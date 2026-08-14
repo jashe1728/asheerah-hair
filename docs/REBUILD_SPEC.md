@@ -99,22 +99,49 @@ Status: reverse-engineering complete (data current as of 2026-08-14).
 
 ## 5. PRICING MODEL (reconstructed)
 
-### Wig pricing — function of (length, lace, density)
-Base structure observed from Straight Wig (matrix fully extracted, saved to
-`catalog_summary.json` and `products_all.json`). Rules:
-- **Density:** 180% < 200% < 250% (higher density = higher price).
-- **Lace size:** larger lace (7x7 > 13x6 > 6x6 > 13x4) generally higher; HD ≥ Transparent of same size (HD slightly higher than Transparent for the same dimension; e.g. 13X4 HD 187 vs 13X4 Transparent 171 at 10"/180%).
-- **Length:** monotonically increasing with length (10"→30").
-- **Compare-at (was) price:** approximately sale price + a fixed margin varying by variant (roughly 12–15% of sale). Exact values per variant in the JSON dump.
+### ⚠️ CRITICAL FINDING — Currency mismatch
+The Excel pricing workbook is the friend's **internal EUR pricing engine** (all
+minimum selling prices end in .99 €). The **current Shopify site displays the SAME
+numbers but labelled in USD ($)** — e.g. Straight Wig 10"/6x6 HD 180% shows $186.99
+on Shopify, while the Excel minimum is €186.99. The new site must pick ONE currency.
+Recommendation: use **EUR (€)** since the business ships to Portugal/Angola/Mozambique/
+Cape Verde/Brazil (Portuguese-speaking markets) and WhatsApp is +351. This is a
+decision to confirm with the friend.
 
-### Bundle pricing — function of (length)
-- 12": $218 → 14": $234 → 16": $249 → 18": $274 → 20": $297 → 22": $323 → 24": $349 → 26": $384 → 28": $420 (Straight/Body/Burmese); Deep Wave & 4B/4C stop at 26".
-- Straight Bundles slightly cheaper: 12": $169 (see full matrix in JSON).
+### The pricing engine (from the Excel)
+The Excel builds every price as: **all costs + profit-before-IRS**, rounded UP to
+end in .99. Components:
+- Exchange: USD→EUR 0.92 · IRS tax reserve 25% of profit
+- Fixed costs/order: shipping €30 + payment fee €10
+- Wig extra: customization €11 + gifts/packaging €15
+- Profit floors (net €): wig 30–45, bundle 35–50, crochet 20–60 (grow with length)
+- Curly texture fee: +€8 (wig) / bundle curly +€5 / crochet curly +€3/100g
+- Ambassador discounts (client coupon €7; personal wig €15 / bundle €20 / crochet €10–15)
 
-### Crochet pricing — function of (length, weight)
-- Base per texture; increases with length and weight (100g < 200g < 300g). Full matrix in JSON.
+Promotion formula (per product):
+- Price Before Promotion = Minimum Selling Price + chosen € extra
+- Promotional Price = round-up-to-.99(Price Before × (1 − Discount %))
+- Status gate: OK (profit protected) vs UNSAFE (promo below minimum)
 
-> NOTE: The user will provide an Excel file with the authoritative hair pricing. The above is reconstructed from Shopify data and should be reconciled against that Excel before finalizing the catalog.
+### Wig minimum price (€) — function of (lace-type, lace-size, density, length)
+14 price columns × lengths 10–32 (HD & Transparent; 6x6/13x4 share, 7x7/13x6/360
+share; HD also has separate 13x6/7x7 columns). Full matrix cached in
+`excel/price_engine.json`. Sample (12"): HD 13x4/6x6 180% = €197.99, 200% = €200.99,
+250% = €213.99; Transparent 6x6/13x4 180% = €181.99.
+300% density exists only from 16" (HD 13x4/6x6) / some HD 13x6/7x7.
+
+### Bundle minimum price (€) — function of (length, texture)
+Straight: 12"=€168.99 → 28"=€346.99. Curly: 12"=€183.99 → 28"=€355.99. (10" not sold.)
+
+### Crochet minimum price (€) — function of (length, weight, texture)
+Straight 100g 12"=€108.99 → 26"=€187.99; 300g 12"=€220.99 → 26"=€409.99.
+Curly +€10–15. Bulk (200/300g) = better value (fees charged once).
+
+### Reconciliation status
+The Shopify JSON (products_all.json) carries the USD-labelled sale prices; the
+Excel price_engine.json carries the authoritative EUR minimum prices. **The Excel
+is authoritative** — the catalog for the new site should be rebuilt from
+price_engine.json, not from the Shopify scrape. The user's Excel is the source of truth.
 
 ## 6. KEY METADATA & INTEGRATIONS TO REPLACE
 
