@@ -9,7 +9,7 @@ const CONFIG = {
   whatsapp: '351914522508',           // friend's WhatsApp number
   email: 'asheerahhair@gmail.com',
   // Google Apps Script backend (empty = orders go to WhatsApp/email fallback)
-  backendURL: '',
+  backendURL: 'https://script.google.com/macros/s/AKfycbzKCanbiHbmlJkhhjy77g2LyTGef6jqcOBNp-2LmUsw21eOCJfSiATnLrw3i2lXlnMP/exec',
   // Payment publishable keys (fill after accounts are created)
   stripePublishable: '',
   paypalClientId: '',
