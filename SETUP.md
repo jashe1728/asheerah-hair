@@ -1,81 +1,75 @@
 # Asheerah Hair — Account Setup Guide
 
-This file is for whoever configures the business accounts. It must be done while
-signed into **Asheerah's** Google account (not Shelton's). Parts of it (payment
-keys) are done on the payment providers' sites.
+Configured while signed into **Asheerah's** Google account. Keys are PUBLISHABLE
+only (safe to be public). Never put secret/private keys in the site.
 
 ---
 
-## 1. Google Sheets + Apps Script backend (orders)
+## 1. Google Sheets + Apps Script backend (orders + monthly report)
 
-Goal: orders placed on the site land in a Google Sheet Asheerah can open, and an
-order email goes to asheerahhair@gmail.com.
+Orders land in a Google Sheet with structured columns and a computed **Profit**
+per order. `buildReport()` creates a **Monthly Report** tab with revenue / COGS /
+fees / profit by month + charts.
 
-### Step 1 — Create the sheet + script (manual, once)
-1. Go to https://sheets.new signed into Asheerah's Google account. Rename it
-   "Asheerah Hair Orders". This becomes the order store.
-2. Go to https://script.google.com → **New project**.
-3. Replace the default `Code.gs` with the contents of `backend/Code.gs`.
-4. Change `OWNER_EMAIL` at the top if it should be a different inbox.
-5. **Deploy → New deployment → Web app**:
-   - Execute as: **Me (asheerahhair@gmail.com)**
-   - Who has access: **Anyone**
-   - Click Deploy, authorize when prompted, copy the **/exec** URL.
-6. Paste that URL into the site's `assets/js/app.js` → `CONFIG.backendURL = 'https://script.google.com/macros/s/.../exec'`.
+### Step 1 — Create the spreadsheet + script (once)
+1. https://sheets.new (Asheerah's account) → rename "Asheerah Hair Orders".
+2. Extensions → Apps Script.
+3. Paste the contents of `backend/Code.gs` into `Código.gs` (save).
+4. Check `OWNER_EMAIL` at the top if it should be a different inbox.
 
-### Step 2 — Trigger authorization
-In the Apps Script editor, select `authMail` in the function dropdown and click
-**Run**. Approve the permission popup. This authorises MailApp so order emails
-send. (First automated emails may go to Spam — mark "Not spam" once.)
+### Step 2 — Authorize MailApp
+Select `authMail` in the function dropdown → **Run** → Review permissions → Allow.
 
-### Verify
-Place a test order on the site → a row appears in the Sheet and an email arrives.
+### Step 3 — Deploy
+Deploy → New deployment → Web app:
+- Execute as: **Me** · Who has access: **Anyone**
+- Copy the `/exec` URL → paste into `config.js` → `backendURL`.
 
-> If the backend is not yet deployed, the site automatically falls back to
-> opening a pre-filled WhatsApp message to +351 914 522 508 — orders are never lost.
+### Step 4 — Generate the monthly report (after orders exist)
+In the editor, select **`buildReport`** → **Run**. It creates/refreshes the
+**Monthly Report** tab with a summary table + charts. Re-run any time.
+
+> The report computes COGS from the supplier cost model embedded in `Code.gs`
+> (editable if supplier prices change), fees per payment method, and profit.
 
 ---
 
 ## 2. Online payments (full integration)
 
-The site is wired to offer **Card (Stripe), PayPal, and MB Way**. Each needs an
-account owned by the business (Asheerah, or whoever legally owns the business).
+The site offers **Card (Stripe), PayPal, MB Way**. All keys are PUBLISHABLE and
+go into `config.js`. All charges settle in **EUR**.
 
 ### Stripe (cards + Apple/Google Pay)
-1. https://stripe.com → sign up (business verification / KYC required).
-2. Dashboard → **Developers → API keys** → copy the **Publishable key** (pk_live_...).
-3. Paste into `assets/js/app.js` → `CONFIG.stripePublishable`.
-4. For MB Way on Stripe: enable it under Payment methods (needs a Stripe account
-   with Portugal; if not available yet, use MONEI for MB Way — see below).
+1. https://stripe.com → sign up → complete business/KYC verification.
+2. Dashboard → **Developers → API keys** → copy the **Publishable key** (`pk_live_...`).
+3. Paste into `config.js` → `stripePublishable`.
+4. MB Way on Stripe: Dashboard → **Settings → Payment methods** → enable **MB WAY**
+   (requires a Stripe account in Portugal). If not available, use MONEI for MB Way.
 
 ### PayPal
-1. https://www.paypal.com/business → create a business account.
-2. Developer dashboard → Apps & Credentials → **Client ID**.
-3. Paste into `assets/js/app.js` → `CONFIG.paypalClientId`.
+1. https://www.paypal.com/business → create business account.
+2. Developer dashboard → **Apps & Credentials** → **Client ID**.
+3. Paste into `config.js` → `paypalClientId`.
 
 ### MB Way
 Two options:
-- **Stripe MB Way** (if available on the account): no extra setup beyond Stripe.
-- **MONEI** (https://monei.com, €10 one-time setup, 1.4% + €0.28/tx): create an
-  account, get the API key, and wire the MB Way checkout to it.
+- **Stripe MB Way** (if enabled on the account): no extra key — Stripe handles it.
+- **MONEI** (https://monei.com): €10 one-time setup, 1.4% + €0.28/tx. Create an
+  account → get the API key → paste into `config.js` → `mbwayKey`.
 
 ---
 
 ## 3. Currency
-
-- Base currency is **EUR** (matches the pricing Excel).
-- The site offers EUR / USD / GBP display via the currency switcher (approximate
-  display rates in `CONFIG.rates`). Update these rates in `app.js` as needed.
-- **All charges are settled in EUR** by the payment provider; the switcher is
-  display-only.
+- Base **EUR** (matches pricing Excel). Charges settle in EUR.
+- Site shows EUR/USD/GBP via the switcher (display rates in `config.js` → `rates`).
 
 ---
 
-## 4. Before launch checklist
-- [ ] `CONFIG.backendURL` set (Apps Script /exec)
-- [ ] `CONFIG.stripePublishable` set
-- [ ] `CONFIG.paypalClientId` set
-- [ ] MB Way method enabled (Stripe or MONEI)
-- [ ] Domain pointed to GitHub Pages (custom domain asheerahhair.com)
-- [ ] WhatsApp number confirmed in `CONFIG.whatsapp` and footer
-- [ ] Test order end-to-end (cart → checkout → sheet → email)
+## 4. Before-launch checklist
+- [ ] `config.js` → `backendURL` set (Apps Script `/exec`)
+- [ ] `config.js` → `stripePublishable` set
+- [ ] `config.js` → `paypalClientId` set
+- [ ] MB Way enabled (Stripe or MONEI)
+- [ ] `buildReport()` run once → Monthly Report tab visible
+- [ ] Domain pointed to GitHub Pages
+- [ ] Test full order end-to-end (cart → checkout → Sheet → report → email)
