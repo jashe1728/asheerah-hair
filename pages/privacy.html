@@ -9,11 +9,32 @@
 <style>.prose{max-width:760px;margin:0 auto;color:var(--ink-soft)}.prose h2{color:var(--ink);margin:1.6rem 0 .6rem;font-size:1.5rem}.prose p,.prose li{margin-bottom:.7rem}.prose ul{margin-left:1.3rem}</style>
 </head>
 <body data-page="policy">
-<nav class="nav">
-  <a href="../index.html" class="brand"><img class="logo" src="../assets/logo-sm.png" alt="Asheerah Hair"></a>
-  <div class="nav-links"><a href="../index.html">Home</a><a href="../shop.html?cat=wigs">Wigs</a><a href="../shop.html?cat=bundles">Bundles</a><a href="../shop.html?cat=crochet">Crochet</a><a href="../faq.html">FAQ</a><a href="contact.html">Contact</a></div>
-  <div class="nav-actions"><button class="icon-btn" title="Cart" onclick="location.href='../cart.html'">🛍️<span class="cart-count" data-cart-count>0</span></button><button class="nav-burger" aria-label="Menu">☰</button></div>
-</nav>
+<header class="site-header">
+  <div class="announcement"><span data-i18n="announce">Use Com Confiança</span><span class="sep">|</span><span data-i18n="announce2">Cabelo Humano Virgem 100%</span><span class="sep">|</span><span data-i18n="announce3">Envio Mundial</span></div>
+  <div class="header-row">
+    <a href="../index.html" class="brand" aria-label="Asheerah Hair"><img class="logo" src="../assets/logo-sm.png" alt="Asheerah Hair"></a>
+    <nav class="header-nav">
+      <a href="../index.html" data-i18n="nav.home">Home</a>
+      <a href="../shop.html?cat=wigs" data-i18n="nav.wigs">Wigs</a>
+      <a href="../shop.html?cat=bundles" data-i18n="nav.bundles">Bundles</a>
+      <a href="../shop.html?cat=crochet" data-i18n="nav.crochet">Crochet</a>
+      <a href="../faq.html" data-i18n="nav.faq">FAQ</a>
+      <a href="../pages/contact.html" data-i18n="nav.contact">Contact</a>
+    </nav>
+    <div class="header-right">
+      <div class="currency-selector" id="currencySelector" aria-haspopup="listbox" aria-expanded="false">
+        <span class="flag" id="ptFlag"><svg viewBox="0 0 4 3"><path d="M0 0h4v3H0z" fill="#fff"/><path d="M0 0h1.4v3H0z" fill="#060"/><circle cx="1.1" cy="1.5" r=".7" fill="#c00"/><circle cx="1.15" cy="1.5" r=".45" fill="#fe0"/></svg></span>
+        <span id="currencyLabel" data-i18n="currency">EUR / PT-PT</span>
+        <span class="chev">⌄</span>
+      </div>
+      <div class="header-icons">
+        <button class="hicon" id="searchBtn" aria-label="Search" title="Search"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.5" y2="16.5"/></svg></button>
+        <a class="hicon" href="cart.html" aria-label="Cart" title="Cart"><svg viewBox="0 0 24 24"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4Z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/></svg><span class="cart-count" data-cart-count>0</span></a>
+      </div>
+      <button class="header-burger" aria-label="Menu">☰</button>
+    </div>
+  </div>
+</header>
 <div class="page"><div class="container"><h1>Privacy Policy</h1>
 <div class="prose">
 <p>Asheerah Hair respects your privacy. This policy explains what information we collect when you use our website and how we use it.</p>

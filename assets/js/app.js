@@ -112,8 +112,8 @@ function clearCart(){ saveCart([]); updateCartUI(); }
 
 // ---------- Nav ----------
 function initNav(){
-  const burger = document.querySelector('.nav-burger');
-  const links = document.querySelector('.nav-links');
+  const burger = document.querySelector('.header-burger');
+  const links = document.querySelector('.header-nav');
   if (burger && links){
     burger.addEventListener('click', ()=> links.classList.toggle('open'));
     links.querySelectorAll('a').forEach(a => a.addEventListener('click', ()=> links.classList.remove('open')));
@@ -127,6 +127,35 @@ function initNav(){
       else if (href.includes('faq') && page==='faq') a.classList.add('active');
       else if (href.includes('contact') && page==='contact') a.classList.add('active');
       else if (href.includes('shop') && ['shop','product','cart','checkout'].includes(page)) a.classList.add('active');
+    });
+  }
+}
+
+// ---------- Header currency selector + search ----------
+function initHeaderControls(){
+  // currency selector: clicking cycles EUR -> USD -> GBP (display only, settles EUR)
+  const sel = document.getElementById('currencySelector');
+  if (sel){
+    sel.addEventListener('click', ()=>{
+      const order = ['EUR','USD','GBP'];
+      const cur = localStorage.getItem('ash_cur') || 'EUR';
+      const next = order[(order.indexOf(cur)+1) % order.length];
+      localStorage.setItem('ash_cur', next);
+      const lbl = document.getElementById('currencyLabel');
+      if (lbl) lbl.textContent = next + ' / ' + (next==='EUR'?'PT-PT':next==='USD'?'US':'GB');
+      // refresh page content if on a page that shows currency
+      if (window.renderShop) renderShop();
+      if (window.renderCartPage) renderCartPage();
+      if (window.renderCheckoutPage) renderCheckoutPage();
+      updateCartUI();
+    });
+  }
+  // search button opens the search overlay / jumps to shop
+  const sb = document.getElementById('searchBtn');
+  if (sb){
+    sb.addEventListener('click', ()=>{
+      const q = prompt('Search products…');
+      if (q) location.href = 'shop.html?q=' + encodeURIComponent(q);
     });
   }
 }
@@ -150,6 +179,7 @@ function initReveal(){
 // ---------- Page init ----------
 document.addEventListener('DOMContentLoaded', async () => {
   initNav();
+  initHeaderControls();
   initReveal();
   updateCartUI();
   const cur = localStorage.getItem('ash_cur') || 'EUR';
