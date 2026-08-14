@@ -118,11 +118,39 @@ function initNav(){
     burger.addEventListener('click', ()=> links.classList.toggle('open'));
     links.querySelectorAll('a').forEach(a => a.addEventListener('click', ()=> links.classList.remove('open')));
   }
+  // highlight active page link
+  const page = document.body.dataset.page;
+  if (page && links){
+    links.querySelectorAll('a').forEach(a => {
+      const href = a.getAttribute('href') || '';
+      if (page==='home' && (href==='index.html' || href==='../index.html')) a.classList.add('active');
+      else if (href.includes('faq') && page==='faq') a.classList.add('active');
+      else if (href.includes('contact') && page==='contact') a.classList.add('active');
+      else if (href.includes('shop') && ['shop','product','cart','checkout'].includes(page)) a.classList.add('active');
+    });
+  }
+}
+
+// ---------- Reveal on scroll ----------
+function initReveal(){
+  // gate: only animate if JS is on and motion is not reduced
+  document.documentElement.classList.add('js');
+  if (window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+    document.querySelectorAll('.reveal').forEach(el => el.classList.add('in'));
+    return;
+  }
+  const els = document.querySelectorAll('.reveal');
+  if (!('IntersectionObserver' in window)) { els.forEach(el => el.classList.add('in')); return; }
+  const io = new IntersectionObserver((entries)=>{
+    entries.forEach(en => { if (en.isIntersecting){ en.target.classList.add('in'); io.unobserve(en.target); } });
+  }, { threshold: 0.12 });
+  els.forEach(el => io.observe(el));
 }
 
 // ---------- Page init ----------
 document.addEventListener('DOMContentLoaded', async () => {
   initNav();
+  initReveal();
   updateCartUI();
   const cur = localStorage.getItem('ash_cur') || 'EUR';
   document.querySelectorAll('[data-currency]').forEach(b => {
