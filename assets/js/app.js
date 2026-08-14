@@ -1,18 +1,11 @@
 /* Asheerah Hair — shared app logic: catalog, cart, currency, helpers */
 'use strict';
 
-// ---------- Config (fill in real values when accounts are ready) ----------
-const CONFIG = {
-  currency: 'EUR',                    // base currency (authoritative)
-  rates: { EUR: 1, USD: 1.08, GBP: 0.85 },  // approx display rates; update as needed
-  shipping: 30,                        // EUR fixed shipping (from Excel Settings)
-  whatsapp: '351914522508',           // friend's WhatsApp number
-  email: 'asheerahhair@gmail.com',
-  // Google Apps Script backend (empty = orders go to WhatsApp/email fallback)
-  backendURL: 'https://script.google.com/macros/s/AKfycbzKCanbiHbmlJkhhjy77g2LyTGef6jqcOBNp-2LmUsw21eOCJfSiATnLrw3i2lXlnMP/exec',
-  // Payment publishable keys (fill after accounts are created)
-  stripePublishable: '',
-  paypalClientId: '',
+// Configuration lives in config.js (window.CONFIG), loaded before this file.
+const CONFIG = window.CONFIG || {
+  currency:'EUR', rates:{EUR:1,USD:1.08,GBP:0.85}, shipping:30,
+  whatsapp:'351914522508', email:'asheerahhair@gmail.com',
+  backendURL:'', stripePublishable:'', paypalClientId:'', mbwayKey:'',
 };
 
 const CURRENCIES = {
@@ -259,6 +252,14 @@ function renderCheckoutPage(){
       <div class="row"><span>Items (${cartCount()})</span><span>${money(cartTotalEur(),cur)}</span></div>
       <div class="row"><span>Shipping</span><span>${money(CONFIG.shipping,cur)}</span></div>
       <div class="row total"><span>Total</span><span>${money(total,cur)}</span></div>
+      <h2 style="text-align:center;margin:1.5rem 0 .8rem;font-size:1.3rem">Delivery details</h2>
+      <div style="display:grid;gap:.8rem">
+        <input id="custName" placeholder="Full name" required>
+        <input id="custEmail" type="email" placeholder="Email (for tracking)" required>
+        <input id="custPhone" type="tel" placeholder="Phone">
+        <input id="custAddress" placeholder="Delivery address">
+      </div>
+      <h2 style="text-align:center;margin:1.5rem 0 .8rem;font-size:1.3rem">Payment</h2>
       <div class="methods" id="payMethods">
         ${['stripe','paypal','mbway'].map(m=>`
           <label class="method">
@@ -292,14 +293,32 @@ function renderCheckoutPage(){
 
   window.placeOrder = () => {
     const method = document.querySelector('input[name=pay]:checked')?.value || 'mbway';
-    let extra = '';
-    if (method==='mbway') extra = `\nMB Way phone: ${document.getElementById('mbwayPhone')?.value||''}`;
+    let mbwayPhone = '';
+    if (method==='mbway') mbwayPhone = document.getElementById('mbwayPhone')?.value||'';
+    const items = cart.map(i=>({ title:i.title, opts:i.opts, qty:i.qty, priceEur:i.priceEur }));
     const lines = cart.map(i=>`• ${i.title} (${Object.values(i.opts).filter(Boolean).join(', ')}) ×${i.qty} — ${money(i.priceEur*i.qty,'EUR')}`).join('\n');
-    const text = `NEW ORDER (Asheerah Hair)\n${lines}\n\nShipping: ${money(CONFIG.shipping,'EUR')}\nTOTAL: ${money(total,'EUR')}\nPayment: ${method}${extra}\n\nName/address to confirm on WhatsApp.`;
+    const text = `NEW ORDER (Asheerah Hair)\n${lines}\n\nShipping: ${money(CONFIG.shipping,'EUR')}\nTOTAL: ${money(total,'EUR')}\nPayment: ${method}${mbwayPhone?'\nMB Way phone: '+mbwayPhone:''}\n\nName/address to confirm on WhatsApp.`;
+    const payload = {
+      type:'order',
+      text,
+      method,
+      mbwayPhone,
+      items,
+      subtotalEur: cartTotalEur(),
+      shippingEur: CONFIG.shipping,
+      totalEur: total,
+      currency:'EUR',
+      customer: {
+        name: document.getElementById('custName')?.value||'',
+        email: document.getElementById('custEmail')?.value||'',
+        phone: document.getElementById('custPhone')?.value||'',
+        address: document.getElementById('custAddress')?.value||'',
+      },
+    };
     // Try backend, fall back to WhatsApp
     const fallback = () => { window.open(`https://wa.me/${CONFIG.whatsapp}?text=${encodeURIComponent(text)}`,'_blank'); };
     if (CONFIG.backendURL){
-      fetch(CONFIG.backendURL, { method:'POST', headers:{'Content-Type':'text/plain;charset=utf-8'}, body: JSON.stringify({type:'order', text}) })
+      fetch(CONFIG.backendURL, { method:'POST', headers:{'Content-Type':'text/plain;charset=utf-8'}, body: JSON.stringify(payload) })
         .then(r=>r.json()).then(d=>{
           document.getElementById('orderNote').textContent = d.ok
             ? 'Order received! Confirmation on the way.'

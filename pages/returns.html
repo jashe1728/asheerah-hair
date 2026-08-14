@@ -43,6 +43,7 @@
 <a class="wa-btn" href="https://wa.me/351914522508" target="_blank" rel="noopener" title="Chat on WhatsApp">💬</a>
 <button class="chat-btn" onclick="toggleChat()" aria-label="Chat">💬</button>
 <div class="chat-window" id="chatWindow"><div class="chat-head">Asheerah Hair Assistant<span><button class="close" onclick="toggleChat()">×</button></span></div><div class="chat-body" id="chatBody"></div><div class="chat-quick"><button onclick="quickAsk('Do you accept returns?')">Returns</button><button onclick="quickAsk('How do I contact you?')">Contact</button></div><div class="chat-input"><input id="chatInput" placeholder="Ask a question…" onkeydown="if(event.key==='Enter')sendChat()"><button onclick="sendChat()">Send</button></div></div>
+<script src="../config.js"></script>
 <script src="../assets/js/app.js"></script>
 <script src="../assets/js/chatbot.js"></script>
 </body>
