@@ -69,6 +69,13 @@ var I18N = {
   luxury_wigs:{ pt:'Perucas de Luxo', en:'Luxury Wigs', es:'Pelucas de Lujo', de:'Luxus-Perücken', fr:'Perruques de Luxe', it:'Parrucche di Lusso' },
   luxury_bundles:{ pt:'Pacotes de Luxo', en:'Luxury Bundles', es:'Paquetes de Lujo', de:'Luxus-Bündel', fr:'Paquets de Luxe', it:'Pacchetti di Lusso' },
   crochet_hair:{ pt:'Cabelo de Crochê', en:'Crochet Hair', es:'Cabello de Crochet', de:'Gehäkeltes Haar', fr:'Cheveux au Crochet', it:'Capelli all\u2019uncinetto' },
+  promo_wigs: { pt:'PERUCAS', en:'WIGS', es:'PELUCAS', de:'PERÜCKEN', fr:'PERRUQUES', it:'PARRUCCHE' },
+  promo_wigs_sub: { pt:'Perucas de lace para um look impecável', en:'Lace wigs for a flawless look', es:'Pelucas de lace para un look impecable', de:'Lace-Perücken für einen makellosen Look', fr:'Perruques lace pour un look impeccable', it:'Parrucche lace per un look impeccabile' },
+  promo_bundles: { pt:'PACOTES', en:'BUNDLES', es:'PAQUETES', de:'BÜNDEL', fr:'PAQUETS', it:'PACCHETTI' },
+  promo_bundles_sub: { pt:'Pacotes premium para todos os estilos', en:'Premium bundles for every style', es:'Paquetes premium para cada estilo', de:'Premium-Bündel für jeden Stil', fr:'Paquets premium pour chaque style', it:'Pacchetti premium per ogni stile' },
+  promo_crochet: { pt:'CABELO DE CROCHÊ', en:'CROCHET HAIR', es:'CABELLO DE CROCHET', de:'GEHÄKELTES HAAR', fr:'CHEVEUX AU CROCHET', it:'CAPELLI ALL\u2019UNCINETTO' },
+  promo_crochet_sub: { pt:'Natural. Versátil. Sem esforço.', en:'Natural. Versatile. Effortless.', es:'Natural. Versátil. Sin esfuerzo.', de:'Natürlich. Vielseitig. Mühelos.', fr:'Naturel. Polyvalent. Sans effort.', it:'Naturale. Versatile. Senza sforzo.' },
+  promo_shop_btn: { pt:'COMPRAR AGORA', en:'SHOP NOW', es:'COMPRAR AHORA', de:'JETZT KAUFEN', fr:'ACHETER MAINTENANT', it:'ACQUISTA ORA' },
 
   your_cart: { pt:'O Teu Carrinho', en:'Your Cart', es:'Tu Carrito', de:'Dein Warenkorb', fr:'Votre Panier', it:'Il Tuo Carrello' },
   cart_empty:{ pt:'O teu carrinho está vazio.', en:'Your cart is empty.', es:'Tu carrito está vacío.', de:'Dein Warenkorb ist leer.', fr:'Votre panier est vide.', it:'Il tuo carrello è vuoto.' },
