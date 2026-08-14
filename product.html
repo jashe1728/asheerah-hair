@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Product — Asheerah Hair</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;1,500&family=DM+Sans:wght@400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/css/styles.css">
+</head>
+<body data-page="product">
+<nav class="nav">
+  <a href="index.html" class="brand">asheerah<span>hair</span></a>
+  <div class="nav-links">
+    <a href="index.html">Home</a>
+    <a href="shop.html?cat=wigs">Wigs</a>
+    <a href="shop.html?cat=bundles">Bundles</a>
+    <a href="shop.html?cat=crochet">Crochet</a>
+    <a href="faq.html">FAQ</a>
+    <a href="pages/contact.html">Contact</a>
+  </div>
+  <div class="nav-actions">
+    <button class="icon-btn" title="Cart" onclick="location.href='cart.html'">🛍️<span class="cart-count" data-cart-count>0</span></button>
+    <button class="nav-burger" aria-label="Menu">☰</button>
+  </div>
+</nav>
+
+<div class="page">
+  <div class="container">
+    <div id="productRoot"><p style="text-align:center;color:var(--muted)">Loading…</p></div>
+  </div>
+</div>
+
+<footer>
+  <div class="footer-grid">
+    <div><h4 style="font-size:1.4rem;font-family:'Cormorant Garamond',serif">asheerah<span style="color:var(--gold)">hair</span></h4><p style="opacity:.85;max-width:280px;margin-top:.5rem">Luxury 100% virgin human hair. Premium quality, made for you.</p></div>
+    <div><h4>Shop</h4><a href="shop.html?cat=wigs">Luxury Wigs</a><a href="shop.html?cat=bundles">Luxury Bundles</a><a href="shop.html?cat=crochet">Crochet Human Hair</a><a href="shop.html">All Products</a></div>
+    <div><h4>Support</h4><a href="faq.html">FAQ</a><a href="pages/shipping.html">Shipping</a><a href="pages/returns.html">Returns & Refunds</a><a href="pages/contact.html">Contact Us</a></div>
+    <div><h4>Contact</h4><a href="mailto:asheerahhair@gmail.com">asheerahhair@gmail.com</a><a href="https://wa.me/351914522508">WhatsApp +351 914 522 508</a><a href="https://www.instagram.com/asheerah_hair" target="_blank" rel="noopener">Instagram @asheerah_hair</a><a href="https://www.tiktok.com/@asheerahhair" target="_blank" rel="noopener">TikTok @asheerahhair</a></div>
+  </div>
+  <div class="foot-bottom"><span>© <span id="copyYear">2026</span> Asheerah Hair. All rights reserved.</span><span>💳 Card · PayPal · MB Way</span></div>
+</footer>
+
+<a class="wa-btn" href="https://wa.me/351914522508" target="_blank" rel="noopener" title="Chat on WhatsApp">💬</a>
+
+<button class="chat-btn" onclick="toggleChat()" aria-label="Chat">💬</button>
+<div class="chat-window" id="chatWindow">
+  <div class="chat-head">Asheerah Hair Assistant<span><button class="close" onclick="toggleChat()">×</button></span></div>
+  <div class="chat-body" id="chatBody"></div>
+  <div class="chat-quick"><button onclick="quickAsk('What type of hair do you sell?')">Hair types</button><button onclick="quickAsk('How long does shipping take?')">Shipping</button><button onclick="quickAsk('Do you accept returns?')">Returns</button></div>
+  <div class="chat-input"><input id="chatInput" placeholder="Ask a question…" onkeydown="if(event.key==='Enter')sendChat()"><button onclick="sendChat()">Send</button></div>
+</div>
+
+<script src="assets/js/app.js"></script>
+<script src="assets/js/chatbot.js"></script>
+</body>
+</html>
