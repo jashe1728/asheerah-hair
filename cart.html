@@ -21,6 +21,7 @@
       <a href="pages/contact.html" data-i18n="nav.contact">Contact</a>
     </nav>
     <div class="header-right">
+      <div id="langDropdown"></div>
       <div class="currency-selector" id="currencySelector" aria-haspopup="listbox" aria-expanded="false">
         <span class="flag" id="ptFlag"><svg viewBox="0 0 4 3"><path d="M0 0h4v3H0z" fill="#fff"/><path d="M0 0h1.4v3H0z" fill="#060"/><circle cx="1.1" cy="1.5" r=".7" fill="#c00"/><circle cx="1.15" cy="1.5" r=".45" fill="#fe0"/></svg></span>
         <span id="currencyLabel" data-i18n="currency">EUR / PT-PT</span>
@@ -37,7 +38,7 @@
 
 <div class="page">
   <div class="container">
-    <h1>Your Cart</h1>
+    <h1 data-i18n="your_cart">Your Cart</h1>
     <div class="currency-switch">
       <button data-currency="EUR">€</button>
       <button data-currency="USD">$</button>
@@ -67,6 +68,7 @@
 </div>
 
 <script src="config.js"></script>
+<script src="assets/js/i18n.js"></script>
 <script src="assets/js/app.js"></script>
 <script src="assets/js/chatbot.js"></script>
 </body>

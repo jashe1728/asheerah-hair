@@ -80,7 +80,7 @@ function renderCartDrawer(){
   if (!el) return;
   const cart = getCart();
   if (!cart.length){
-    el.innerHTML = '<p style="color:var(--muted);text-align:center;padding:2rem">Your cart is empty.</p>';
+    el.innerHTML = '<p style="color:var(--muted);text-align:center;padding:2rem">'+(window.uiTxt?uiTxt('cart_empty'):'Your cart is empty.')+'</p>';
     return;
   }
   const cur = localStorage.getItem('ash_cur') || 'EUR';
@@ -220,7 +220,7 @@ function renderProduct(){
   const handle = new URLSearchParams(location.search).get('h');
   const p = findProduct(handle);
   const root = document.getElementById('productRoot'); if (!root) return;
-  if (!p){ root.innerHTML = '<p style="text-align:center">Product not found.</p>'; return; }
+  if (!p){ root.innerHTML = '<p style="text-align:center">'+(window.uiTxt?uiTxt('not_found'):'Product not found.')+'</p>'; return; }
   const cur = localStorage.getItem('ash_cur') || 'EUR';
   const opts = p.options || [];
   let sel = {}; opts.forEach(o => sel[o.name] = o.values[0]);
@@ -255,8 +255,8 @@ function renderProduct(){
               </div>
             </div>`).join('')}
           <div class="qty"><button onclick="qtyChange(-1)">−</button><span id="qtyVal">1</span><button onclick="qtyChange(1)">+</button></div>
-          <button class="add-btn" onclick="addCurrentToCart()">Add to cart</button>
-          <div class="desc"><h3 style="margin-bottom:.4rem">Description</h3><p>${p.description}</p></div>
+          <button class="add-btn" onclick="addCurrentToCart()">${(window.uiTxt?uiTxt('add_to_cart'):'Add to cart')}</button>
+          <div class="desc"><h3 style="margin-bottom:.4rem">${(window.uiTxt?uiTxt('description'):'Description')}</h3><p>${p.description}</p></div>
         </div>
       </div>`;
   };
@@ -278,7 +278,7 @@ function renderProduct(){
   window.addCurrentToCart = () => {
     const optsForCart = { opt1: sel[opts[0]?.name||'']||'', opt2: sel[opts[1]?.name||'']||'', opt3: sel[opts[2]?.name||'']||'' };
     addToCart(handle, optsForCart, window.qtyVal||1);
-    alert('Added to cart ✓');
+    alert(window.uiTxt?uiTxt('added'):'Added to cart ✓');
   };
 }
 
@@ -306,28 +306,28 @@ function renderCheckoutPage(){
   const total = cartTotalEur() + CONFIG.shipping;
   root.innerHTML = `
     <div class="summary" style="max-width:520px;margin:0 auto">
-      <h2 style="text-align:center;margin-bottom:1rem">Order summary</h2>
-      <div class="row"><span>Items (${cartCount()})</span><span>${money(cartTotalEur(),cur)}</span></div>
+      <h2 style="text-align:center;margin-bottom:1rem">${(window.uiTxt?uiTxt('order_summary'):'Order summary')}</h2>
+      <div class="row"><span>${(window.uiTxt?uiTxt('items'):'Items')} (${cartCount()})</span><span>${money(cartTotalEur(),cur)}</span></div>
       <div class="row"><span>Shipping</span><span>${money(CONFIG.shipping,cur)}</span></div>
       <div class="row total"><span>Total</span><span>${money(total,cur)}</span></div>
-      <h2 style="text-align:center;margin:1.5rem 0 .8rem;font-size:1.3rem">Delivery details</h2>
+      <h2 style="text-align:center;margin:1.5rem 0 .8rem;font-size:1.3rem">${(window.uiTxt?uiTxt('delivery_details'):'Delivery details')}</h2>
       <div style="display:grid;gap:.8rem">
-        <input id="custName" placeholder="Full name" required>
-        <input id="custEmail" type="email" placeholder="Email (for tracking)" required>
-        <input id="custPhone" type="tel" placeholder="Phone">
-        <input id="custAddress" placeholder="Delivery address">
+        <input id="custName" placeholder="${(window.uiTxt?uiTxt('full_name'):'Full name')}" required>
+        <input id="custEmail" type="email" placeholder="${(window.uiTxt?uiTxt('email_tracking'):'Email (for tracking)')}" required>
+        <input id="custPhone" type="tel" placeholder="${(window.uiTxt?uiTxt('phone'):'Phone')}">
+        <input id="custAddress" placeholder="${(window.uiTxt?uiTxt('address'):'Delivery address')}">
       </div>
-      <h2 style="text-align:center;margin:1.5rem 0 .8rem;font-size:1.3rem">Payment</h2>
+      <h2 style="text-align:center;margin:1.5rem 0 .8rem;font-size:1.3rem">${(window.uiTxt?uiTxt('payment'):'Payment')}</h2>
       <div class="methods" id="payMethods">
         ${['stripe','paypal','mbway'].map(m=>`
           <label class="method">
             <input type="radio" name="pay" value="${m}">
-            <div><div class="m-name">${m==='stripe'?'Card (Stripe)':m==='paypal'?'PayPal':'MB Way'}</div>
-            <div class="m-sub">${m==='mbway'?'Pay by phone number in the MB Way app':''}</div></div>
+            <div><div class="m-name">${m==='stripe'?(window.uiTxt?uiTxt('card_stripe'):'Card (Stripe)'):m==='paypal'?'PayPal':(window.uiTxt?uiTxt('mbway'):'MB Way')}</div>
+            <div class="m-sub">${m==='mbway'?(window.uiTxt?uiTxt('mbway_desc'):'Pay by phone number in the MB Way app'):''}</div></div>
           </label>`).join('')}
       </div>
       <div id="payArea" style="margin-top:1rem"></div>
-      <button class="btn btn-gold" style="width:100%;margin-top:1rem" onclick="placeOrder()">Place order</button>
+      <button class="btn btn-gold" style="width:100%;margin-top:1rem" onclick="placeOrder()">${(window.uiTxt?uiTxt('place_order'):'Place order')}</button>
       <p id="orderNote" style="color:var(--muted);font-size:.85rem;text-align:center;margin-top:1rem"></p>
     </div>`;
 
@@ -379,8 +379,8 @@ function renderCheckoutPage(){
       fetch(CONFIG.backendURL, { method:'POST', headers:{'Content-Type':'text/plain;charset=utf-8'}, body: JSON.stringify(payload) })
         .then(r=>r.json()).then(d=>{
           document.getElementById('orderNote').textContent = d.ok
-            ? 'Order received! Confirmation on the way.'
-            : 'Order recorded. Confirming shortly.';
+            ? (window.uiTxt?uiTxt('order_received'):'Order received! Confirmation on the way.')
+            : (window.uiTxt?uiTxt('order_recorded'):'Order recorded. Confirming shortly.');
           clearCart();
         }).catch(fallback);
     } else fallback();

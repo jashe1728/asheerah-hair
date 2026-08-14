@@ -26,6 +26,7 @@
       <a href="pages/contact.html" data-i18n="nav.contact">Contact</a>
     </nav>
     <div class="header-right">
+      <div id="langDropdown"></div>
       <div class="currency-selector" id="currencySelector" aria-haspopup="listbox" aria-expanded="false">
         <span class="flag" id="ptFlag"><svg viewBox="0 0 4 3"><path d="M0 0h4v3H0z" fill="#fff"/><path d="M0 0h1.4v3H0z" fill="#060"/><circle cx="1.1" cy="1.5" r=".7" fill="#c00"/><circle cx="1.15" cy="1.5" r=".45" fill="#fe0"/></svg></span>
         <span id="currencyLabel" data-i18n="currency">EUR / PT-PT</span>
@@ -43,12 +44,12 @@
 <!-- Hero -->
 <header class="hero">
   <div class="container">
-    <h1>Luxury Hair.<br><em>Made for You.</em></h1>
-    <p class="sub">100% Virgin Human Hair</p>
-    <p class="lead">Luxury in every strand.</p>
+    <h1><span data-i18n="hero_luxury">Luxury Hair.</span><br><em data-i18n="hero_made">Made for You.</em></h1>
+    <p class="sub" data-i18n="hero_virgin">100% Virgin Human Hair</p>
+    <p class="lead" data-i18n="hero_strand">Luxury in every strand.</p>
     <div class="ctas">
-      <a href="shop.html" class="btn btn-gold">Shop Now</a>
-      <a href="shop.html?cat=wigs" class="btn btn-ghost">Explore Wigs</a>
+      <a href="shop.html" class="btn btn-gold" data-i18n="btn_shop">Shop Now</a>
+      <a href="shop.html?cat=wigs" class="btn btn-ghost" data-i18n="btn_wigs">Explore Wigs</a>
     </div>
     <div class="hero-img">
       <img src="https://asheerahhair.com/cdn/shop/files/photo_5893160885415514167_y.jpg?v=1782158425&width=1920" alt="Luxury human hair">
@@ -60,8 +61,8 @@
 <section>
   <div class="container">
     <div class="section-head">
-      <span class="eyebrow">Shop by Collection</span>
-      <h2>Our Collections</h2>
+      <span class="eyebrow" data-i18n="shop_by_collection">Shop by Collection</span>
+      <h2 data-i18n="sec_collections">Our Collections</h2>
     </div>
     <div class="collections reveal">
       <a class="col-card" href="shop.html?cat=wigs">
@@ -84,8 +85,8 @@
 <section>
   <div class="container">
     <div class="section-head">
-      <span class="eyebrow">Shop by Texture</span>
-      <h2>Find Your Texture</h2>
+      <span class="eyebrow" data-i18n="shop_by_texture">Shop by Texture</span>
+      <h2 data-i18n="sec_texture">Find Your Texture</h2>
     </div>
     <div class="textures reveal">
       <a class="texture" href="shop.html?cat=wigs"><img src="https://cdn.shopify.com/s/files/1/1018/3927/4361/files/photo_5888784068927753925_y.jpg?v=1781959419" alt="Straight"><span>Straight</span></a>
@@ -102,11 +103,11 @@
 <section style="padding-top:0">
   <div class="container">
     <div class="valueprops reveal">
-      <div class="vp"><div class="ic">🌿</div><strong>100% Virgin Human Hair</strong></div>
-      <div class="vp"><div class="ic">🛡️</div><strong>Premium Quality</strong></div>
-      <div class="vp"><div class="ic">💎</div><strong>Long Lasting & Durable</strong></div>
-      <div class="vp"><div class="ic">🚚</div><strong>Fast & Secure Shipping</strong></div>
-      <div class="vp"><div class="ic">🎧</div><strong>Excellent Customer Service</strong></div>
+      <div class="vp"><div class="ic">🌿</div><strong data-i18n="vp_virgin">100% Virgin Human Hair</strong></div>
+      <div class="vp"><div class="ic">🛡️</div><strong data-i18n="vp_quality">Premium Quality</strong></div>
+      <div class="vp"><div class="ic">💎</div><strong data-i18n="vp_durable">Long Lasting &amp; Durable</strong></div>
+      <div class="vp"><div class="ic">🚚</div><strong data-i18n="vp_shipping">Fast &amp; Secure Shipping</strong></div>
+      <div class="vp"><div class="ic">🎧</div><strong data-i18n="vp_service">Excellent Customer Service</strong></div>
     </div>
   </div>
 </section>
@@ -115,10 +116,10 @@
 <section>
   <div class="container">
     <div class="features reveal">
-      <div class="feature"><div class="ic">✦</div><h3>Premium Human Hair</h3><p>100% virgin human hair, carefully selected for quality.</p></div>
-      <div class="feature"><div class="ic">✈</div><h3>Worldwide Shipping</h3><p>Delivering premium hair to selected countries worldwide.</p></div>
-      <div class="feature"><div class="ic">🔒</div><h3>Secure Payments</h3><p>Shop confidently with a safe and secure checkout.</p></div>
-      <div class="feature"><div class="ic">♡</div><h3>Made for Your Style</h3><p>Choose your preferred length, lace and density.</p></div>
+      <div class="feature"><div class="ic">✦</div><h3 data-i18n="feat_hair">Premium Human Hair</h3><p data-i18n="feat_hair_d">100% virgin human hair, carefully selected for quality.</p></div>
+      <div class="feature"><div class="ic">✈</div><h3 data-i18n="feat_ship">Worldwide Shipping</h3><p data-i18n="feat_ship_d">Delivering premium hair to selected countries worldwide.</p></div>
+      <div class="feature"><div class="ic">🔒</div><h3 data-i18n="feat_pay">Secure Payments</h3><p data-i18n="feat_pay_d">Shop confidently with a safe and secure checkout.</p></div>
+      <div class="feature"><div class="ic">♡</div><h3 data-i18n="feat_style">Made for Your Style</h3><p data-i18n="feat_style_d">Choose your preferred length, lace and density.</p></div>
     </div>
   </div>
 </section>
@@ -128,17 +129,17 @@
   <div class="container" style="text-align:center">
     <div class="section-head">
       <span class="eyebrow">Instagram</span>
-      <h2>Follow Our Hair Journey</h2>
+      <h2 data-i18n="ig_follow">Follow Our Hair Journey</h2>
       <p>@asheerah_hair</p>
     </div>
-    <a href="https://www.instagram.com/asheerah_hair" target="_blank" rel="noopener" class="btn btn-ghost" style="margin-bottom:1.5rem">View More on Instagram</a>
+    <a href="https://www.instagram.com/asheerah_hair" target="_blank" rel="noopener" class="btn btn-ghost" style="margin-bottom:1.5rem" data-i18n="ig_view">View More on Instagram</a>
   </div>
 </section>
 
 <!-- Reviews -->
 <section>
   <div class="container">
-    <div class="section-head"><span class="eyebrow">Customers Are Saying</span><h2>Real Reviews</h2></div>
+    <div class="section-head"><span class="eyebrow" data-i18n="reviews_label">Customers Are Saying</span><h2 data-i18n="real_reviews">Real Reviews</h2></div>
     <div class="reviews reveal">
       <div class="review"><div class="stars">★★★★★</div><p>Amei tudo! Excelente qualidade 🥰</p><div class="name">Ciara Ly</div><div class="prod">Verified buyer</div></div>
       <div class="review"><div class="stars">★★★★★</div><p>Amazinggg, love it!! 😍😍😍</p><div class="name">Ciaraly</div><div class="prod">Straight Bundles</div></div>
@@ -200,6 +201,7 @@
 </div>
 
 <script src="config.js"></script>
+<script src="assets/js/i18n.js"></script>
 <script src="assets/js/app.js"></script>
 <script src="assets/js/chatbot.js"></script>
 </body>

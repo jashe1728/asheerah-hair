@@ -27,6 +27,7 @@
       <a href="pages/contact.html" data-i18n="nav.contact">Contact</a>
     </nav>
     <div class="header-right">
+      <div id="langDropdown"></div>
       <div class="currency-selector" id="currencySelector" aria-haspopup="listbox" aria-expanded="false">
         <span class="flag" id="ptFlag"><svg viewBox="0 0 4 3"><path d="M0 0h4v3H0z" fill="#fff"/><path d="M0 0h1.4v3H0z" fill="#060"/><circle cx="1.1" cy="1.5" r=".7" fill="#c00"/><circle cx="1.15" cy="1.5" r=".45" fill="#fe0"/></svg></span>
         <span id="currencyLabel" data-i18n="currency">EUR / PT-PT</span>
@@ -43,8 +44,8 @@
 
 <div class="page">
   <div class="container">
-    <h1>Frequently Asked Questions</h1>
-    <p style="text-align:center;color:var(--ink-soft);margin-bottom:2rem">Can't find an answer? Use the chat assistant or <a href="pages/contact.html" style="text-decoration:underline;color:var(--gold-d)">contact us</a>.</p>
+    <h1 data-i18n="faq_title">Frequently Asked Questions</h1>
+    <p style="text-align:center;color:var(--ink-soft);margin-bottom:2rem" data-i18n="faq_hint">Can't find an answer? Use the chat assistant or <a href="pages/contact.html" style="text-decoration:underline;color:var(--gold-d)">contact us</a>.</p>
     <div style="max-width:760px;margin:0 auto">
       <div class="faq-item"><details open><summary>1. What type of hair does Asheerah Hair sell?</summary><p>We offer premium-quality human hair products, including wigs, bundles, and crochet human hair in various textures and lengths.</p></details></div>
       <div class="faq-item"><details><summary>2. Is your hair 100% human hair?</summary><p>Yes. Our products are made from high-quality human hair, designed to provide a natural look, softness, and long-lasting wear.</p></details></div>
@@ -82,6 +83,7 @@
 </div>
 
 <script src="config.js"></script>
+<script src="assets/js/i18n.js"></script>
 <script src="assets/js/app.js"></script>
 <script src="assets/js/chatbot.js"></script>
 </body>

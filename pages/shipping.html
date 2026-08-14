@@ -22,6 +22,7 @@
       <a href="../pages/contact.html" data-i18n="nav.contact">Contact</a>
     </nav>
     <div class="header-right">
+      <div id="langDropdown"></div>
       <div class="currency-selector" id="currencySelector" aria-haspopup="listbox" aria-expanded="false">
         <span class="flag" id="ptFlag"><svg viewBox="0 0 4 3"><path d="M0 0h4v3H0z" fill="#fff"/><path d="M0 0h1.4v3H0z" fill="#060"/><circle cx="1.1" cy="1.5" r=".7" fill="#c00"/><circle cx="1.15" cy="1.5" r=".45" fill="#fe0"/></svg></span>
         <span id="currencyLabel" data-i18n="currency">EUR / PT-PT</span>
@@ -67,6 +68,7 @@
 <button class="chat-btn" onclick="toggleChat()" aria-label="Chat">💬</button>
 <div class="chat-window" id="chatWindow"><div class="chat-head">Asheerah Hair Assistant<span><button class="close" onclick="toggleChat()">×</button></span></div><div class="chat-body" id="chatBody"></div><div class="chat-quick"><button onclick="quickAsk('How long does shipping take?')">Shipping</button><button onclick="quickAsk('Do you accept returns?')">Returns</button></div><div class="chat-input"><input id="chatInput" placeholder="Ask a question…" onkeydown="if(event.key==='Enter')sendChat()"><button onclick="sendChat()">Send</button></div></div>
 <script src="../config.js"></script>
+<script src="../assets/js/i18n.js"></script>
 <script src="../assets/js/app.js"></script>
 <script src="../assets/js/chatbot.js"></script>
 </body>
