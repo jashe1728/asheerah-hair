@@ -10,7 +10,7 @@ var LANG_NAMES = { pt:'Português', en:'English', es:'Español', de:'Deutsch', f
 
 /* Inline SVG flags (render everywhere, offline-safe). viewBox 3:2. */
 var FLAGS = {
-  pt: '<svg viewBox="0 0 4 3"><path d="M0 0h4v3H0z" fill="#fff"/><path d="M0 0h1.4v3H0z" fill="#060"/><circle cx="1.15" cy="1.5" r=".72" fill="#c00"/><circle cx="1.25" cy="1.5" r=".42" fill="#fe0"/></svg>',
+  pt: '<svg viewBox="0 0 4 3"><path d="M0 0h4v3H0z" fill="#ff0000"/><path d="M0 0h1.6v3H0z" fill="#046a38"/><circle cx="1.35" cy="1.5" r=".68" fill="#ffcf00"/><path d="M1.06 1.05a.45.45 0 1 0 .58.68l-.58-.68z" fill="#046a38"/><path d="M1.28 1.28l.1-.2.1.2-.1-.06zM1.48 1.5l.2-.06-.2.1zm-.16.18l-.06.2-.1-.2zm-.22.02l-.2.06.2-.1z" fill="#fff"/></svg>',
   en: '<svg viewBox="0 0 4 3"><path d="M0 0h4v3H0z" fill="#012169"/><path d="M0 0 4 3M4 0 0 3" stroke="#fff" stroke-width=".7"/><path d="M0 0 4 3M4 0 0 3" stroke="#C8102E" stroke-width=".4"/><path d="M2 0v3M0 1.5h4" stroke="#fff" stroke-width="1"/><path d="M2 0v3M0 1.5h4" stroke="#C8102E" stroke-width=".5"/></svg>',
   es: '<svg viewBox="0 0 4 3"><path d="M0 0h4v3H0z" fill="#AA151B"/><path d="M0 1h4v1H0z" fill="#F1BF00"/></svg>',
   de: '<svg viewBox="0 0 4 3"><path d="M0 0h4v1H0z" fill="#000"/><path d="M0 1h4v1H0z" fill="#DD0000"/><path d="M0 2h4v1H0z" fill="#FFCE00"/></svg>',

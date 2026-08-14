@@ -132,32 +132,58 @@ function initNav(){
 }
 
 // ---------- Header currency selector + search ----------
+function curSym(code){ const c = CURRENCIES[code]; return c ? c.symbol : code; }
 function initHeaderControls(){
-  // currency selector: clicking cycles EUR -> USD -> GBP (display only, settles EUR)
-  const sel = document.getElementById('currencySelector');
-  if (sel){
-    sel.addEventListener('click', ()=>{
-      const order = ['EUR','USD','GBP'];
-      const cur = localStorage.getItem('ash_cur') || 'EUR';
-      const next = order[(order.indexOf(cur)+1) % order.length];
-      localStorage.setItem('ash_cur', next);
-      const lbl = document.getElementById('currencyLabel');
-      if (lbl) lbl.textContent = next + ' / ' + (next==='EUR'?'PT-PT':next==='USD'?'US':'GB');
-      // refresh page content if on a page that shows currency
-      if (window.renderShop) renderShop();
-      if (window.renderCartPage) renderCartPage();
-      if (window.renderCheckoutPage) renderCheckoutPage();
-      updateCartUI();
-    });
-  }
+  // currency dropdown (spread like the language menu, symbol not flag)
+  buildCurrencyDropdown();
   // search button opens the search overlay / jumps to shop
   const sb = document.getElementById('searchBtn');
   if (sb){
     sb.addEventListener('click', ()=>{
-      const q = prompt('Search products…');
+      const q = prompt(window.uiTxt ? uiTxt('search_placeholder') : 'Search products…');
       if (q) location.href = 'shop.html?q=' + encodeURIComponent(q);
     });
   }
+}
+function buildCurrencyDropdown(){
+  const wrap = document.getElementById('currencyDropdown');
+  if (!wrap) return;
+  wrap.innerHTML = '';
+  const cur = localStorage.getItem('ash_cur') || CONFIG.currency || 'EUR';
+  const btn = document.createElement('button');
+  btn.className = 'currency-btn';
+  btn.setAttribute('aria-haspopup','listbox');
+  btn.setAttribute('aria-expanded','false');
+  btn.innerHTML = '<span class="cur-sym">'+curSym(cur)+'</span><span>'+cur+'</span><span class="chev">⌄</span>';
+  const menu = document.createElement('div');
+  menu.className = 'currency-menu';
+  menu.setAttribute('role','listbox');
+  Object.keys(CURRENCIES).forEach(code => {
+    const c = CURRENCIES[code];
+    const opt = document.createElement('button');
+    opt.className = 'currency-opt' + (code===cur?' active':'');
+    opt.setAttribute('role','option');
+    opt.setAttribute('data-cur', code);
+    opt.innerHTML = '<span class="cur-sym">'+c.symbol+'</span><span>'+c.label+'</span>' + (code===cur?' ✓':'');
+    opt.addEventListener('click', (e)=>{ e.stopPropagation(); setCurrency(code); closeCur(); });
+    menu.appendChild(opt);
+  });
+  wrap.appendChild(btn);
+  wrap.appendChild(menu);
+  btn.addEventListener('click', (e)=>{ e.stopPropagation(); const open = menu.classList.toggle('open'); btn.setAttribute('aria-expanded', open?'true':'false'); });
+  document.addEventListener('click', ()=>{ closeCur(); });
+  function closeCur(){ menu.classList.remove('open'); btn.setAttribute('aria-expanded','false'); }
+  window.updateCurrencyDropdown = buildCurrencyDropdown;
+}
+function setCurrency(code){
+  localStorage.setItem('ash_cur', code);
+  // refresh content that shows currency
+  if (window.renderShop) renderShop();
+  if (window.renderProduct) renderProduct();
+  if (window.renderCartPage) renderCartPage();
+  if (window.renderCheckoutPage) renderCheckoutPage();
+  if (window.updateCartUI) updateCartUI();
+  if (window.updateCurrencyDropdown) updateCurrencyDropdown();
 }
 
 // ---------- Reveal on scroll ----------

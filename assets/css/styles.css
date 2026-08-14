@@ -40,11 +40,17 @@ input:focus,select:focus,textarea:focus{outline:2px solid var(--gold);outline-of
 .header-nav a:hover{color:var(--ink);background:var(--gold-soft)}
 .header-nav a.active{background:var(--ink);color:var(--ivory)}
 .header-right{margin-left:auto;display:flex;align-items:center;gap:1.1rem}
-/* currency selector */
-.currency-selector{display:flex;align-items:center;gap:.45rem;font-size:.82rem;color:var(--ink-soft);cursor:pointer;padding:.35rem .7rem;border:1px solid var(--border);border-radius:999px;background:var(--card)}
-.currency-selector .flag{width:18px;height:13px;border-radius:2px;overflow:hidden;display:inline-block;flex:none}
-.currency-selector .flag svg{display:block;width:100%;height:100%}
-.currency-selector .chev{font-size:.6rem;color:var(--muted)}
+/* currency selector (dropdown, symbol not flag) */
+#currencyDropdown{position:relative}
+.currency-btn{display:flex;align-items:center;gap:.4rem;font-size:.82rem;color:var(--ink-soft);cursor:pointer;padding:.35rem .7rem;border:1px solid var(--border);border-radius:999px;background:var(--card);font-family:inherit}
+.currency-btn .cur-sym{font-weight:700;color:var(--gold-d)}
+.currency-btn .chev{font-size:.6rem;color:var(--muted)}
+.currency-menu{display:none;position:absolute;top:calc(100% + 6px);right:0;background:var(--card);border:1px solid var(--border);border-radius:12px;box-shadow:var(--shadow-hover);padding:.3rem;min-width:120px;z-index:80}
+.currency-menu.open{display:block}
+.currency-opt{display:flex;align-items:center;gap:.5rem;width:100%;background:none;border:none;padding:.5rem .7rem;border-radius:8px;font-size:.9rem;color:var(--ink);cursor:pointer;text-align:left;font-family:inherit}
+.currency-opt:hover{background:var(--gold-soft)}
+.currency-opt.active{background:var(--gold-soft);font-weight:600}
+.currency-opt .cur-sym{font-weight:700;color:var(--gold-d);width:1.2rem}
 /* language dropdown (custom, inline SVG flags) */
 #langDropdown{position:relative}
 .lang-btn{display:flex;align-items:center;gap:.4rem;font-size:.82rem;color:var(--ink-soft);cursor:pointer;padding:.35rem .7rem;border:1px solid var(--border);border-radius:999px;background:var(--card);font-family:inherit}
@@ -119,6 +125,16 @@ section{padding:4rem 0}
 .vp{text-align:center}
 .vp .ic{font-size:1.6rem}
 .vp strong{display:block;font-size:.82rem;text-transform:uppercase;letter-spacing:1px;margin-top:.4rem}
+
+/* ---- Contact cards (real brand SVG icons, carob brown) ---- */
+.contact-cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:1rem;margin:1.5rem 0}
+.contact-card{background:var(--card);border:1px solid var(--border);border-radius:var(--r-md);padding:1.3rem;text-align:center;transition:.2s}
+.contact-card:hover{box-shadow:var(--shadow-hover);transform:translateY(-2px)}
+.contact-card .ic{width:52px;height:52px;margin:0 auto .6rem;border-radius:999px;background:var(--gold-soft);display:grid;place-items:center}
+.contact-card .ic svg{width:26px;height:26px;fill:var(--ink);stroke:none}
+.contact-card h3{margin-bottom:.3rem;font-size:1.05rem;color:var(--ink)}
+.contact-card a{color:var(--gold-d);text-decoration:none;font-weight:600;word-break:break-word}
+.contact-card a:hover{text-decoration:underline}
 
 /* ---- Features ---- */
 .features{display:grid;grid-template-columns:repeat(4,1fr);gap:1.2rem}
