@@ -8,40 +8,31 @@
 var SS_NAME = 'Asheerah Hair Orders';
 var OWNER_EMAIL = 'asheerahhair@gmail.com';   // who receives the order email
 var SHEET_NAME = 'Orders';
+var MSG_SHEET_NAME = 'Messages';
 
 function doGet(e) {
-  var ss = getSheet_();
-  var data = ss.getDataRange().getValues();
+  var data = getSheet_().getDataRange().getValues();
   return json_({ ok: true, count: data.length - 1, columns: data[0] || [] });
 }
 
 function doPost(e) {
   try {
     var body = JSON.parse(e.postData.contents);
-    var sheet = getSheet_();
 
     if (body.type === 'order') {
-      var row = [new Date(), body.text || '', body.method || '', body.name || '', body.email || ''];
-      sheet.appendRow(row);
-
-      // Notify the owner by email
+      getSheet_().appendRow([new Date(), body.text || '', body.method || '', body.name || '', body.email || '']);
       try {
         MailApp.sendEmail({
           to: OWNER_EMAIL,
           subject: 'New Asheerah Hair Order ' + Utilities.formatDate(new Date(), Session.getScriptTimeZone(), 'yyyy-MM-dd HH:mm'),
           body: body.text || 'Order received.'
         });
-      } catch (mailErr) { /* mail optional */ }
-
+      } catch (mailErr) { /* mail optional — never fail the order on a mail issue */ }
       return json_({ ok: true, saved: true, emailed: true });
     }
 
     if (body.type === 'contact') {
-      sheet.getParent().getSheetByName('Messages') ||
-        ss = SpreadsheetApp.getActiveSpreadsheet();
-      var ms = SpreadsheetApp.getActiveSpreadsheet().getSheetByName('Messages');
-      if (!ms) { ms = SpreadsheetApp.getActiveSpreadsheet().insertSheet('Messages'); }
-      ms.appendRow([new Date(), body.name || '', body.email || '', body.phone || '', body.comment || '']);
+      getMessagesSheet_().appendRow([new Date(), body.name || '', body.email || '', body.phone || '', body.comment || '']);
       return json_({ ok: true, saved: true });
     }
 
@@ -51,16 +42,30 @@ function doPost(e) {
   }
 }
 
+/**
+ * Returns the Orders sheet, creating the spreadsheet + styled header on first use.
+ * NOTE: relies on SpreadsheetApp.getActiveSpreadsheet(), so the script must be
+ * created FROM the spreadsheet (File > Script editor), not as a standalone project.
+ */
 function getSheet_() {
   var ss = SpreadsheetApp.getActiveSpreadsheet();
-  if (!ss) {
-    // Lazy-create on first run
-    ss = SpreadsheetApp.create(SS_NAME);
-  }
+  if (!ss) { ss = SpreadsheetApp.create(SS_NAME); }
   var sheet = ss.getSheetByName(SHEET_NAME);
   if (!sheet) {
     sheet = ss.insertSheet(SHEET_NAME);
     sheet.appendRow(['Timestamp', 'Order text', 'Payment method', 'Name', 'Email']);
+    sheet.getRange(1, 1, 1, 5).setFontWeight('bold').setBackground('#C9A24B').setFontColor('#FFFFFF');
+  }
+  return sheet;
+}
+
+/** Returns the Messages sheet (for the contact form), created with a header if missing. */
+function getMessagesSheet_() {
+  var ss = SpreadsheetApp.getActiveSpreadsheet();
+  var sheet = ss.getSheetByName(MSG_SHEET_NAME);
+  if (!sheet) {
+    sheet = ss.insertSheet(MSG_SHEET_NAME);
+    sheet.appendRow(['Timestamp', 'Name', 'Email', 'Phone', 'Comment']);
     sheet.getRange(1, 1, 1, 5).setFontWeight('bold').setBackground('#C9A24B').setFontColor('#FFFFFF');
   }
   return sheet;
