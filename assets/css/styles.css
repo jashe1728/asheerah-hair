@@ -111,22 +111,22 @@ section{padding:4rem 0}
 .promo-card{position:relative;border-radius:var(--r-lg);overflow:hidden;background:linear-gradient(150deg,#F6E7D3,#F3E0C8 55%,#EBD3B4);
   box-shadow:var(--shadow);display:flex;min-height:470px;transition:.3s}
 .promo-card:hover{transform:translateY(-6px);box-shadow:var(--shadow-hover)}
-/* decorative arc top-right */
-.promo-card::before{content:"";position:absolute;top:-40px;right:-30px;width:150px;height:150px;border-radius:50%;
-  border:1.5px solid rgba(54,37,17,.18);z-index:1}
-.promo-card::after{content:"";position:absolute;top:-24px;right:-14px;width:118px;height:118px;border-radius:50%;
-  border:1px solid rgba(54,37,17,.12);z-index:1}
+/* decorative arcs top-right (visible, clean) */
+.promo-card::before{content:"";position:absolute;top:-30px;right:-16px;width:170px;height:170px;border-radius:50%;
+  border:2px solid rgba(54,37,17,.28);z-index:1;pointer-events:none}
+.promo-card::after{content:"";position:absolute;top:-16px;right:-2px;width:140px;height:140px;border-radius:50%;
+  border:1px solid rgba(54,37,17,.22);z-index:1;pointer-events:none}
 .promo-card .promo-media{flex:0 0 46%;position:relative;overflow:hidden}
 .promo-card .promo-media img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center 15%;display:block;transition:.5s}
 .promo-card:hover .promo-media img{transform:scale(1.05)}
-.promo-card .promo-body{position:relative;z-index:2;flex:1;min-width:0;padding:2.2rem 1.5rem 1.6rem;display:flex;flex-direction:column;justify-content:center;text-align:right;overflow:visible}
+.promo-card .promo-body{position:relative;z-index:2;flex:1;min-width:0;padding:2.2rem 1.6rem 1.6rem 1.2rem;display:flex;flex-direction:column;text-align:right;overflow:visible}
 .promo-card .promo-body h3{font-family:'Cormorant Garamond',serif;font-size:clamp(1.4rem,2.1vw,1.9rem);font-weight:700;letter-spacing:1px;color:var(--ink);line-height:1.05;word-break:normal;overflow-wrap:break-word;white-space:normal}
 .promo-card .promo-body .promo-div{display:flex;align-items:center;justify-content:flex-end;gap:.5rem;margin:.55rem 0}
 .promo-card .promo-body .promo-div::before{content:"";flex:0 0 26px;height:1px;background:var(--gold-d)}
 .promo-card .promo-body .promo-div .dot{width:5px;height:5px;border-radius:50%;background:var(--gold-d);flex:none}
 .promo-card .promo-body .promo-div::after{content:"";flex:1;max-width:56px;height:1px;background:var(--gold-d)}
 .promo-card .promo-body p{font-size:.9rem;color:var(--ink-soft);line-height:1.4;margin-left:auto;overflow-wrap:break-word;word-break:break-word;max-width:100%}
-.promo-card .promo-body .promo-btn{display:inline-block;margin-top:.9rem;background:var(--ink);color:var(--ivory);align-self:flex-end;white-space:nowrap;
+.promo-card .promo-body .promo-btn{display:inline-block;margin:auto 0 0 auto;background:var(--ink);color:var(--ivory);white-space:nowrap;
   font-size:.72rem;font-weight:700;letter-spacing:1.2px;text-transform:uppercase;padding:.5rem 1.1rem;border-radius:999px;transition:.2s}
 .promo-card .promo-body .promo-btn:hover{background:var(--gold-d)}
 @media(max-width:640px){
@@ -134,7 +134,7 @@ section{padding:4rem 0}
   .promo-card .promo-media{flex:none;min-height:300px;width:100%}
   .promo-card .promo-body{text-align:center;align-items:center;padding-top:1.6rem}
   .promo-card .promo-body .promo-div,.promo-card .promo-body p{justify-content:center;text-align:center;margin-left:0}
-  .promo-card .promo-body .promo-btn{align-self:center}
+  .promo-card .promo-body .promo-btn{margin:1rem auto 0 auto}
 }
 
 /* ---- Texture chips ---- */
