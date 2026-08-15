@@ -28,7 +28,8 @@ input:focus,select:focus,textarea:focus{outline:2px solid var(--gold);outline-of
 .container{width:min(1180px,100% - 2.5rem);margin-inline:auto}
 
 /* ---- Header (premium framed) ---- */
-.site-header{background:var(--ivory);border-top:1px solid var(--ink);border-bottom:1px solid var(--ink)}
+.site-header{position:sticky;top:0;z-index:100;background:var(--ivory);border-top:1px solid var(--ink);border-bottom:1px solid var(--ink);
+  box-shadow:0 6px 24px rgba(54,37,17,.06)}
 .announcement{text-align:center;padding:.55rem 1rem;font-size:.78rem;letter-spacing:.4px;color:var(--ink-soft);
   border-bottom:1px solid var(--border);text-transform:uppercase;font-family:'Cormorant Garamond',serif;font-weight:600}
 .announcement .sep{margin:0 .6rem;color:var(--gold-d)}
