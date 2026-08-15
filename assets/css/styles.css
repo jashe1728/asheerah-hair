@@ -269,7 +269,7 @@ section{padding:4rem 0}
 .summary .row{display:flex;justify-content:space-between;padding:.45rem 0;color:var(--ink-soft)}
 .summary .row.total{font-size:1.3rem;font-weight:700;color:var(--ink);border-top:1.5px solid var(--border);margin-top:.6rem;padding-top:.9rem}
 .currency-switch{display:flex;gap:.5rem;justify-content:center;margin-bottom:2rem}
-.currency-switch button{padding:.5rem 1.1rem;border-radius:999px;border:1.5px solid var(--border);background:#fff;font-weight:600}
+.currency-switch button{padding:.5rem 1.1rem;border-radius:999px;border:1.5px solid var(--border);background:#fff;font-weight:600;color:var(--gold-d)}
 .currency-switch button.active{background:var(--ink);color:#fff;border-color:var(--ink)}
 
 /* ---- Checkout methods ---- */
