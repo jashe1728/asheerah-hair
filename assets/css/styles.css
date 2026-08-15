@@ -142,6 +142,7 @@ section{padding:4rem 0}
 .promo-card .promo-body .promo-btn:hover{background:var(--gold-d)}
 @media(max-width:640px){
   .collections{grid-template-columns:repeat(2,1fr);gap:.7rem}
+  .collections .promo-card:last-child:nth-child(odd){grid-column:1/-1;max-width:calc(50% - .35rem);margin:0 auto}
   .promo-card{flex-direction:column;min-height:0;border-radius:var(--r-md)}
   .promo-card .promo-media{flex:none;width:100%;aspect-ratio:1/1;min-height:0}
   .promo-card .promo-body{text-align:center;align-items:center;padding:.7rem .5rem .6rem}
