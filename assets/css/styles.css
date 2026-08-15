@@ -35,7 +35,7 @@ input:focus,select:focus,textarea:focus{outline:2px solid var(--gold);outline-of
 .announcement .sep{margin:0 .6rem;color:var(--gold-d)}
 .header-row{display:flex;align-items:center;gap:2rem;width:min(1180px,100% - 2.5rem);margin:0 auto;padding:.7rem 0}
 .header-row .brand{display:flex;align-items:center}
-.header-row .logo{height:64px;width:auto;display:block}   /* slightly bigger per client */
+.header-row .logo{height:72px;width:auto;display:block}
 .header-nav{display:flex;gap:.3rem;align-items:center;margin-left:.5rem}
 .header-nav a{font-size:.95rem;color:var(--ink-soft);font-weight:500;padding:.45rem .9rem;border-radius:999px;transition:.15s}
 .header-nav a:hover{color:var(--ink);background:var(--gold-soft)}
@@ -90,7 +90,7 @@ input:focus,select:focus,textarea:focus{outline:2px solid var(--gold);outline-of
   .announcement .sep{margin:0 .35rem}
   .header-row{position:relative;gap:.6rem;padding:.3rem 0}
   .header-row .brand{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%)}
-  .header-row .logo{height:46px}
+  .header-row .logo{height:58px}
   #langDropdown,#currencyDropdown{display:none}
   .header-right{gap:.6rem}
   .header-icons{gap:.7rem}
@@ -109,7 +109,15 @@ input:focus,select:focus,textarea:focus{outline:2px solid var(--gold);outline-of
   .hero-img img{width:100%;height:100%;object-fit:cover;object-position:72% 14%;display:block}
   .hero::after{content:"";position:absolute;inset:0;z-index:1;pointer-events:none;
     background:linear-gradient(0deg,rgba(251,235,210,.95),rgba(251,235,210,.92) 26%,rgba(251,235,210,.55) 40%,rgba(251,235,210,0) 58%)}
+  .scroll-hint{display:inline-flex;position:absolute;bottom:12px;left:50%;transform:translateX(-50%);z-index:4;flex-direction:column;align-items:center;gap:.1rem;color:var(--ink-soft);text-decoration:none;font-size:.58rem;letter-spacing:.24em;text-transform:uppercase}
+  .scroll-hint svg{width:15px;height:15px;stroke:currentColor;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;animation:bounceY 1.6s ease-in-out infinite}
+  .scroll-hint span{opacity:.85}
 }
+
+/* ---- Scroll-for-more hint ---- */
+html{scroll-behavior:smooth}
+.scroll-hint{display:none}
+@keyframes bounceY{0%,100%{transform:translateY(0)}50%{transform:translateY(5px)}}
 
 /* ---- Hero ---- */
 .hero{position:relative;text-align:center;padding:3.2rem 1rem 2.5rem}
