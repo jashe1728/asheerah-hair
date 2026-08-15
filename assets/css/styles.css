@@ -1,8 +1,8 @@
 /* Asheerah Hair — luxury warm design system (v2: cream + carob) */
 :root{
-  --gold:#C9A24B;
+  --gold:#7A4E1F;
   --gold-d:#6F4518;
-  --gold-soft:#F2E9D5;
+  --gold-soft:#EAD9BE;
   --ivory:#FDF6E4;            /* main cream background (client) */
   --card:#FFFDF7;             /* slightly lighter card */
   --ink:#362511;              /* carob — dark text/buttons/footer (client) */
@@ -109,7 +109,7 @@ input:focus,select:focus,textarea:focus{outline:2px solid var(--gold);outline-of
   .hero-img{position:absolute;inset:0;margin:0;max-width:none;border-radius:0;box-shadow:none;width:100%;height:100%;z-index:0}
   .hero-img img{width:100%;height:100%;object-fit:cover;object-position:72% 14%;display:block}
   .hero::after{content:"";position:absolute;inset:0;z-index:1;pointer-events:none;
-    background:linear-gradient(0deg,rgba(253,246,228,1) 0%,rgba(253,246,228,.98) 30%,rgba(253,246,228,.86) 40%,rgba(253,246,228,0) 58%)}
+    background:linear-gradient(0deg,rgba(253,246,228,1) 0%,rgba(253,246,228,.75) 7%,rgba(253,246,228,0) 16%)}
   .scroll-hint{display:inline-flex;position:absolute;bottom:12px;left:50%;transform:translateX(-50%);z-index:4;flex-direction:column;align-items:center;gap:.1rem;color:var(--ink-soft);text-decoration:none;font-size:.58rem;letter-spacing:.24em;text-transform:uppercase}
   .scroll-hint svg{width:15px;height:15px;stroke:currentColor;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;animation:bounceY 1.6s ease-in-out infinite}
   .scroll-hint span{opacity:.85}
