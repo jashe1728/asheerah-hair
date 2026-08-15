@@ -85,6 +85,17 @@ input:focus,select:focus,textarea:focus{outline:2px solid var(--gold);outline-of
   .announcement{font-size:.68rem}
 }
 
+@media(max-width:640px){
+  .announcement{font-size:.58rem;letter-spacing:.3px;padding:.28rem .7rem;line-height:1.5}
+  .announcement .sep{margin:0 .35rem}
+  .header-row{gap:.6rem;padding:.3rem 0}
+  .header-row .logo{height:34px}
+  .header-right{gap:.6rem}
+  .header-icons{gap:.7rem}
+  .currency-btn,.lang-btn{font-size:.72rem;padding:.22rem .5rem}
+  .header-burger{font-size:1.25rem}
+}
+
 /* ---- Hero ---- */
 .hero{position:relative;text-align:center;padding:3.2rem 1rem 2.5rem}
 .hero h1{font-size:clamp(2.6rem,6vw,4.4rem);line-height:1.05;color:var(--ink)}
