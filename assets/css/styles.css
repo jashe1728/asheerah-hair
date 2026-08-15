@@ -242,8 +242,8 @@ section{padding:4rem 0}
 .method .m-sub{color:var(--muted);font-size:.85rem}
 
 /* ---- Chatbot ---- */
-.chat-btn{position:fixed;bottom:20px;right:20px;z-index:100;width:58px;height:58px;border-radius:999px;
-  background:var(--gold);color:#fff;font-size:1.6rem;box-shadow:var(--shadow-hover);display:grid;place-items:center;transition:.2s}
+.chat-btn{position:fixed;bottom:20px;right:20px;z-index:100;width:54px;height:54px;border-radius:999px;
+  background:var(--ink);color:#fff;box-shadow:var(--shadow-hover);display:grid;place-items:center;transition:.2s}
 .chat-btn:hover{transform:scale(1.06)}
 .chat-btn svg{width:24px;height:24px}
 .chat-window{position:fixed;bottom:160px;right:20px;z-index:100;width:min(360px,calc(100% - 40px));
@@ -289,8 +289,8 @@ footer .social a{opacity:1}
 .foot-bottom{margin-top:2rem;padding-top:1.5rem;border-top:1px solid rgba(255,255,255,.15);display:flex;justify-content:space-between;flex-wrap:wrap;gap:1rem;font-size:.85rem;color:var(--gold-soft)}
 
 /* ---- WhatsApp float (stacked above chat on the right) ---- */
-.wa-btn{position:fixed;bottom:90px;right:20px;z-index:99;width:58px;height:58px;border-radius:999px;
-  background:#25D366;color:#fff;font-size:1.7rem;display:grid;place-items:center;box-shadow:var(--shadow-hover);transition:.2s}
+.wa-btn{position:fixed;bottom:90px;right:20px;z-index:99;width:54px;height:54px;border-radius:999px;
+  background:#25D366;color:#fff;display:grid;place-items:center;box-shadow:var(--shadow-hover);transition:.2s}
 .wa-btn svg{width:26px;height:26px}
 .wa-btn:hover{transform:scale(1.06)}
 @media(max-width:560px){ .wa-btn{bottom:84px} }
