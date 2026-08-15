@@ -259,6 +259,21 @@ section{padding:4rem 0}
 .chat-input input{flex:1}
 .chat-input button{background:var(--gold);color:#fff;border-radius:999px;padding:0 1.1rem;font-weight:700}
 
+/* ---- Newsletter ---- */
+.newsletter{padding:2.5rem 0 1rem}
+.nl-inner{background:var(--ink);border-radius:var(--r-lg);padding:2.4rem 2rem;display:flex;align-items:center;gap:2rem;flex-wrap:wrap;color:#fff;position:relative;overflow:hidden}
+.nl-inner::before{content:"";position:absolute;top:-50px;right:-40px;width:180px;height:180px;border-radius:50%;border:1.5px solid rgba(255,255,255,.15)}
+.nl-text{flex:1;min-width:240px}
+.nl-text h2{font-family:'Cormorant Garamond',serif;font-size:2rem;color:var(--ivory)}
+.nl-text p{color:var(--gold-soft);margin-top:.4rem;max-width:420px}
+.nl-form{display:flex;gap:.6rem;flex:1;min-width:260px;max-width:460px}
+.nl-form input{flex:1;padding:.85rem 1.1rem;border-radius:999px;border:none;font-size:.95rem;background:var(--ivory);color:var(--ink)}
+.nl-form input:focus{outline:2px solid var(--gold)}
+.nl-form button{background:var(--gold);color:#fff;font-weight:700;padding:.85rem 1.6rem;border-radius:999px;border:none;cursor:pointer;transition:.2s;white-space:nowrap}
+.nl-form button:hover{background:var(--gold-d)}
+.nl-msg{margin:.8rem 0 0;width:100%;color:var(--gold);font-weight:600;display:none}
+.nl-msg.show{display:block}
+
 /* ---- Footer logo ---- */
 footer .logo{height:42px;width:auto;opacity:.95}
 footer{background:var(--ink);color:#fff;border-radius:26px;margin:1.5rem 1rem 1rem;padding:2.5rem 2rem}

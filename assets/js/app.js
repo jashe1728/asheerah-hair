@@ -202,10 +202,46 @@ function initReveal(){
   els.forEach(el => io.observe(el));
 }
 
+// ---------- Newsletter ----------
+function initNewsletter(){
+  const form = document.getElementById('nlForm');
+  if (!form) return;
+  form.addEventListener('submit', async (e)=>{
+    e.preventDefault();
+    const email = (document.getElementById('nlEmail')?.value || '').trim();
+    const msg = document.getElementById('nlMsg');
+    if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)){
+      if (msg){ msg.textContent = '…'; msg.style.display='block'; }
+      return;
+    }
+    // store locally
+    try {
+      const list = JSON.parse(localStorage.getItem('ash_subscribers')||'[]');
+      if (!list.includes(email)) list.push(email);
+      localStorage.setItem('ash_subscribers', JSON.stringify(list));
+    } catch(e){}
+    // optionally post to backend (if configured) for future automation
+    if (CONFIG && CONFIG.backendURL){
+      try {
+        await fetch(CONFIG.backendURL, {
+          method:'POST', headers:{'Content-Type':'text/plain;charset=utf-8'},
+          body: JSON.stringify({ type:'subscribe', email })
+        });
+      } catch(e){ /* offline/local — saved locally anyway */ }
+    }
+    if (msg){
+      msg.textContent = window.uiTxt ? uiTxt('nl_ok') : 'Thanks for subscribing!';
+      msg.style.display = 'block';
+    }
+    if (form.querySelector('input')) form.querySelector('input').value = '';
+  });
+}
+
 // ---------- Page init ----------
 document.addEventListener('DOMContentLoaded', async () => {
   initNav();
   initHeaderControls();
+  initNewsletter();
   initReveal();
   updateCartUI();
   const cur = localStorage.getItem('ash_cur') || 'EUR';

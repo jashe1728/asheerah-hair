@@ -119,6 +119,25 @@ var I18N = {
   search_placeholder:{ pt:'Procurar produtos…', en:'Search products…', es:'Buscar productos…', de:'Produkte suchen…', fr:'Rechercher des produits…', it:'Cerca prodotti…' },
   search:   { pt:'Procurar', en:'Search', es:'Buscar', de:'Suchen', fr:'Rechercher', it:'Cerca' },
   cart:     { pt:'Carrinho', en:'Cart', es:'Carrito', de:'Warenkorb', fr:'Panier', it:'Carrello' },
+
+  // Footer
+  foot_tagline: { pt:'Cabelo humano virgem 100% de luxo. Qualidade premium, feito para ti.', en:'Luxury 100% virgin human hair. Premium quality, made for you.', es:'Cabello humano virgen 100% de lujo. Calidad premium, hecho para ti.', de:'Luxuriöses 100% echtes Menschenhaar. Premium-Qualität, für dich gemacht.', fr:'Cheveux humains vierges 100% de luxe. Qualité premium, faits pour vous.', it:'Capelli umani vergini 100% di lusso. Qualità premium, fatti per te.' },
+  foot_shop: { pt:'Comprar', en:'Shop', es:'Comprar', de:'Einkaufen', fr:'Boutique', it:'Acquista' },
+  foot_support:{ pt:'Apoio', en:'Support', es:'Soporte', de:'Support', fr:'Assistance', it:'Supporto' },
+  foot_contact:{ pt:'Contacto', en:'Contact', es:'Contacto', de:'Kontakt', fr:'Contact', it:'Contatto' },
+  foot_all_products:{ pt:'Todos os Produtos', en:'All Products', es:'Todos los Productos', de:'Alle Produkte', fr:'Tous les Produits', it:'Tutti i Prodotti' },
+  foot_shipping:{ pt:'Envio', en:'Shipping', es:'Envío', de:'Versand', fr:'Livraison', it:'Spedizione' },
+  foot_returns:{ pt:'Devoluções & Reembolsos', en:'Returns & Refunds', es:'Devoluciones y Reembolsos', de:'Rückgabe & Erstattung', fr:'Retours & Remboursements', it:'Resi e Rimborsi' },
+  foot_contact_us:{ pt:'Contacta-nos', en:'Contact Us', es:'Contáctenos', de:'Kontaktieren Sie Uns', fr:'Contactez-Nous', it:'Contattaci' },
+  foot_rights:{ pt:'Todos os direitos reservados.', en:'All rights reserved.', es:'Todos los derechos reservados.', de:'Alle Rechte vorbehalten.', fr:'Tous droits réservés.', it:'Tutti i diritti riservati.' },
+  foot_payments:{ pt:'Cartão · PayPal · MB Way', en:'Card · PayPal · MB Way', es:'Tarjeta · PayPal · MB Way', de:'Karte · PayPal · MB Way', fr:'Carte · PayPal · MB Way', it:'Carta · PayPal · MB Way' },
+
+  // Newsletter
+  nl_title:{ pt:'Junta-te à Nossa Lista', en:'Join Our List', es:'Únete a Nuestra Lista', de:'Werde Teil Unserer Liste', fr:'Rejoignez Notre Liste', it:'Unisciti alla Nostra Lista' },
+  nl_sub:{ pt:'Recebe novidades, promoções e dicas de cabelo em primeira mão.', en:'Get news, exclusive offers and hair tips first.', es:'Recibe noticias, ofertas exclusivas y consejos de cabello.', de:'Erhalte Neuigkeiten, exklusive Angebote und Haar-Tipps zuerst.', fr:'Recevez nos actualités, offres exclusives et conseils capillaires.', it:'Ricevi notizie, offerte esclusive e consigli per i capelli.' },
+  nl_email_ph:{ pt:'O teu email', en:'Your email', es:'Tu email', de:'Deine E-Mail', fr:'Votre email', it:'La tua email' },
+  nl_btn:{ pt:'Subscrever', en:'Subscribe', es:'Suscribirse', de:'Abonnieren', fr:'S\u2019abonner', it:'Iscriviti' },
+  nl_ok:{ pt:'Obrigado por subscrever! Fica atento.', en:'Thanks for subscribing! Watch your inbox.', es:'¡Gracias por suscribirte! Revisa tu correo.', de:'Danke fürs Abonnieren! Prüfe dein Postfach.', fr:'Merci de vous être abonné ! Vérifiez votre boîte mail.', it:'Grazie per esserti iscritto! Controlla la tua email.' },
 };
 
 var LANG = detectLang();

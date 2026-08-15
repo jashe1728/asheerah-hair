@@ -64,6 +64,17 @@ function doPost(e) {
       return json_({ ok: true, saved: true });
     }
 
+    if (body.type === 'subscribe') {
+      var email = String(body.email||'').trim();
+      if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) return json_({ ok:false, error:'Invalid email' });
+      var nl = getSheet_('Subscribers', ['Timestamp','Email']);
+      // dedupe by email
+      var existing = nl.getDataRange().getValues();
+      var dup = existing.some(function(r){ return String(r[1]).trim().toLowerCase() === email.toLowerCase(); });
+      if (!dup) nl.appendRow([new Date(), email]);
+      return json_({ ok: true, saved: true, new: !dup });
+    }
+
     return json_({ ok: false, error: 'Unknown type' });
   } catch (err) {
     return json_({ ok: false, error: String(err) });
