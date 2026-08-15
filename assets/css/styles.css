@@ -127,7 +127,7 @@ section{padding:4rem 0}
 .promo-card .promo-body .promo-div::after{content:"";flex:1;max-width:56px;height:1px;background:var(--gold-d)}
 .promo-card .promo-body p{font-size:.9rem;color:var(--ink-soft);line-height:1.4;margin-left:auto;overflow-wrap:break-word;word-break:break-word;max-width:100%}
 .promo-card .promo-body .promo-btn{display:inline-block;margin-top:.9rem;background:var(--ink);color:var(--ivory);align-self:flex-end;white-space:nowrap;
-  font-size:.78rem;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;padding:.55rem 1.3rem;border-radius:999px;transition:.2s}
+  font-size:.72rem;font-weight:700;letter-spacing:1.2px;text-transform:uppercase;padding:.5rem 1.1rem;border-radius:999px;transition:.2s}
 .promo-card .promo-body .promo-btn:hover{background:var(--gold-d)}
 @media(max-width:640px){
   .promo-card{flex-direction:column;min-height:auto}
@@ -148,6 +148,7 @@ section{padding:4rem 0}
 .valueprops{display:grid;grid-template-columns:repeat(5,1fr);gap:1rem;background:var(--ink);color:#fff;border-radius:var(--r-lg);padding:2rem}
 .vp{text-align:center}
 .vp .ic{font-size:1.6rem}
+.vp .ic svg{width:30px;height:30px;fill:none;stroke:var(--gold);stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round}
 .vp strong{display:block;font-size:.82rem;text-transform:uppercase;letter-spacing:1px;margin-top:.4rem}
 
 /* ---- Contact cards (real brand SVG icons, carob brown) ---- */
@@ -164,6 +165,7 @@ section{padding:4rem 0}
 .features{display:grid;grid-template-columns:repeat(4,1fr);gap:1.2rem}
 .feature{background:var(--card);border:1px solid var(--border);border-radius:var(--r-md);padding:1.6rem;box-shadow:var(--shadow)}
 .feature .ic{font-size:1.6rem}
+.feature .ic svg{width:34px;height:34px;fill:none;stroke:var(--gold-d);stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round}
 .feature h3{font-size:1.2rem;margin:.5rem 0 .3rem}
 .feature p{color:var(--ink-soft);font-size:.92rem}
 
@@ -243,6 +245,7 @@ section{padding:4rem 0}
 .chat-btn{position:fixed;bottom:20px;right:20px;z-index:100;width:58px;height:58px;border-radius:999px;
   background:var(--gold);color:#fff;font-size:1.6rem;box-shadow:var(--shadow-hover);display:grid;place-items:center;transition:.2s}
 .chat-btn:hover{transform:scale(1.06)}
+.chat-btn svg{width:26px;height:26px;fill:none;stroke:var(--ink);stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
 .chat-window{position:fixed;bottom:92px;right:20px;z-index:100;width:min(360px,calc(100% - 40px));
   background:#fff;border:1px solid var(--border);border-radius:20px;box-shadow:var(--shadow-hover);
   display:none;flex-direction:column;overflow:hidden;max-height:70vh}
@@ -288,6 +291,7 @@ footer .social a{opacity:1}
 /* ---- WhatsApp float (stacked above chat on the right) ---- */
 .wa-btn{position:fixed;bottom:90px;right:20px;z-index:99;width:58px;height:58px;border-radius:999px;
   background:#25D366;color:#fff;font-size:1.7rem;display:grid;place-items:center;box-shadow:var(--shadow-hover);transition:.2s}
+.wa-btn svg{width:26px;height:26px;fill:none;stroke:#fff;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
 .wa-btn:hover{transform:scale(1.06)}
 @media(max-width:560px){ .wa-btn{bottom:84px} }
 
