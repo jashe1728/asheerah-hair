@@ -1,9 +1,9 @@
 /* Asheerah Hair — luxury warm design system (v2: cream + carob) */
 :root{
   --gold:#C9A24B;
-  --gold-d:#B08C3C;
+  --gold-d:#6F4518;
   --gold-soft:#F2E9D5;
-  --ivory:#FBEBD2;            /* main cream background (client) */
+  --ivory:#FDF6E4;            /* main cream background (client) */
   --card:#FFFDF7;             /* slightly lighter card */
   --ink:#362511;              /* carob — dark text/buttons/footer (client) */
   --ink-soft:#5C4A30;         /* secondary text (carob-tinted) */
@@ -88,7 +88,7 @@ input:focus,select:focus,textarea:focus{outline:2px solid var(--gold);outline-of
 @media(max-width:640px){
   .announcement{font-size:.58rem;letter-spacing:.3px;padding:.28rem .7rem;line-height:1.5}
   .announcement .sep{margin:0 .35rem}
-  .header-row{position:relative;gap:.6rem;padding:.3rem 0}
+  .header-row{position:relative;gap:.6rem;padding:.7rem 0;min-height:74px}
   .header-row .brand{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%)}
   .header-row .logo{height:58px}
   #langDropdown,#currencyDropdown{display:none}
@@ -108,7 +108,7 @@ input:focus,select:focus,textarea:focus{outline:2px solid var(--gold);outline-of
   .hero-img{position:absolute;inset:0;margin:0;max-width:none;border-radius:0;box-shadow:none;width:100%;height:100%;z-index:0}
   .hero-img img{width:100%;height:100%;object-fit:cover;object-position:72% 14%;display:block}
   .hero::after{content:"";position:absolute;inset:0;z-index:1;pointer-events:none;
-    background:linear-gradient(0deg,rgba(251,235,210,.95),rgba(251,235,210,.92) 26%,rgba(251,235,210,.55) 40%,rgba(251,235,210,0) 58%)}
+    background:linear-gradient(0deg,rgba(253,246,228,1) 0%,rgba(253,246,228,.98) 30%,rgba(253,246,228,.86) 40%,rgba(253,246,228,0) 58%)}
   .scroll-hint{display:inline-flex;position:absolute;bottom:12px;left:50%;transform:translateX(-50%);z-index:4;flex-direction:column;align-items:center;gap:.1rem;color:var(--ink-soft);text-decoration:none;font-size:.58rem;letter-spacing:.24em;text-transform:uppercase}
   .scroll-hint svg{width:15px;height:15px;stroke:currentColor;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;animation:bounceY 1.6s ease-in-out infinite}
   .scroll-hint span{opacity:.85}
@@ -211,7 +211,7 @@ section{padding:4rem 0}
 /* ---- Reviews ---- */
 .reviews{display:grid;grid-template-columns:repeat(3,1fr);gap:1.2rem}
 .review{background:var(--card);border:1px solid var(--border);border-radius:var(--r-md);padding:1.4rem;box-shadow:var(--shadow)}
-.review .stars{color:var(--gold);letter-spacing:2px}
+.review .stars{color:var(--gold-d);letter-spacing:2px}
 .review p{color:var(--ink-soft);margin:.6rem 0}
 .review .name{font-weight:700;font-size:.9rem}
 .review .prod{color:var(--muted);font-size:.8rem}
