@@ -138,6 +138,77 @@ var I18N = {
   nl_email_ph:{ pt:'O teu email', en:'Your email', es:'Tu email', de:'Deine E-Mail', fr:'Votre email', it:'La tua email' },
   nl_btn:{ pt:'Subscrever', en:'Subscribe', es:'Suscribirse', de:'Abonnieren', fr:'S\u2019abonner', it:'Iscriviti' },
   nl_ok:{ pt:'Obrigado por subscrever! Fica atento.', en:'Thanks for subscribing! Watch your inbox.', es:'¡Gracias por suscribirte! Revisa tu correo.', de:'Danke fürs Abonnieren! Prüfe dein Postfach.', fr:'Merci de vous être abonné ! Vérifiez votre boîte mail.', it:'Grazie per esserti iscritto! Controlla la tua email.' },
+
+  // Mobile menu: language & currency
+  lang_title:{ pt:'Idioma', en:'Language', es:'Idioma', de:'Sprache', fr:'Langue', it:'Lingua' },
+  currency_title:{ pt:'Moeda', en:'Currency', es:'Moneda', de:'Währung', fr:'Devise', it:'Valuta' },
+
+  // Search panel
+  search_title:{ pt:'Procurar produtos', en:'Search products', es:'Buscar productos', de:'Produkte suchen', fr:'Rechercher des produits', it:'Cerca prodotti' },
+  search_no_results:{ pt:'Sem resultados para', en:'No results for', es:'Sin resultados para', de:'Keine Ergebnisse für', fr:'Aucun résultat pour', it:'Nessun risultato per' },
+  search_close:{ pt:'Fechar pesquisa', en:'Close search', es:'Cerrar búsqueda', de:'Suche schließen', fr:'Fermer la recherche', it:'Chiudi ricerca' },
+
+  // Product: lace columns & savings
+  lace_transparent:{ pt:'Transparent', en:'Transparent', es:'Transparente', de:'Transparent', fr:'Transparent', it:'Trasparente' },
+  lace_hd:{ pt:'HD', en:'HD', es:'HD', de:'HD', fr:'HD', it:'HD' },
+  you_save:{ pt:'Poupas', en:'You save', es:'Ahorras', de:'Du sparst', fr:'Vous économisez', it:'Risparmi' },
+  sale:{ pt:'Promoção', en:'Sale', es:'Oferta', de:'Angebot', fr:'Promo', it:'Offerta' },
+  combo_unavailable:{ pt:'Esta combinação não está disponível de momento. Contacta-nos para ajudar.', en:'This combination is not currently available. Contact us and we will help.', es:'Esta combinación no está disponible actualmente. Contáctanos y te ayudamos.', de:'Diese Kombination ist derzeit nicht verfügbar. Kontaktieren Sie uns.', fr:'Cette combinaison n\u2019est pas disponible actuellement. Contactez-nous.', it:'Questa combinazione non è disponibile al momento. Contattaci.' },
+
+  // Cart / categories
+  cat_wigs:{ pt:'Perucas', en:'Wigs', es:'Pelucas', de:'Perücken', fr:'Perruques', it:'Parrucche' },
+  cat_bundles:{ pt:'Pacotes', en:'Bundles', es:'Paquetes', de:'Bündel', fr:'Paquets', it:'Pacchetti' },
+  cat_crochet:{ pt:'Cabelo de Crochê', en:'Crochet Hair', es:'Cabello de Crochet', de:'Gehäkeltes Haar', fr:'Cheveux au Crochet', it:'Capelli all\u2019uncinetto' },
+  original_price:{ pt:'Preço original', en:'Original price', es:'Precio original', de:'Originalpreis', fr:'Prix d\u2019origine', it:'Prezzo originale' },
+  sale_price:{ pt:'Preço promocional', en:'Sale price', es:'Precio de oferta', de:'Angebotspreis', fr:'Prix promo', it:'Prezzo scontato' },
+  line_subtotal:{ pt:'Subtotal da linha', en:'Line subtotal', es:'Subtotal de línea', de:'Positionszwischensumme', fr:'Sous-total de ligne', it:'Subtotale riga' },
+  remove_item:{ pt:'Remover', en:'Remove', es:'Eliminar', de:'Entfernen', fr:'Retirer', it:'Rimuovi' },
+  quantity:{ pt:'Quantidade', en:'Quantity', es:'Cantidad', de:'Menge', fr:'Quantité', it:'Quantità' },
+  continue_shopping:{ pt:'Continuar a comprar', en:'Continue shopping', es:'Seguir comprando', de:'Weiter einkaufen', fr:'Continuer les achats', it:'Continua lo shopping' },
+  shipping_calc_checkout:{ pt:'Calculado no checkout', en:'Calculated at checkout', es:'Calculado al pagar', de:'Wird an der Kasse berechnet', fr:'Calculé au paiement', it:'Calcolato al checkout' },
+
+  // Checkout: contact & delivery
+  contact_info:{ pt:'Contacto', en:'Contact', es:'Contacto', de:'Kontakt', fr:'Contact', it:'Contatto' },
+  delivery_address:{ pt:'Morada de Entrega', en:'Delivery Address', es:'Dirección de Entrega', de:'Lieferadresse', fr:'Adresse de Livraison', it:'Indirizzo di Consegna' },
+  first_name:{ pt:'Nome próprio', en:'First name', es:'Nombre', de:'Vorname', fr:'Prénom', it:'Nome' },
+  last_name:{ pt:'Apelido', en:'Last name', es:'Apellido', de:'Nachname', fr:'Nom', it:'Cognome' },
+  country_region:{ pt:'País / Região', en:'Country / Region', es:'País / Región', de:'Land / Region', fr:'Pays / Région', it:'Paese / Regione' },
+  address_line:{ pt:'Morada', en:'Address', es:'Dirección', de:'Adresse', fr:'Adresse', it:'Indirizzo' },
+  apartment:{ pt:'Apartamento, piso ou porta (opcional)', en:'Apartment, floor or door (optional)', es:'Apartamento, piso o puerta (opcional)', de:'Wohnung, Etage oder Tür (optional)', fr:'Appartement, étage ou porte (facultatif)', it:'Appartamento, piano o porta (facoltativo)' },
+  postal_code:{ pt:'Código postal', en:'Postal code', es:'Código postal', de:'Postleitzahl', fr:'Code postal', it:'Codice postale' },
+  city:{ pt:'Cidade / Localidade', en:'City / Town', es:'Ciudad / Localidad', de:'Stadt / Ort', fr:'Ville / Localité', it:'Città / Località' },
+  district:{ pt:'Distrito / Estado / Província', en:'District / State / Province', es:'Distrito / Estado / Provincia', de:'Bezirk / Bundesland / Provinz', fr:'District / État / Province', it:'Distretto / Stato / Provincia' },
+  delivery_notes:{ pt:'Notas de entrega (opcional)', en:'Delivery notes (optional)', es:'Notas de entrega (opcional)', de:'Lieferhinweise (optional)', fr:'Notes de livraison (facultatif)', it:'Note di consegna (facoltative)' },
+  phone_required:{ pt:'Telefone com indicativo internacional', en:'Phone with country code', es:'Teléfono con código de país', de:'Telefon mit Ländervorwahl', fr:'Téléphone avec indicatif', it:'Telefono con prefisso internazionale' },
+  fld_required:{ pt:'Campo obrigatório', en:'Required field', es:'Campo obligatorio', de:'Pflichtfeld', fr:'Champ obligatoire', it:'Campo obbligatorio' },
+  fld_email:{ pt:'Introduz um email válido', en:'Enter a valid email', es:'Introduce un email válido', de:'Gültige E-Mail eingeben', fr:'Saisissez un email valide', it:'Inserisci un\u2019email valida' },
+
+  // Checkout: totals, coupon, security
+  items_summary:{ pt:'Resumo dos Artigos', en:'Items Summary', es:'Resumen de Artículos', de:'Artikelübersicht', fr:'Récapitulatif des Articles', it:'Riepilogo Articoli' },
+  subtotal_original:{ pt:'Subtotal original', en:'Original subtotal', es:'Subtotal original', de:'Ursprüngliche Zwischensumme', fr:'Sous-total d\u2019origine', it:'Subtotale originale' },
+  discount_total:{ pt:'Desconto total', en:'Total discount', es:'Descuento total', de:'Gesamtrabatt', fr:'Remise totale', it:'Sconto totale' },
+  taxes:{ pt:'Impostos', en:'Taxes', es:'Impuestos', de:'Steuern', fr:'Taxes', it:'Tasse' },
+  final_total:{ pt:'Total final', en:'Final total', es:'Total final', de:'Endbetrag', fr:'Total final', it:'Totale finale' },
+  coupon_label:{ pt:'Cupão de desconto', en:'Discount code', es:'Código de descuento', de:'Rabattcode', fr:'Code promo', it:'Codice sconto' },
+  apply:{ pt:'Aplicar', en:'Apply', es:'Aplicar', de:'Anwenden', fr:'Appliquer', it:'Applica' },
+  remove_code:{ pt:'Remover', en:'Remove', es:'Eliminar', de:'Entfernen', fr:'Retirer', it:'Rimuovi' },
+  coupon_applied:{ pt:'Cupão aplicado', en:'Code applied', es:'Código aplicado', de:'Code angewendet', fr:'Code appliqué', it:'Codice applicato' },
+  coupon_invalid:{ pt:'Cupão inválido ou não ativo', en:'Invalid or inactive code', es:'Código inválido o inactivo', de:'Ungültiger oder inaktiver Code', fr:'Code invalide ou inactif', it:'Codice non valido o inattivo' },
+  coupon_removed:{ pt:'Cupão removido', en:'Code removed', es:'Código eliminado', de:'Code entfernt', fr:'Code retiré', it:'Codice rimosso' },
+  coupon_applying:{ pt:'A aplicar…', en:'Applying…', es:'Aplicando…', de:'Wird angewendet…', fr:'Application…', it:'Applicazione…' },
+  apply_coupon_hint:{ pt:'O código será validado no checkout.', en:'The code will be validated at checkout.', es:'El código se validará al pagar.', de:'Der Code wird an der Kasse validiert.', fr:'Le code sera validé au paiement.', it:'Il codice sarà validato al checkout.' },
+
+  // Checkout: payment & security
+  payment_methods:{ pt:'Métodos de Pagamento', en:'Payment Methods', es:'Métodos de Pago', de:'Zahlungsmethoden', fr:'Moyens de Paiement', it:'Metodi di Pagamento' },
+  pay_card:{ pt:'Cartão (Visa / Mastercard)', en:'Card (Visa / Mastercard)', es:'Tarjeta (Visa / Mastercard)', de:'Karte (Visa / Mastercard)', fr:'Carte (Visa / Mastercard)', it:'Carta (Visa / Mastercard)' },
+  pay_paypal:{ pt:'PayPal', en:'PayPal', es:'PayPal', de:'PayPal', fr:'PayPal', it:'PayPal' },
+  pay_mbway:{ pt:'MB Way', en:'MB Way', es:'MB Way', de:'MB Way', fr:'MB Way', it:'MB Way' },
+  mbway_phone_hint:{ pt:'Telemóvel MB Way (com +351)', en:'MB Way phone (with +351)', es:'Teléfono MB Way (con +351)', de:'MB-Way-Telefon (mit +351)', fr:'Téléphone MB Way (avec +351)', it:'Telefono MB Way (con +351)' },
+  pay_config_note:{ pt:'Este método de pagamento está a ser configurado. A tua encomenda será confirmada por email/WhatsApp por agora.', en:'This payment method is being configured. Your order will be confirmed by email/WhatsApp for now.', es:'Este método de pago se está configurando. Tu pedido se confirmará por email/WhatsApp por ahora.', de:'Diese Zahlungsmethode wird gerade eingerichtet. Ihre Bestellung wird vorerst per E-Mail/WhatsApp bestätigt.', fr:'Ce moyen de paiement est en cours de configuration. Votre commande sera confirmée par email/WhatsApp pour le moment.', it:'Questo metodo di pagamento è in configurazione. Il tuo ordine sarà confermato via email/WhatsApp per ora.' },
+  secure_checkout_note:{ pt:'Os valores são validados de novo antes da confirmação da encomenda.', en:'Amounts are re-validated before the order is confirmed.', es:'Los importes se revalidan antes de confirmar el pedido.', de:'Beträge werden vor der Bestellbestätigung erneut validiert.', fr:'Les montants sont revalidés avant la confirmation de la commande.', it:'Gli importi vengono rivalidati prima della conferma dell\u2019ordine.' },
+  order_submitting:{ pt:'A processar…', en:'Processing…', es:'Procesando…', de:'Verarbeitung…', fr:'Traitement…', it:'Elaborazione…' },
+  order_saved_confirm:{ pt:'Encomenda registada. Confirmaremos por email/WhatsApp em breve.', en:'Order recorded. We will confirm by email/WhatsApp shortly.', es:'Pedido registrado. Confirmaremos por email/WhatsApp en breve.', de:'Bestellung erfasst. Wir bestätigen per E-Mail/WhatsApp.', fr:'Commande enregistrée. Nous confirmerons par email/WhatsApp.', it:'Ordine registrato. Confermeremo via email/WhatsApp.' },
+  empty_cart_checkout:{ pt:'O teu carrinho está vazio. Adiciona artigos antes de finalizar a compra.', en:'Your cart is empty. Add items before checking out.', es:'Tu carrito está vacío. Añade artículos antes de pagar.', de:'Ihr Warenkorb ist leer. Fügen Sie Artikel hinzu, bevor Sie zur Kasse gehen.', fr:'Votre panier est vide. Ajoutez des articles avant de commander.', it:'Il tuo carrello è vuoto. Aggiungi articoli prima del checkout.' }
 };
 
 var LANG = detectLang();
