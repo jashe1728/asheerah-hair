@@ -263,6 +263,7 @@ function setLang(l){
   if (window.renderCartPage) window.renderCartPage();
   if (window.renderCheckoutPage) window.renderCheckoutPage();
   if (window.updateLangDropdown) window.updateLangDropdown();
+  if (window.chatLanguageChanged) window.chatLanguageChanged(l);
 }
 
 /* Build the custom language dropdown and inject it into the header's currency selector area. */

@@ -1,6 +1,6 @@
 # Website chatbot
 
-The chatbot answers approved FAQs on the static website and hands pricing, customization, stock, customs, installment, complaints, damaged/wrong items, and unknown questions to the owner through WhatsApp.
+The chatbot answers approved FAQs on the static website in Portuguese, English, Spanish, German, French, and Italian. It follows the website language selector and hands pricing, customization, stock, customs, installment, complaints, damaged/wrong items, and unknown questions to the owner through WhatsApp in the selected language.
 
 ## Trust rules
 
@@ -20,6 +20,7 @@ The chatbot answers approved FAQs on the static website and hands pricing, custo
 ## Files
 
 - `assets/data/chatbot-kb.json` — live knowledge base.
+- `assets/data/chatbot-locales.json` — translated triggers, approved answers, interface text, and handoff wording for all six website languages.
 - `assets/js/chatbot.js` — routing, UI behavior, transcript handoff, and logging.
 - `assets/css/styles.css` — existing widget styles plus handoff and accessibility rules.
 - `backend/Code.gs` — optional `Chatbot Log` sheet and one owner email alert per chat session.
@@ -55,4 +56,3 @@ Measure T1 answers, T2 confirmations, and T3/unknown handoffs. A safe handoff co
 ## Owner decision still needed
 
 The published policy pages conflict on damaged-item timing: `pages/returns.html` says seven days, while `pages/shipping.html` says 48 hours. The chatbot deliberately states no deadline and sends damaged/wrong items to the owner until one policy is chosen and both pages are aligned.
-
