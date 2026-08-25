@@ -301,6 +301,17 @@ section{padding:4rem 0}
 .chat-input{display:flex;gap:.5rem;padding:.7rem;border-top:1px solid var(--border);background:#fff}
 .chat-input input{flex:1}
 .chat-input button{background:var(--gold);color:#fff;border-radius:999px;padding:0 1.1rem;font-weight:700}
+.chat-handoff{display:block;align-self:stretch;background:#1f7a4d;color:#fff!important;text-align:center;
+  text-decoration:none;padding:.72rem .9rem;border-radius:12px;font-size:.86rem;font-weight:700;line-height:1.35}
+.chat-handoff:hover{background:#17623d}
+.chat-safety{font-size:.68rem;line-height:1.35;color:var(--ink-soft);margin:.15rem 0 0;text-align:center}
+.chat-btn:focus-visible,.chat-head .close:focus-visible,.chat-quick button:focus-visible,
+.chat-input button:focus-visible,.chat-handoff:focus-visible{outline:3px solid var(--gold);outline-offset:2px}
+
+@media(max-width:520px){
+  .chat-window{right:10px;bottom:145px;width:calc(100% - 20px);max-height:72vh}
+  .chat-btn{right:14px;bottom:16px}
+}
 
 /* ---- Newsletter ---- */
 .newsletter{padding:2.5rem 0 1rem}

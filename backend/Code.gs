@@ -17,6 +17,7 @@ var REPORT_NAME = 'Monthly Report';
 var SS_ID_PROP = 'ASH_SS_ID';
 var ORDERS_HEADER = ['Timestamp','Order','Customer','Email','Phone','Method','Items','Subtotal €','Shipping €','Total €','COGS €','Fee €','Profit €'];
 var MSG_HEADER = ['Timestamp','Name','Email','Phone','Comment'];
+var CHAT_HEADER = ['Timestamp','Session','Page','Question','Route','Tier','Reason','Matched Q&A','Transcript','Status','Owner answer','Add to KB','Reviewed'];
 
 // ---- Supplier cost model (USD), from the pricing Excel's Supplier Pricelists tab.
 // Keys match the site's option strings. Converted to EUR via usd_eur. Editable in the "Costs" tab.
@@ -73,6 +74,44 @@ function doPost(e) {
       var dup = existing.some(function(r){ return String(r[1]).trim().toLowerCase() === email.toLowerCase(); });
       if (!dup) nl.appendRow([new Date(), email]);
       return json_({ ok: true, saved: true, new: !dup });
+    }
+
+    if (body.type === 'chat_log') {
+      var sessionId = safeCell_(body.sessionId, 40);
+      var question = safeCell_(body.question, 500);
+      if (!sessionId || !question) return json_({ ok:false, error:'Missing chat reference or question' });
+
+      var lock = LockService.getScriptLock();
+      lock.waitLock(5000);
+      try {
+        getSheet_('Chatbot Log', CHAT_HEADER).appendRow([
+          new Date(), sessionId, safeCell_(body.page, 180), question,
+          safeCell_(body.route, 40), Number(body.tier)||'', safeCell_(body.reason, 80),
+          safeCell_(body.matchedId, 30), safeCell_(body.transcript, 2500),
+          'Needs review', '', '', ''
+        ]);
+      } finally {
+        lock.releaseLock();
+      }
+
+      // One owner alert per website-chat session prevents a customer conversation
+      // (or repeated button presses) from flooding the owner's inbox.
+      var cache = CacheService.getScriptCache();
+      var mailKey = 'chat-mail-' + digestKey_(sessionId);
+      var alerted = cache.get(mailKey);
+      if (!alerted) {
+        cache.put(mailKey, '1', 21600);
+        try {
+          MailApp.sendEmail({
+            to: OWNER_EMAIL,
+            subject: 'Website chat needs your help — ' + sessionId,
+            body: 'A website visitor reached a Tier ' + (Number(body.tier)||3) + ' handoff.\n\n' +
+              'Question: ' + question + '\nPage: ' + safeCell_(body.page,180) + '\n\n' +
+              safeCell_(body.transcript,2500) + '\n\nThe visitor was offered a WhatsApp button with this same reference.'
+          });
+        } catch (mailErr) { /* The sheet remains the source of truth. */ }
+      }
+      return json_({ ok:true, saved:true });
     }
 
     return json_({ ok: false, error: 'Unknown type' });
@@ -158,6 +197,16 @@ function feeFor_(method, totalEur) {
 }
 
 function r2(x) { return Math.round(Number(x) * 100) / 100; }
+
+function safeCell_(value, maxLen) {
+  var text = String(value||'').replace(/[\u0000-\u001F\u007F]/g, ' ').trim().slice(0,maxLen);
+  return /^[=+\-@]/.test(text) ? "'" + text : text;
+}
+
+function digestKey_(value) {
+  var bytes = Utilities.computeDigest(Utilities.DigestAlgorithm.SHA_256, String(value));
+  return Utilities.base64EncodeWebSafe(bytes).slice(0,24);
+}
 
 /**
  * Build (or rebuild) the Monthly Report tab with summary tables + charts.

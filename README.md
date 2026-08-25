@@ -11,7 +11,8 @@ engine (see `docs/price_engine.json`).
   built from the Excel pricing engine (EUR base)
 - Google Sheets + Apps Script backend for orders (see `backend/Code.gs` and
   `SETUP.md`)
-- Rule-based FAQ chatbot (FAQ first; AI upgrade planned)
+- Warm three-tier website chatbot with owner-approved answers, safe matching,
+  WhatsApp transcript handoff, and optional Google Sheets review log
 - Multi-currency display (EUR base / USD / GBP), settled in EUR
 
 ## Pages
@@ -31,3 +32,6 @@ engine (see `docs/price_engine.json`).
 ## Setup
 See `SETUP.md` — Google Sheets backend and payment keys must be configured on
 Asheerah's business accounts before going live.
+
+Chatbot maintenance, approval rules, and weekly review are documented in
+`docs/CHATBOT.md`.
