@@ -65,7 +65,7 @@ var I18N = {
   reviews_label:{ pt:'Feedback de Clientes', en:'Customer Feedback', es:'Opiniones de Clientes', de:'Kundenfeedback', fr:'Retours Clients', it:'Feedback dei Clienti' },
   real_reviews:{ pt:'O que as Clientes Dizem', en:'What Customers Say', es:'Lo que Dicen las Clientas', de:'Was Kundinnen Sagen', fr:'Ce que Disent les Clientes', it:'Cosa Dicono le Clienti' },
   you_may_also_like:{ pt:'Também podes gostar', en:'You may also like', es:'También te puede gustar', de:'Das könnte dir auch gefallen', fr:'Vous aimerez peut-être aussi', it:'Potrebbe piacerti anche' },
-  recommended_hair:{ pt:'Descobre mais cabelo', en:'Discover more hair', es:'Descubre más cabello', de:'Mehr Haar entdecken', fr:'Découvrez plus de cheveux', it:'Scopri altri capelli' },
+  recommended_hair:{ pt:'Descobre mais produtos', en:'Discover more products', es:'Descubre más productos', de:'Weitere Produkte entdecken', fr:'Découvrez plus de produits', it:'Scopri altri prodotti' },
   product_reviews:{ pt:'Avaliações deste produto', en:'Product reviews', es:'Opiniones de este producto', de:'Produktbewertungen', fr:'Avis sur ce produit', it:'Recensioni del prodotto' },
   leave_review:{ pt:'Deixa a tua avaliação', en:'Leave a review', es:'Deja tu opinión', de:'Bewertung abgeben', fr:'Laisser un avis', it:'Lascia una recensione' },
   review_name_ph:{ pt:'O teu nome', en:'Your name', es:'Tu nombre', de:'Dein Name', fr:'Votre nom', it:'Il tuo nome' },

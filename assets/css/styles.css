@@ -267,7 +267,7 @@ section{padding:4rem 0}
 .pd .desc{margin-top:2rem;color:var(--ink-soft)}
 .pd .desc ul{margin:.6rem 0 0 1.2rem}
 .product-recommendations,.product-reviews{margin-top:4rem;padding-top:3rem;border-top:1px solid var(--border)}
-.recommended-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:1rem}
+.recommended-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:1.5rem}
 .recommended-card .info{padding:1rem}.recommended-card .info h3{font-size:1.15rem;line-height:1.15}.recommended-card .price{color:var(--gold-d);font-weight:700;margin-top:.35rem}.recommended-card .buy-btn{margin-top:.65rem}
 .product-review-list{display:grid;grid-template-columns:repeat(3,1fr);gap:1rem;margin-bottom:1.8rem}
 .product-review{background:var(--card);border:1px solid var(--border);border-radius:var(--r-md);padding:1rem}.product-review p{color:var(--ink-soft);margin:.5rem 0}.product-review strong{display:block;color:var(--ink)}.review-source{display:block;color:var(--muted);font-size:.75rem;margin-top:.15rem}.review-stars{color:var(--gold-d);letter-spacing:1px}.stars-muted{color:var(--border)}
