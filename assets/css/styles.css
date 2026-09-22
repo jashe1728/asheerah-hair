@@ -253,7 +253,7 @@ section{padding:4rem 0}
 .pd .option-group{margin-bottom:1.2rem}
 .pd .option-group label{display:block;font-weight:600;font-size:.9rem;margin-bottom:.5rem;text-transform:uppercase;letter-spacing:.5px;color:var(--ink-soft)}
 .pills{display:flex;flex-wrap:wrap;gap:.5rem}
-.pill{padding:.5rem 1rem;border:1.5px solid var(--border);border-radius:999px;background:#fff;font-size:.9rem;transition:.15s}
+.pill{padding:.5rem 1rem;border:1.5px solid var(--border);border-radius:999px;background:#fff;color:var(--ink);font-size:.9rem;transition:.15s}
 .pill:hover{border-color:var(--gold)}
 .pill.active{background:var(--ink);color:#fff;border-color:var(--ink)}
 .qty{display:flex;align-items:center;gap:.8rem;margin:1.2rem 0}
@@ -306,7 +306,8 @@ section{padding:4rem 0}
 .msg.bot{background:#fff;border:1px solid var(--border);align-self:flex-start;border-bottom-left-radius:4px}
 .msg.user{background:var(--gold);color:#fff;align-self:flex-end;border-bottom-right-radius:4px}
 .chat-quick{display:flex;gap:.4rem;flex-wrap:wrap;padding:.5rem .8rem;border-top:1px solid var(--border);background:#fff}
-.chat-quick button{font-size:.75rem;padding:.35rem .7rem;border-radius:999px;border:1px solid var(--border);background:var(--ivory)}
+.chat-quick button{font-size:.75rem;padding:.35rem .7rem;border-radius:999px;border:1px solid var(--border);background:var(--ivory);color:var(--ink-soft)}
+.chat-quick button:hover{background:var(--gold-soft);color:var(--ink);border-color:var(--gold)}
 .chat-input{display:flex;gap:.5rem;padding:.7rem;border-top:1px solid var(--border);background:#fff}
 .chat-input input{flex:1}
 .chat-input button{background:var(--gold);color:#fff;border-radius:999px;padding:0 1.1rem;font-weight:700}
