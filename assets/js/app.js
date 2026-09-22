@@ -549,9 +549,8 @@ function renderFeatured(){
   const preferred = ['wigs','bundles','crochet'];
   const list = preferred.map(cat => CATALOG.products.find(p => p.category === cat && p.images && p.images[0])).filter(Boolean);
   grid.innerHTML = list.map(p => {
-    const min = Math.min(...p.variants.map(v=>v.price_eur).filter(Boolean));
-    const minV = p.variants.find(v => v.price_eur === min) || null;
-    const price = priceHTML(min, minV && minV.compare_eur > min ? minV.compare_eur : null, cur);
+    const pricing = variantPricing(p, defaultOpts(p));
+    const price = priceHTML(pricing.priceEur, pricing.hasPromo ? pricing.compareEur : null, cur);
     return `<a class="product-card featured-card" href="product.html?h=${encodeURIComponent(p.handle)}">
       <div class="img"><img src="${p.images[0]}" alt="${escapeHTML(p.title)}" loading="lazy"></div>
       <div class="info"><span class="featured-category">${escapeHTML(p.category)}</span><h3>${escapeHTML(p.title)}</h3><div class="price">${price}</div><span class="buy-btn">${uiTxt('view_product')}</span></div>
@@ -566,10 +565,7 @@ function renderShop(){
   if (cat) list = list.filter(p => p.category === cat);
   grid.innerHTML = list.map(p => {
     const pricing = variantPricing(p, defaultOpts(p));
-    const min = Math.min(...p.variants.map(v=>v.price_eur).filter(Boolean));
-    const minV = p.variants.find(v => v.price_eur === min) || null;
-    const hasPromo = !!(minV && minV.compare_eur && minV.compare_eur > min);
-    const priceHTMLstr = priceHTML(min, hasPromo ? minV.compare_eur : null, cur);
+    const priceHTMLstr = priceHTML(pricing.priceEur, pricing.hasPromo ? pricing.compareEur : null, cur);
     return `<a class="product-card shop-card" href="product.html?h=${p.handle}">
       <div class="img"><img src="${p.images[0]||''}" alt="${escapeHTML(p.title)}" loading="lazy"></div>
       <div class="info">
@@ -622,7 +618,7 @@ function recommendedProducts(p){
 function recommendationsHTML(p){
   const list=recommendedProducts(p);
   if(!list.length)return '';
-  return `<section class="product-recommendations" aria-labelledby="recommendedTitle"><div class="section-head"><span class="eyebrow">${uiTxt('you_may_also_like')}</span><h2 id="recommendedTitle">${uiTxt('recommended_hair')}</h2></div><div class="recommended-grid">${list.map(x=>{const min=Math.min(...x.variants.map(v=>v.price_eur).filter(Boolean));return `<a class="product-card recommended-card" href="product.html?h=${encodeURIComponent(x.handle)}"><div class="img"><img src="${x.images[0]}" alt="${escapeHTML(x.title)}" loading="lazy"></div><div class="info"><h3>${escapeHTML(x.title)}</h3><div class="price">${money(min,curCode())}</div><span class="buy-btn">${uiTxt('view_product')}</span></div></a>`;}).join('')}</div></section>`;
+  return `<section class="product-recommendations" aria-labelledby="recommendedTitle"><div class="section-head"><span class="eyebrow">${uiTxt('you_may_also_like')}</span><h2 id="recommendedTitle">${uiTxt('recommended_hair')}</h2></div><div class="recommended-grid">${list.map(x=>{const pricing=variantPricing(x,defaultOpts(x));const price=priceHTML(pricing.priceEur,pricing.hasPromo?pricing.compareEur:null,curCode());return `<a class="product-card recommended-card" href="product.html?h=${encodeURIComponent(x.handle)}"><div class="img"><img src="${x.images[0]}" alt="${escapeHTML(x.title)}" loading="lazy"></div><div class="info"><h3>${escapeHTML(x.title)}</h3><div class="price">${price}</div><span class="buy-btn">${uiTxt('view_product')}</span></div></a>`;}).join('')}</div></section>`;
 }
 window.submitProductReview = event => {
   event.preventDefault();
