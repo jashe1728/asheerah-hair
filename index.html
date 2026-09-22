@@ -9,7 +9,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;1,500&family=DM+Sans:wght@400;500;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="assets/css/styles.css">
-<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>💇‍♀️</text></svg>">
+<link rel="icon" href="assets/logo-sm.png">
 </head>
 <body data-page="home">
 
@@ -93,6 +93,21 @@
   </div>
 </section>
 
+<!-- Featured products -->
+<section class="featured-section">
+  <div class="container">
+    <div class="section-head">
+      <span class="eyebrow" data-i18n="featured_label">Start Here</span>
+      <h2 data-i18n="featured_title">Featured Hair</h2>
+      <p class="section-intro" data-i18n="featured_sub">A considered edit of our most versatile styles.</p>
+    </div>
+    <div id="featuredGrid" class="featured-grid reveal" aria-live="polite">
+      <p class="featured-loading" data-i18n="loading">Loading…</p>
+    </div>
+    <div class="section-cta"><a href="shop.html" class="btn btn-ghost" data-i18n="featured_cta">View all products</a></div>
+  </div>
+</section>
+
 <!-- Shop by Texture -->
 <section>
   <div class="container">
@@ -129,8 +144,8 @@
   <div class="container">
     <div class="features reveal">
       <div class="feature"><div class="ic"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v18"/><path d="M12 3c-3.2 0-5.4 1.6-5.4 4 0 3.2 4.2 3.4 4.2 6.4"/><path d="M12 3c3.2 0 5.4 1.6 5.4 4 0 3.2-4.2 3.4-4.2 6.4"/></svg></div><h3 data-i18n="feat_hair">Premium Human Hair</h3><p data-i18n="feat_hair_d">100% virgin human hair, carefully selected for quality.</p></div>
-      <div class="feature"><div class="ic"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M3 12h18"/><path d="M12 3c2.6 2.4 3.9 5.6 3.9 9s-1.3 6.6-3.9 9c-2.6-2.4-3.9-5.6-3.9-9S9.4 5.4 12 3z"/></svg></div><h3 data-i18n="feat_ship">Worldwide Shipping</h3><p data-i18n="feat_ship_d">Delivering premium hair to selected countries worldwide.</p></div>
-      <div class="feature"><div class="ic"><svg viewBox="0 0 24 24"><rect x="5" y="10" width="14" height="11" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/><circle cx="12" cy="15.5" r="1.6"/></svg></div><h3 data-i18n="feat_pay">Secure Payments</h3><p data-i18n="feat_pay_d">Shop confidently with a safe and secure checkout.</p></div>
+      <div class="feature"><div class="ic"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M3 12h18"/><path d="M12 3c2.6 2.4 3.9 5.6 3.9 9s-1.3 6.6-3.9 9c-2.6-2.4-3.9-6.6-3.9-9S9.4 5.4 12 3z"/></svg></div><h3 data-i18n="feat_ship">Shipping to Selected Countries</h3><p data-i18n="feat_ship_d">Estimated delivery within 6–10 days.</p></div>
+      <div class="feature"><div class="ic"><svg viewBox="0 0 24 24"><rect x="5" y="10" width="14" height="11" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/><circle cx="12" cy="15.5" r="1.6"/></svg></div><h3 data-i18n="feat_pay">Payment Options</h3><p data-i18n="feat_pay_d">Choose your preferred method at checkout. Setup is being finalised.</p></div>
       <div class="feature"><div class="ic"><svg viewBox="0 0 24 24"><path d="M12 20s-8-5-8-11a4.5 4.5 0 0 1 8-2.8A4.5 4.5 0 0 1 20 9c0 6-8 11-8 11Z"/></svg></div><h3 data-i18n="feat_style">Made for Your Style</h3><p data-i18n="feat_style_d">Choose your preferred length, lace and density.</p></div>
     </div>
   </div>
@@ -151,11 +166,11 @@
 <!-- Reviews -->
 <section>
   <div class="container">
-    <div class="section-head"><span class="eyebrow" data-i18n="reviews_label">Customers Are Saying</span><h2 data-i18n="real_reviews">Real Reviews</h2></div>
+    <div class="section-head"><span class="eyebrow" data-i18n="reviews_label">Customer Feedback</span><h2 data-i18n="real_reviews">What Customers Say</h2></div>
     <div class="reviews reveal">
-      <div class="review"><div class="stars">★★★★★</div><p>Amei tudo! Excelente qualidade 🥰</p><div class="name">Ciara Ly</div><div class="prod">Verified buyer</div></div>
-      <div class="review"><div class="stars">★★★★★</div><p>Amazinggg, love it!! 😍😍😍</p><div class="name">Ciaraly</div><div class="prod">Straight Bundles</div></div>
-      <div class="review"><div class="stars">★★★★★</div><p>Best hair of my life — super soft, smooth and shiny! Alta qualidade.</p><div class="name">Deivaforbs</div><div class="prod">Burmese Curly Bundles</div></div>
+      <div class="review"><div class="stars">★★★★★</div><p>Amei tudo! Excelente qualidade.</p><div class="name">Ciara Ly</div><div class="prod">Customer feedback</div></div>
+      <div class="review"><div class="stars">★★★★★</div><p>Amazing, love it. Alta qualidade.</p><div class="name">Ciaraly</div><div class="prod">Straight Bundles</div></div>
+      <div class="review"><div class="stars">★★★★★</div><p>Best hair of my life, super soft, smooth and shiny.</p><div class="name">Deivaforbs</div><div class="prod">Burmese Curly Bundles</div></div>
     </div>
   </div>
 </section>

@@ -531,6 +531,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   });
   try { await loadCatalog(); } catch(e) { console.warn('catalog load failed', e); }
   const page = document.body.dataset.page;
+  if (page === 'home') renderFeatured();
   if (page === 'shop') renderShop();
   if (page === 'product') renderProduct();
   if (page === 'cart') renderCartPage();
@@ -538,6 +539,21 @@ document.addEventListener('DOMContentLoaded', async () => {
 });
 
 // ---------- Shop grid ----------
+function renderFeatured(){
+  const grid = document.getElementById('featuredGrid'); if (!grid || !CATALOG) return;
+  const cur = curCode();
+  const preferred = ['wigs','bundles','crochet'];
+  const list = preferred.map(cat => CATALOG.products.find(p => p.category === cat && p.images && p.images[0])).filter(Boolean);
+  grid.innerHTML = list.map(p => {
+    const min = Math.min(...p.variants.map(v=>v.price_eur).filter(Boolean));
+    const minV = p.variants.find(v => v.price_eur === min) || null;
+    const price = priceHTML(min, minV && minV.compare_eur > min ? minV.compare_eur : null, cur);
+    return `<a class="product-card featured-card" href="product.html?h=${encodeURIComponent(p.handle)}">
+      <div class="img"><img src="${p.images[0]}" alt="${escapeHTML(p.title)}" loading="lazy"></div>
+      <div class="info"><span class="featured-category">${escapeHTML(p.category)}</span><h3>${escapeHTML(p.title)}</h3><div class="price">${price}</div><span class="buy-btn">${uiTxt('view_product')}</span></div>
+    </a>`;
+  }).join('');
+}
 function renderShop(){
   const grid = document.getElementById('shopGrid'); if (!grid) return;
   const cur = curCode();
@@ -977,7 +993,7 @@ function placeOrder(btn){
   ).join('\n');
   const addressLine = [data.address, data.apt].filter(Boolean).join(', ') + ', ' + data.zip + ' ' + data.city + (data.district?', '+data.district:'') + (data.country?', '+data.country:'');
 
-  const text = `NOVA ENCOMENDA (Asheerah Hair)\n${lines}\n\nSubtotal original: ${money(t.subtotalOriginal,'EUR')}\nDesconto: −${money(t.totalDiscount,'EUR')}\nEnvio: ${money(t.shipping,'EUR')}\nTOTAL: ${money(t.totalFinal,'EUR')}\nPagamento: ${method}${mbwayPhone?'\nTelemóvel MB Way: '+mbwayPhone:''}\n\nCliente: ${data.name}\nEmail: ${data.email}\nTelefone: ${data.phone}\nMorada: ${addressLine}${data.notes?'\nNotas: '+data.notes:''}`;
+  const text = `NOVO PEDIDO DE PAGAMENTO (Asheerah Hair)\n${lines}\n\nSubtotal original: ${money(t.subtotalOriginal,'EUR')}\nDesconto: −${money(t.totalDiscount,'EUR')}\nEnvio: ${money(t.shipping,'EUR')}\nTOTAL ESTIMADO: ${money(t.totalFinal,'EUR')}\nMétodo preferido: ${method}${mbwayPhone?'\nTelemóvel MB Way: '+mbwayPhone:''}\n\nCliente: ${data.name}\nEmail: ${data.email}\nTelefone: ${data.phone}\nMorada: ${addressLine}${data.notes?'\nNotas: '+data.notes:''}`;
 
   const payload = {
     type:'order',

@@ -22,7 +22,7 @@ var FLAGS = {
 var I18N = {
   announce: { pt:'Use Com Confiança', en:'Shop With Confidence', es:'Compre Con Confianza', de:'Kaufen Sie Mit Vertrauen', fr:'Achetez En Toute Confiance', it:'Acquista Con Fiducia' },
   announce2: { pt:'Cabelo Humano Virgem 100%', en:'100% Virgin Human Hair', es:'Cabello Humano Virgen 100%', de:'100% Echtes Menschenhaar', fr:'Cheveux Humains Vierges 100%', it:'Capelli Umani Vergini 100%' },
-  announce3: { pt:'Envio Mundial', en:'Worldwide Shipping', es:'Envío Mundial', de:'Weltweiter Versand', fr:'Livraison Mondiale', it:'Spedizione Mondiale' },
+  announce3: { pt:'Envio para países selecionados', en:'Shipping to selected countries', es:'Envío a países seleccionados', de:'Versand in ausgewählte Länder', fr:'Livraison vers certains pays', it:'Spedizione in paesi selezionati' },
   currency: { pt:'EUR / PT-PT', en:'EUR / PT-PT', es:'EUR / ES-ES', de:'EUR / DE-DE', fr:'EUR / FR-FR', it:'EUR / IT-IT' },
 
   nav_home:   { pt:'Início', en:'Home', es:'Inicio', de:'Start', fr:'Accueil', it:'Home' },
@@ -52,20 +52,25 @@ var I18N = {
 
   feat_hair: { pt:'Cabelo Humano Premium', en:'Premium Human Hair', es:'Cabello Humano Premium', de:'Premium-Menschenhaar', fr:'Cheveux Humains Premium', it:'Capelli Umani Premium' },
   feat_hair_d: { pt:'100% cabelo humano virgem, selecionado para qualidade.', en:'100% virgin human hair, carefully selected for quality.', es:'100% cabello humano virgen, seleccionado por su calidad.', de:'100% echtes Menschenhaar, sorgfältig für Qualität ausgewählt.', fr:'100% cheveux humains vierges, sélectionnés pour leur qualité.', it:'100% capelli umani vergini, selezionati per la qualità.' },
-  feat_ship: { pt:'Envio Mundial', en:'Worldwide Shipping', es:'Envío Mundial', de:'Weltweiter Versand', fr:'Livraison Mondiale', it:'Spedizione Mondiale' },
-  feat_ship_d: { pt:'Entregamos cabelo premium em todo o mundo.', en:'Delivering premium hair worldwide.', es:'Entregamos cabello premium en todo el mundo.', de:'Premium-Haar weltweit geliefert.', fr:'Livraison de cheveux premium dans le monde.', it:'Consegna di capelli premium in tutto il mondo.' },
-  feat_pay:  { pt:'Pagamentos Seguros', en:'Secure Payments', es:'Pagos Seguros', de:'Sichere Zahlungen', fr:'Paiements Sécurisés', it:'Pagamenti Sicuri' },
-  feat_pay_d:{ pt:'Compra com um checkout seguro e confiável.', en:'Shop confidently with a secure checkout.', es:'Compra con confianza con un pago seguro.', de:'Kaufen Sie sicher mit sicherem Checkout.', fr:'Achetez en toute confiance avec un paiement sécurisé.', it:'Acquista con sicurezza con un checkout protetto.' },
+  feat_ship: { pt:'Envio para países selecionados', en:'Shipping to Selected Countries', es:'Envío a países seleccionados', de:'Versand in ausgewählte Länder', fr:'Livraison vers certains pays', it:'Spedizione in paesi selezionati' },
+  feat_ship_d: { pt:'Entrega estimada entre 6 e 10 dias.', en:'Estimated delivery within 6–10 days.', es:'Entrega estimada entre 6 y 10 días.', de:'Voraussichtliche Lieferung innerhalb von 6–10 Tagen.', fr:'Livraison estimée sous 6–10 jours.', it:'Consegna stimata entro 6–10 giorni.' },
+  feat_pay:  { pt:'Opções de Pagamento', en:'Payment Options', es:'Opciones de Pago', de:'Zahlungsoptionen', fr:'Options de Paiement', it:'Opzioni di Pagamento' },
+  feat_pay_d:{ pt:'Escolhe o método preferido no checkout. A configuração está a ser finalizada.', en:'Choose your preferred method at checkout. Setup is being finalised.', es:'Elige tu método en el checkout. La configuración está en curso.', de:'Wähle deine bevorzugte Methode. Die Einrichtung wird abgeschlossen.', fr:'Choisissez votre méthode. La configuration est en cours.', it:'Scegli il tuo metodo. La configurazione è in corso.' },
   feat_style:{ pt:'Feito para o Teu Estilo', en:'Made for Your Style', es:'Hecho para tu Estilo', de:'Für deinen Stil', fr:'Fait pour Votre Style', it:'Fatto per il Tuo Stile' },
   feat_style_d:{ pt:'Escolhe o comprimento, lace e densidade.', en:'Choose your length, lace and density.', es:'Elige tu largo, lace y densidad.', de:'Wählen Sie Länge, Lace und Dichte.', fr:'Choisissez votre longueur, lace et densité.', it:'Scegli lunghezza, lace e densità.' },
 
   ig_follow: { pt:'Segue a Nossa Jornada', en:'Follow Our Hair Journey', es:'Sigue Nuestro Viaje', de:'Folge Unserer Reise', fr:'Suivez Notre Parcours', it:'Segui il Nostro Viaggio' },
   ig_view:   { pt:'Ver Mais no Instagram', en:'View More on Instagram', es:'Ver Más en Instagram', de:'Mehr Auf Instagram', fr:'Voir Plus Sur Instagram', it:'Guarda di Più su Instagram' },
 
-  reviews_label:{ pt:'O que os Clientes Dizem', en:'Customers Are Saying', es:'Lo que Dicen los Clientes', de:'Das Sagen Kunden', fr:'Ce que Disent les Clients', it:'Cosa Dicono i Clienti' },
-  real_reviews:{ pt:'Avaliações Reais', en:'Real Reviews', es:'Reseñas Reales', de:'Echte Bewertungen', fr:'Avis Réels', it:'Recensioni Reali' },
+  reviews_label:{ pt:'Feedback de Clientes', en:'Customer Feedback', es:'Opiniones de Clientes', de:'Kundenfeedback', fr:'Retours Clients', it:'Feedback dei Clienti' },
+  real_reviews:{ pt:'O que as Clientes Dizem', en:'What Customers Say', es:'Lo que Dicen las Clientas', de:'Was Kundinnen Sagen', fr:'Ce que Disent les Clientes', it:'Cosa Dicono le Clienti' },
 
-  all_products:{ pt:'Todos os Produtos', en:'All Products', es:'Todos los Productos', de:'Alle Produkte', fr:'Tous les Produits', it:'Tutti i Prodotti' },
+  featured_label:{ pt:'Começa Aqui', en:'Start Here', es:'Empieza Aquí', de:'Hier Beginnen', fr:'Commencez Ici', it:'Inizia Qui' },
+  featured_title:{ pt:'Cabelo em Destaque', en:'Featured Hair', es:'Cabello Destacado', de:'Ausgewähltes Haar', fr:'Sélection Cheveux', it:'Capelli in Evidenza' },
+  featured_sub:{ pt:'Uma seleção pensada de estilos versáteis.', en:'A considered edit of our most versatile styles.', es:'Una selección cuidada de estilos versátiles.', de:'Eine kuratierte Auswahl vielseitiger Styles.', fr:'Une sélection de styles polyvalents.', it:'Una selezione curata di stili versatili.' },
+  featured_cta:{ pt:'Ver todos os produtos', en:'View all products', es:'Ver todos los productos', de:'Alle Produkte ansehen', fr:'Voir tous les produits', it:'Vedi tutti i prodotti' },
+
+  view_product:{ pt:'Ver produto', en:'View product', es:'Ver producto', de:'Produkt ansehen', fr:'Voir le produit', it:'Vedi prodotto' },
   luxury_wigs:{ pt:'Perucas de Luxo', en:'Luxury Wigs', es:'Pelucas de Lujo', de:'Luxus-Perücken', fr:'Perruques de Luxe', it:'Parrucche di Lusso' },
   luxury_bundles:{ pt:'Pacotes de Luxo', en:'Luxury Bundles', es:'Paquetes de Lujo', de:'Luxus-Bündel', fr:'Paquets de Luxe', it:'Pacchetti di Lusso' },
   crochet_hair:{ pt:'Cabelo de Crochê', en:'Crochet Hair', es:'Cabello de Crochet', de:'Gehäkeltes Haar', fr:'Cheveux au Crochet', it:'Capelli all\u2019uncinetto' },
@@ -93,7 +98,7 @@ var I18N = {
   payment:   { pt:'Pagamento', en:'Payment', es:'Pago', de:'Zahlung', fr:'Paiement', it:'Pagamento' },
   card_stripe:{ pt:'Cartão (Stripe)', en:'Card (Stripe)', es:'Tarjeta (Stripe)', de:'Karte (Stripe)', fr:'Carte (Stripe)', it:'Carta (Stripe)' },
   mbway_desc:{ pt:'Paga por telemóvel na app MB Way', en:'Pay by phone in the MB Way app', es:'Paga por teléfono en la app MB Way', de:'Per Telefon in der MB-Way-App zahlen', fr:'Payez par téléphone dans l\u2019app MB Way', it:'Paga via telefono nell\u2019app MB Way' },
-  place_order:{ pt:'Finalizar Encomenda', en:'Place order', es:'Realizar Pedido', de:'Bestellung Aufgeben', fr:'Passer Commande', it:'Effettua Ordine' },
+  place_order:{ pt:'Pedir Dados de Pagamento', en:'Request payment details', es:'Solicitar datos de pago', de:'Zahlungsdaten anfordern', fr:'Demander les informations de paiement', it:'Richiedi i dati di pagamento' },
   order_received:{ pt:'Encomenda recebida! Confirmação a caminho.', en:'Order received! Confirmation on the way.', es:'¡Pedido recibido! Confirmación en camino.', de:'Bestellung erhalten! Bestätigung unterwegs.', fr:'Commande reçue ! Confirmation en route.', it:'Ordine ricevuto! Conferma in arrivo.' },
   order_recorded:{ pt:'Encomenda registada. Confirmaremos em breve.', en:'Order recorded. Confirming shortly.', es:'Pedido registrado. Confirmaremos pronto.', de:'Bestellung erfasst. Bestätigung folgt.', fr:'Commande enregistrée. Confirmation à venir.', it:'Ordine registrato. Conferma a breve.' },
   add_to_cart:{ pt:'Adicionar ao Carrinho', en:'Add to cart', es:'Añadir al Carrito', de:'In den Warenkorb', fr:'Ajouter au Panier', it:'Aggiungi al Carrello' },
@@ -214,9 +219,9 @@ var I18N = {
   pay_ready:{ pt:'Disponível', en:'Available', es:'Disponible', de:'Verfügbar', fr:'Disponible', it:'Disponibile' },
   mbway_phone_hint:{ pt:'Telemóvel MB Way (com +351)', en:'MB Way phone (with +351)', es:'Teléfono MB Way (con +351)', de:'MB-Way-Telefon (mit +351)', fr:'Téléphone MB Way (avec +351)', it:'Telefono MB Way (con +351)' },
   pay_config_note:{ pt:'Este método de pagamento está a ser configurado. A tua encomenda será confirmada por email/WhatsApp por agora.', en:'This payment method is being configured. Your order will be confirmed by email/WhatsApp for now.', es:'Este método de pago se está configurando. Tu pedido se confirmará por email/WhatsApp por ahora.', de:'Diese Zahlungsmethode wird gerade eingerichtet. Ihre Bestellung wird vorerst per E-Mail/WhatsApp bestätigt.', fr:'Ce moyen de paiement est en cours de configuration. Votre commande sera confirmée par email/WhatsApp pour le moment.', it:'Questo metodo di pagamento è in configurazione. Il tuo ordine sarà confermato via email/WhatsApp per ora.' },
-  secure_checkout_note:{ pt:'Os valores são validados de novo antes da confirmação da encomenda.', en:'Amounts are re-validated before the order is confirmed.', es:'Los importes se revalidan antes de confirmar el pedido.', de:'Beträge werden vor der Bestellbestätigung erneut validiert.', fr:'Les montants sont revalidés avant la confirmation de la commande.', it:'Gli importi vengono rivalidati prima della conferma dell\u2019ordine.' },
+  secure_checkout_note:{ pt:'Este é um pedido de pagamento. Nada é cobrado até confirmarmos os dados contigo.', en:'This is a payment request. Nothing is charged until we confirm the details with you.', es:'Esta es una solicitud de pago. No se cobra nada hasta confirmar los datos contigo.', de:'Dies ist eine Zahlungsanfrage. Es wird nichts berechnet, bevor wir die Daten bestätigen.', fr:'Ceci est une demande de paiement. Aucun montant ne sera débité avant confirmation.', it:'Questa è una richiesta di pagamento. Non verrà addebitato nulla prima della conferma.' },
   order_submitting:{ pt:'A processar…', en:'Processing…', es:'Procesando…', de:'Verarbeitung…', fr:'Traitement…', it:'Elaborazione…' },
-  order_saved_confirm:{ pt:'Encomenda registada. Confirmaremos por email/WhatsApp em breve.', en:'Order recorded. We will confirm by email/WhatsApp shortly.', es:'Pedido registrado. Confirmaremos por email/WhatsApp en breve.', de:'Bestellung erfasst. Wir bestätigen per E-Mail/WhatsApp.', fr:'Commande enregistrée. Nous confirmerons par email/WhatsApp.', it:'Ordine registrato. Confermeremo via email/WhatsApp.' },
+  order_saved_confirm:{ pt:'Pedido recebido. Confirmaremos o método e os dados de pagamento por email/WhatsApp antes de concluir a encomenda.', en:'Request received. We will confirm the payment method and details by email/WhatsApp before completing the order.', es:'Solicitud recibida. Confirmaremos el método y los datos de pago por email/WhatsApp antes de completar el pedido.', de:'Anfrage erhalten. Wir bestätigen Zahlungsmethode und Daten per E-Mail/WhatsApp.', fr:'Demande reçue. Nous confirmerons le mode et les informations de paiement par email/WhatsApp.', it:'Richiesta ricevuta. Confermeremo metodo e dati di pagamento via email/WhatsApp.' },
   empty_cart_checkout:{ pt:'O teu carrinho está vazio. Adiciona artigos antes de finalizar a compra.', en:'Your cart is empty. Add items before checking out.', es:'Tu carrito está vacío. Añade artículos antes de pagar.', de:'Ihr Warenkorb ist leer. Fügen Sie Artikel hinzu, bevor Sie zur Kasse gehen.', fr:'Votre panier est vide. Ajoutez des articles avant de commander.', it:'Il tuo carrello è vuoto. Aggiungi articoli prima del checkout.' }
 };
 
