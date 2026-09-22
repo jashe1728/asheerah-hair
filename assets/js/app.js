@@ -789,8 +789,9 @@ function renderCheckoutPage(){
 
       <fieldset>
         <legend>${uiTxt('payment_method')}</legend>
+        <p class="payment-intro">${uiTxt('payment_choose')}</p>
         <div class="methods" id="payMethods">
-          ${paymentMethodHTML('pending',0)}
+          ${['stripe','paypal','mbway'].map((m,idx)=> paymentMethodHTML(m,idx)).join('')}
         </div>
         <div id="payArea" class="pay-area" aria-live="polite"></div>
       </fieldset>
@@ -899,31 +900,25 @@ function renderCheckoutPage(){
   if (getAppliedCoupon()){ /* coupon UI already handled above */ }
 }
 function paymentMethodHTML(m, idx){
-  if (m === 'pending'){
-    return `<label class="method active">
-      <input type="radio" name="pay" value="pending" checked>
-      <span class="m-radio"></span>
-      <span class="m-body"><span class="m-name">${uiTxt('pay_pending')}</span><span class="m-pending-tag">${uiTxt('pay_pending_note')}</span></span>
-    </label>`;
-  }
   const cfg = CONFIG.payment && CONFIG.payment[m];
-  const configured = cfg && cfg.configured;
+  const configured = !!(cfg && cfg.configured);
   const labels = { stripe:'pay_card', paypal:'pay_paypal', mbway:'pay_mbway' };
-  const sub = { stripe:'', paypal:'', mbway:uiTxt('mbway_desc') };
+  const descriptions = { stripe:'pay_card_desc', paypal:'pay_paypal_desc', mbway:'pay_mbway_desc' };
   const logos = {
-    stripe: `<span class="pay-logo card-logos" aria-hidden="true"><span class="visa">VISA</span><span class="mc">Mastercard</span></span>`,
-    paypal: `<span class="pay-logo paypal-logo" aria-hidden="true">Pay<span>Pal</span></span>`,
-    mbway: `<span class="pay-logo mbway-logo" aria-hidden="true">MB<span>WAY</span></span>`,
+    stripe: `<span class="pay-logo card-logos" aria-hidden="true"><svg viewBox="0 0 48 32"><rect x="1" y="1" width="46" height="30" rx="5"/><path d="M8 11h32M8 17h12"/></svg><span class="visa">VISA</span><span class="mc">●●</span></span>`,
+    paypal: `<span class="pay-logo paypal-logo" aria-hidden="true"><svg viewBox="0 0 24 30"><path d="M5 28 9 3h7c5 0 7 2 6 6-1 5-5 7-10 7h-2l-2 12Z"/><path d="M9 22h5c4 0 6-2 7-6"/></svg><span>Pay<span>Pal</span></span></span>`,
+    mbway: `<span class="pay-logo mbway-logo" aria-hidden="true"><svg viewBox="0 0 22 30"><rect x="2" y="1" width="18" height="28" rx="4"/><circle cx="11" cy="25" r="1"/><path d="m7 9 3 3 5-5M7 18h8"/></svg><span>MB<span>WAY</span></span></span>`,
   };
-  return `<label class="method">
+  return `<label class="method${idx===0?' active':''}${configured?' is-ready':''}">
     <input type="radio" name="pay" value="${m}"${idx===0?' checked':''}>
     <span class="m-radio"></span>
     ${logos[m]}
     <span class="m-body">
       <span class="m-name">${uiTxt(labels[m])}</span>
-      ${sub[m]?`<span class="m-sub">${sub[m]}</span>`:''}
-      ${!configured?`<span class="m-pending-tag">${uiTxt('pay_config_note').split('.')[0]}…</span>`:''}
+      <span class="m-sub">${uiTxt(descriptions[m])}</span>
+      <span class="m-pending-tag">${configured ? uiTxt('pay_ready') : uiTxt('pay_preview')}</span>
     </span>
+    <span class="method-chevron" aria-hidden="true">›</span>
   </label>`;
 }
 

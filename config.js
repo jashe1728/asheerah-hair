@@ -28,9 +28,11 @@ window.CONFIG = {
   // `configured:true` means a REAL processor integration is wired up and the
   // frontend can present it as functional. Leave false until actually integrated.
   // `accepted` lists the card brands actually accepted by the Stripe account.
-  // The only payment method is intentionally unnamed until the business confirms it.
+  // Frontend payment methods. Processor connections are intentionally disabled until Stripe is linked.
   payment: {
-    pending: { configured: false },
+    stripe: { configured: false, accepted: ['visa', 'mastercard'] },
+    paypal: { configured: false },
+    mbway: { configured: false },
   },
 
   // ---- Business contact ----
