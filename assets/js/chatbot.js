@@ -61,7 +61,16 @@ async function chatLoadKnowledge(){
 }
 
 let chatOpen=false;
-function toggleChat(){chatOpen=!chatOpen;const win=document.getElementById('chatWindow'),launcher=document.querySelector('.chat-btn');if(!win)return;win.classList.toggle('open',chatOpen);win.setAttribute('aria-hidden',String(!chatOpen));if(launcher)launcher.setAttribute('aria-expanded',String(chatOpen));if(chatOpen){const input=document.getElementById('chatInput');if(input)input.focus();}}
+function toggleChat(force){
+  const win=document.getElementById('chatWindow'),launcher=document.querySelector('.chat-btn');
+  if(!win)return;
+  const nextOpen=typeof force==='boolean'?force:!win.classList.contains('open');
+  chatOpen=nextOpen;
+  win.classList.toggle('open',nextOpen);
+  win.setAttribute('aria-hidden',String(!nextOpen));
+  if(launcher)launcher.setAttribute('aria-expanded',String(nextOpen));
+  if(nextOpen){const input=document.getElementById('chatInput');if(input)input.focus();}
+}
 function chatAdd(role,text){const body=document.getElementById('chatBody');if(!body)return;const div=document.createElement('div');div.className='msg '+role;div.textContent=text;body.appendChild(div);CHAT_STATE.transcript.push({role,text});CHAT_STATE.transcript=CHAT_STATE.transcript.slice(-8);body.scrollTop=body.scrollHeight;}
 function botSay(text){chatAdd('bot',text);}function userSay(text){chatAdd('user',text);}
 function chatHandoffButton(question){
@@ -97,6 +106,7 @@ if(typeof document!=='undefined')document.addEventListener('DOMContentLoaded',as
   const win=document.getElementById('chatWindow'),input=document.getElementById('chatInput'),launcher=document.querySelector('.chat-btn');
   if(win){win.setAttribute('role','dialog');win.setAttribute('aria-label','Asheerah Hair');win.setAttribute('aria-hidden','true');}
   if(launcher){launcher.setAttribute('aria-controls','chatWindow');launcher.setAttribute('aria-expanded','false');}if(input)input.setAttribute('maxlength','500');
+  document.addEventListener('keydown',event=>{if(event.key==='Escape'&&win&&win.classList.contains('open'))toggleChat(false);});
   await chatLoadKnowledge();chatApplyLanguage();const body=document.getElementById('chatBody');if(body&&!body.children.length)chatLanguageChanged();
 });
 if(typeof module==='object'&&module.exports)module.exports={chatNormalize,chatScore,chatHumanOnly,chatRoute,chatUnknown,chatEntryAnswer,CHAT_STATE};
