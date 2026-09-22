@@ -79,7 +79,7 @@ var I18N = {
   featured_label:{ pt:'Começa Aqui', en:'Start Here', es:'Empieza Aquí', de:'Hier Beginnen', fr:'Commencez Ici', it:'Inizia Qui' },
   featured_title:{ pt:'Cabelo em Destaque', en:'Featured Hair', es:'Cabello Destacado', de:'Ausgewähltes Haar', fr:'Sélection Cheveux', it:'Capelli in Evidenza' },
   featured_sub:{ pt:'Uma seleção pensada de estilos versáteis.', en:'A considered edit of our most versatile styles.', es:'Una selección cuidada de estilos versátiles.', de:'Eine kuratierte Auswahl vielseitiger Styles.', fr:'Une sélection de styles polyvalents.', it:'Una selezione curata di stili versatili.' },
-  featured_cta:{ pt:'Ver todos os produtos', en:'View all products', es:'Ver todos los productos', de:'Alle Produkte ansehen', fr:'Voir tous les produits', it:'Vedi tutti i prodotti' },
+  featured_cta:{ pt:'Ver mais produtos', en:'View more products', es:'Ver más productos', de:'Weitere Produkte ansehen', fr:'Voir plus de produits', it:'Vedi altri prodotti' },
 
   view_product:{ pt:'Ver produto', en:'View product', es:'Ver producto', de:'Produkt ansehen', fr:'Voir le produit', it:'Vedi prodotto' },
   luxury_wigs:{ pt:'Perucas de Luxo', en:'Luxury Wigs', es:'Pelucas de Lujo', de:'Luxus-Perücken', fr:'Perruques de Luxe', it:'Parrucche di Lusso' },

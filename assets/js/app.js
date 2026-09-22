@@ -547,7 +547,7 @@ function renderFeatured(){
   const grid = document.getElementById('featuredGrid'); if (!grid || !CATALOG) return;
   const cur = curCode();
   const preferred = ['wigs','bundles','crochet'];
-  const list = preferred.map(cat => CATALOG.products.find(p => p.category === cat && p.images && p.images[0])).filter(Boolean);
+  const list = preferred.flatMap(cat => CATALOG.products.filter(p => p.category === cat && p.images && p.images[0]).slice(0,2));
   grid.innerHTML = list.map(p => {
     const pricing = variantPricing(p, defaultOpts(p));
     const price = priceHTML(pricing.priceEur, pricing.hasPromo ? pricing.compareEur : null, cur);
