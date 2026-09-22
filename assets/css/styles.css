@@ -266,6 +266,12 @@ section{padding:4rem 0}
 .add-btn:hover{background:var(--gold-d);transform:translateY(-2px)}
 .pd .desc{margin-top:2rem;color:var(--ink-soft)}
 .pd .desc ul{margin:.6rem 0 0 1.2rem}
+.product-recommendations,.product-reviews{margin-top:4rem;padding-top:3rem;border-top:1px solid var(--border)}
+.recommended-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:1rem}
+.recommended-card .info{padding:1rem}.recommended-card .info h3{font-size:1.15rem;line-height:1.15}.recommended-card .price{color:var(--gold-d);font-weight:700;margin-top:.35rem}.recommended-card .buy-btn{margin-top:.65rem}
+.product-review-list{display:grid;grid-template-columns:repeat(3,1fr);gap:1rem;margin-bottom:1.8rem}
+.product-review{background:var(--card);border:1px solid var(--border);border-radius:var(--r-md);padding:1rem}.product-review p{color:var(--ink-soft);margin:.5rem 0}.product-review strong{display:block;color:var(--ink)}.review-source{display:block;color:var(--muted);font-size:.75rem;margin-top:.15rem}.review-stars{color:var(--gold-d);letter-spacing:1px}.stars-muted{color:var(--border)}
+.reviews-empty{color:var(--muted);margin-bottom:1.5rem}.review-form{max-width:720px;background:var(--soft);border:1px solid var(--border);border-radius:var(--r-md);padding:1.25rem}.review-form h3{font-size:1.35rem;margin-bottom:.8rem}.review-form-grid{display:grid;grid-template-columns:1fr 150px;gap:.7rem;margin-bottom:.7rem}.review-form textarea{resize:vertical;margin-bottom:.7rem}.review-submit{width:auto;padding:.75rem 1.4rem}.review-note{color:var(--muted);font-size:.75rem;margin-top:.6rem}
 
 /* ---- Cart / checkout ---- */
 .page{padding:3rem 0;min-height:60vh}
@@ -386,6 +392,8 @@ html.js .reveal.in{opacity:1;transform:none}
   .textures{grid-template-columns:repeat(3,1fr)}
   .features,.valueprops{grid-template-columns:repeat(2,1fr)}
   .reviews{grid-template-columns:1fr}
+  .product-review-list{grid-template-columns:repeat(2,1fr)}
+  .recommended-grid{grid-template-columns:repeat(2,1fr)}
   .pd{grid-template-columns:1fr}
   .pd .gallery{position:static}
   .footer-grid{grid-template-columns:1fr 1fr}
@@ -398,6 +406,8 @@ html.js .reveal.in{opacity:1;transform:none}
   .collections{grid-template-columns:repeat(2,1fr)}
   .textures{grid-template-columns:repeat(2,1fr)}
   .valueprops,.features{grid-template-columns:1fr 1fr}
+  .recommended-grid,.product-review-list{grid-template-columns:1fr}
+  .review-form-grid{grid-template-columns:1fr}
 }
 
 /* =====================================================================

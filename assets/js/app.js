@@ -22,6 +22,10 @@ const CURRENCIES = {
 
 // ---------- Catalog ----------
 let CATALOG = null;
+const SEEDED_PRODUCT_REVIEWS = [
+  { productHandle:'straight-bundles', name:'Ciaraly', rating:5, text:'Amazing, love it. Alta qualidade.' },
+  { productHandle:'burmese-curly-bundles', name:'Deivaforbs', rating:5, text:'Best hair of my life, super soft, smooth and shiny.' },
+];
 async function loadCatalog(){
   if (CATALOG) return CATALOG;
   const r = await fetch('catalog.json');
@@ -582,6 +586,54 @@ function defaultOpts(p){
   return o;
 }
 
+function productReviews(p){
+  let saved=[];
+  try{ saved=JSON.parse(localStorage.getItem('ash_product_reviews')||'[]'); }catch(e){ saved=[]; }
+  return SEEDED_PRODUCT_REVIEWS.filter(r=>r.productHandle===p.handle)
+    .concat(saved.filter(r=>r.productHandle===p.handle));
+}
+function starsHTML(rating){
+  const n=Math.max(1,Math.min(5,Number(rating)||5));
+  return '★★★★★'.slice(0,n)+'<span class="stars-muted">'+'★★★★★'.slice(0,5-n)+'</span>';
+}
+function productReviewsHTML(p){
+  const reviews=productReviews(p);
+  const list=reviews.length
+    ? reviews.map(r=>`<article class="product-review"><div class="review-stars" aria-label="${r.rating} out of 5 stars">${starsHTML(r.rating)}</div><p>${escapeHTML(r.text)}</p><strong>${escapeHTML(r.name)}</strong><span class="review-source">${uiTxt('customer_review')}</span></article>`).join('')
+    : `<p class="reviews-empty">${uiTxt('reviews_empty')}</p>`;
+  return `<section class="product-reviews" aria-labelledby="productReviewsTitle">
+    <div class="section-head"><span class="eyebrow">${uiTxt('reviews_label')}</span><h2 id="productReviewsTitle">${uiTxt('product_reviews')}</h2></div>
+    <div class="product-review-list">${list}</div>
+    <form class="review-form" onsubmit="submitProductReview(event)">
+      <h3>${uiTxt('leave_review')}</h3>
+      <div class="review-form-grid"><input name="reviewName" maxlength="80" placeholder="${uiTxt('review_name_ph')}" required><select name="reviewRating" aria-label="${uiTxt('review_rating')}" required><option value="5">★★★★★</option><option value="4">★★★★☆</option><option value="3">★★★☆☆</option><option value="2">★★☆☆☆</option><option value="1">★☆☆☆☆</option></select></div>
+      <textarea name="reviewText" maxlength="500" rows="4" placeholder="${uiTxt('review_text_ph')}" required></textarea>
+      <button class="btn-primary review-submit" type="submit">${uiTxt('submit_review')}</button>
+      <p class="review-note">${uiTxt('review_note')}</p>
+    </form>
+  </section>`;
+}
+function recommendedProducts(p){
+  if(!CATALOG)return [];
+  const same=CATALOG.products.filter(x=>x.handle!==p.handle&&x.category===p.category&&x.images&&x.images[0]);
+  const rest=CATALOG.products.filter(x=>x.handle!==p.handle&&x.category!==p.category&&x.images&&x.images[0]);
+  return same.concat(rest).slice(0,4);
+}
+function recommendationsHTML(p){
+  const list=recommendedProducts(p);
+  if(!list.length)return '';
+  return `<section class="product-recommendations" aria-labelledby="recommendedTitle"><div class="section-head"><span class="eyebrow">${uiTxt('you_may_also_like')}</span><h2 id="recommendedTitle">${uiTxt('recommended_hair')}</h2></div><div class="recommended-grid">${list.map(x=>{const min=Math.min(...x.variants.map(v=>v.price_eur).filter(Boolean));return `<a class="product-card recommended-card" href="product.html?h=${encodeURIComponent(x.handle)}"><div class="img"><img src="${x.images[0]}" alt="${escapeHTML(x.title)}" loading="lazy"></div><div class="info"><h3>${escapeHTML(x.title)}</h3><div class="price">${money(min,curCode())}</div><span class="buy-btn">${uiTxt('view_product')}</span></div></a>`;}).join('')}</div></section>`;
+}
+window.submitProductReview = event => {
+  event.preventDefault();
+  const form=event.currentTarget, data=new FormData(form), name=String(data.get('reviewName')||'').trim(), text=String(data.get('reviewText')||'').trim();
+  if(!name||!text||!window._product)return;
+  let saved=[];try{saved=JSON.parse(localStorage.getItem('ash_product_reviews')||'[]');}catch(e){saved=[];}
+  saved.push({productHandle:window._product.handle,name,rating:Number(data.get('reviewRating'))||5,text,createdAt:new Date().toISOString()});
+  localStorage.setItem('ash_product_reviews',JSON.stringify(saved.slice(-50)));
+  renderProduct();
+};
+
 // ---------- Product page ----------
 function renderProduct(){
   const handle = new URLSearchParams(location.search).get('h');
@@ -623,7 +675,9 @@ function renderProduct(){
           ${addBtn}
           <div class="desc"><h3>${uiTxt('description')}</h3><p>${p.description}</p></div>
         </div>
-      </div>`;
+      </div>
+      ${recommendationsHTML(p)}
+      ${productReviewsHTML(p)}`;
     // wire lace comparison if present
     opts.forEach((o,i)=>{ if (isLaceOption(o)) wireLaceTable(i); });
   };

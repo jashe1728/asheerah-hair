@@ -64,6 +64,17 @@ var I18N = {
 
   reviews_label:{ pt:'Feedback de Clientes', en:'Customer Feedback', es:'Opiniones de Clientes', de:'Kundenfeedback', fr:'Retours Clients', it:'Feedback dei Clienti' },
   real_reviews:{ pt:'O que as Clientes Dizem', en:'What Customers Say', es:'Lo que Dicen las Clientas', de:'Was Kundinnen Sagen', fr:'Ce que Disent les Clientes', it:'Cosa Dicono le Clienti' },
+  you_may_also_like:{ pt:'Também podes gostar', en:'You may also like', es:'También te puede gustar', de:'Das könnte dir auch gefallen', fr:'Vous aimerez peut-être aussi', it:'Potrebbe piacerti anche' },
+  recommended_hair:{ pt:'Descobre mais cabelo', en:'Discover more hair', es:'Descubre más cabello', de:'Mehr Haar entdecken', fr:'Découvrez plus de cheveux', it:'Scopri altri capelli' },
+  product_reviews:{ pt:'Avaliações deste produto', en:'Product reviews', es:'Opiniones de este producto', de:'Produktbewertungen', fr:'Avis sur ce produit', it:'Recensioni del prodotto' },
+  leave_review:{ pt:'Deixa a tua avaliação', en:'Leave a review', es:'Deja tu opinión', de:'Bewertung abgeben', fr:'Laisser un avis', it:'Lascia una recensione' },
+  review_name_ph:{ pt:'O teu nome', en:'Your name', es:'Tu nombre', de:'Dein Name', fr:'Votre nom', it:'Il tuo nome' },
+  review_rating:{ pt:'Classificação', en:'Rating', es:'Calificación', de:'Bewertung', fr:'Évaluation', it:'Valutazione' },
+  review_text_ph:{ pt:'Escreve a tua experiência com este produto', en:'Tell us about your experience with this product', es:'Cuéntanos tu experiencia con este producto', de:'Teile deine Erfahrung mit diesem Produkt', fr:'Parlez-nous de votre expérience avec ce produit', it:'Raccontaci la tua esperienza con questo prodotto' },
+  submit_review:{ pt:'Adicionar avaliação', en:'Add review', es:'Añadir opinión', de:'Bewertung hinzufügen', fr:'Ajouter un avis', it:'Aggiungi recensione' },
+  review_note:{ pt:'A avaliação fica guardada neste dispositivo.', en:'Your review is saved on this device.', es:'Tu opinión se guarda en este dispositivo.', de:'Deine Bewertung wird auf diesem Gerät gespeichert.', fr:'Votre avis est enregistré sur cet appareil.', it:'La tua recensione viene salvata su questo dispositivo.' },
+  customer_review:{ pt:'Feedback de cliente', en:'Customer feedback', es:'Opinión de cliente', de:'Kundenfeedback', fr:'Avis client', it:'Feedback del cliente' },
+  reviews_empty:{ pt:'Ainda não existem avaliações para este produto.', en:'There are no reviews for this product yet.', es:'Todavía no hay opiniones sobre este producto.', de:'Für dieses Produkt gibt es noch keine Bewertungen.', fr:'Aucun avis pour ce produit pour le moment.', it:'Non ci sono ancora recensioni per questo prodotto.' },
 
   featured_label:{ pt:'Começa Aqui', en:'Start Here', es:'Empieza Aquí', de:'Hier Beginnen', fr:'Commencez Ici', it:'Inizia Qui' },
   featured_title:{ pt:'Cabelo em Destaque', en:'Featured Hair', es:'Cabello Destacado', de:'Ausgewähltes Haar', fr:'Sélection Cheveux', it:'Capelli in Evidenza' },
