@@ -75,7 +75,11 @@ function toggleChat(force){
   }
   win.setAttribute('aria-hidden',String(!nextOpen));
   if(launcher)launcher.setAttribute('aria-expanded',String(nextOpen));
-  if(nextOpen){const input=document.getElementById('chatInput');if(input)input.focus();}
+  if(nextOpen){
+    const input=document.getElementById('chatInput');
+    const touchDevice=typeof window!=='undefined'&&window.matchMedia&&window.matchMedia('(pointer:coarse)').matches;
+    if(input&&!touchDevice)input.focus();
+  }
 }
 function chatAdd(role,text){const body=document.getElementById('chatBody');if(!body)return;const div=document.createElement('div');div.className='msg '+role;div.textContent=text;body.appendChild(div);CHAT_STATE.transcript.push({role,text});CHAT_STATE.transcript=CHAT_STATE.transcript.slice(-8);body.scrollTop=body.scrollHeight;}
 function botSay(text){chatAdd('bot',text);}function userSay(text){chatAdd('user',text);}
