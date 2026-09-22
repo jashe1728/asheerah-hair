@@ -406,7 +406,8 @@ html.js .reveal.in{opacity:1;transform:none}
   .collections{grid-template-columns:repeat(2,1fr)}
   .textures{grid-template-columns:repeat(2,1fr)}
   .valueprops,.features{grid-template-columns:1fr 1fr}
-  .recommended-grid,.product-review-list{grid-template-columns:1fr}
+  .recommended-grid{grid-template-columns:repeat(2,1fr)}
+  .product-review-list{grid-template-columns:1fr}
   .review-form-grid{grid-template-columns:1fr}
 }
 
