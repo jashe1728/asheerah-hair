@@ -41,7 +41,7 @@
       "id": "PAY07", "bucket": "payment", "tier": 1, "status": "approved",
       "question": "How can I pay?",
       "triggers": ["how can i pay", "payment", "pay", "mb way", "mbway", "paypal", "stripe", "card"],
-      "answer": "You can pay in EUR by MB Way, PayPal, or secure card payment through Stripe. The correct payment details or link are provided after the order is confirmed. Please never send card details, PINs, passwords, or security codes in chat."
+      "answer": "There is currently one payment method, but its name and instructions are still being finalised. The payment details or link will be confirmed before the order is completed. Please never send card details, PINs, passwords, or security codes in chat."
     },
     {
       "id": "PAY08", "bucket": "payment", "tier": 2, "status": "approved",
@@ -59,7 +59,7 @@
       "id": "S10", "bucket": "shipping", "tier": 1, "status": "approved",
       "question": "How long does delivery take?",
       "triggers": ["delivery time", "how long does shipping take", "how long", "when will it arrive", "shipping time"],
-      "answer": "The current estimates are 3–7 business days for Europe, 5–10 for the Americas, and 5–12 for Africa. These are estimates after dispatch, not guaranteed arrival dates, and the destination or customs can affect timing."
+      "answer": "The current estimated delivery time is 6–10 days. Timing can vary by destination and starts according to order confirmation and dispatch."
     },
     {
       "id": "S11", "bucket": "shipping", "tier": 1, "status": "approved",

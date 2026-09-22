@@ -192,6 +192,7 @@ function weight100_(opt2) {
 }
 
 function feeFor_(method, totalEur) {
+  if (method === 'pending') return 0;
   var f = FEES[method] || FEES.mbway;
   return r2(totalEur * f.pct + f.fixed);
 }

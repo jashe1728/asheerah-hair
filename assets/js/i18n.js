@@ -130,7 +130,7 @@ var I18N = {
   foot_returns:{ pt:'Devoluções & Reembolsos', en:'Returns & Refunds', es:'Devoluciones y Reembolsos', de:'Rückgabe & Erstattung', fr:'Retours & Remboursements', it:'Resi e Rimborsi' },
   foot_contact_us:{ pt:'Contacta-nos', en:'Contact Us', es:'Contáctenos', de:'Kontaktieren Sie Uns', fr:'Contactez-Nous', it:'Contattaci' },
   foot_rights:{ pt:'Todos os direitos reservados.', en:'All rights reserved.', es:'Todos los derechos reservados.', de:'Alle Rechte vorbehalten.', fr:'Tous droits réservés.', it:'Tutti i diritti riservati.' },
-  foot_payments:{ pt:'Cartão · PayPal · MB Way', en:'Card · PayPal · MB Way', es:'Tarjeta · PayPal · MB Way', de:'Karte · PayPal · MB Way', fr:'Carte · PayPal · MB Way', it:'Carta · PayPal · MB Way' },
+  foot_payments:{ pt:'Método de pagamento a confirmar', en:'Payment method to be confirmed', es:'Método de pago por confirmar', de:'Zahlungsmethode wird bestätigt', fr:'Mode de paiement à confirmer', it:'Metodo di pagamento da confermare' },
 
   // Newsletter
   nl_title:{ pt:'Junta-te à Nossa Lista', en:'Join Our List', es:'Únete a Nuestra Lista', de:'Werde Teil Unserer Liste', fr:'Rejoignez Notre Liste', it:'Unisciti alla Nostra Lista' },
@@ -166,6 +166,7 @@ var I18N = {
   quantity:{ pt:'Quantidade', en:'Quantity', es:'Cantidad', de:'Menge', fr:'Quantité', it:'Quantità' },
   continue_shopping:{ pt:'Continuar a comprar', en:'Continue shopping', es:'Seguir comprando', de:'Weiter einkaufen', fr:'Continuer les achats', it:'Continua lo shopping' },
   shipping_calc_checkout:{ pt:'Calculado no checkout', en:'Calculated at checkout', es:'Calculado al pagar', de:'Wird an der Kasse berechnet', fr:'Calculé au paiement', it:'Calcolato al checkout' },
+  shipping_eta:{ pt:'Prazo estimado', en:'Estimated delivery', es:'Entrega estimada', de:'Voraussichtliche Lieferung', fr:'Livraison estimée', it:'Consegna stimata' },
 
   // Checkout: contact & delivery
   contact_info:{ pt:'Contacto', en:'Contact', es:'Contacto', de:'Kontakt', fr:'Contact', it:'Contatto' },
@@ -199,7 +200,9 @@ var I18N = {
   apply_coupon_hint:{ pt:'O código será validado no checkout.', en:'The code will be validated at checkout.', es:'El código se validará al pagar.', de:'Der Code wird an der Kasse validiert.', fr:'Le code sera validé au paiement.', it:'Il codice sarà validato al checkout.' },
 
   // Checkout: payment & security
-  payment_methods:{ pt:'Métodos de Pagamento', en:'Payment Methods', es:'Métodos de Pago', de:'Zahlungsmethoden', fr:'Moyens de Paiement', it:'Metodi di Pagamento' },
+  payment_method:{ pt:'Método de Pagamento', en:'Payment Method', es:'Método de Pago', de:'Zahlungsmethode', fr:'Mode de Paiement', it:'Metodo di Pagamento' },
+  pay_pending:{ pt:'Método de pagamento', en:'Payment method', es:'Método de pago', de:'Zahlungsmethode', fr:'Mode de paiement', it:'Metodo di pagamento' },
+  pay_pending_note:{ pt:'Nome e instruções serão confirmados antes do lançamento.', en:'Name and instructions will be confirmed before launch.', es:'El nombre y las instrucciones se confirmarán antes del lanzamiento.', de:'Name und Anweisungen werden vor dem Start bestätigt.', fr:'Le nom et les instructions seront confirmés avant le lancement.', it:'Nome e istruzioni saranno confermati prima del lancio.' },
   pay_card:{ pt:'Cartão (Visa / Mastercard)', en:'Card (Visa / Mastercard)', es:'Tarjeta (Visa / Mastercard)', de:'Karte (Visa / Mastercard)', fr:'Carte (Visa / Mastercard)', it:'Carta (Visa / Mastercard)' },
   pay_paypal:{ pt:'PayPal', en:'PayPal', es:'PayPal', de:'PayPal', fr:'PayPal', it:'PayPal' },
   pay_mbway:{ pt:'MB Way', en:'MB Way', es:'MB Way', de:'MB Way', fr:'MB Way', it:'MB Way' },

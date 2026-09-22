@@ -8,8 +8,9 @@ window.CONFIG = {
   // All charges settle in EUR; this is display-only.
   rates: { EUR: 1, USD: 1.08, GBP: 0.85 },
 
-  // Fixed shipping (EUR) and payment fee assumption (EUR) — from Excel Settings
+  // Fixed shipping (EUR). Confirm the final shipping price before launch.
   shipping: 30,
+  shippingEta: '6–10 days',
 
   // Taxes rate (0 = none currently). Set to e.g. 0.23 (23% IVA) when applicable.
   taxRate: 0,
@@ -27,10 +28,9 @@ window.CONFIG = {
   // `configured:true` means a REAL processor integration is wired up and the
   // frontend can present it as functional. Leave false until actually integrated.
   // `accepted` lists the card brands actually accepted by the Stripe account.
+  // The only payment method is intentionally unnamed until the business confirms it.
   payment: {
-    stripe: { configured: false, accepted: ['visa','mastercard'] },
-    paypal: { configured: false },
-    mbway:  { configured: false },
+    pending: { configured: false },
   },
 
   // ---- Business contact ----

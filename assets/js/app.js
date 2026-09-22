@@ -8,8 +8,8 @@
 let checkoutSubmitting = false; // guards against double order submission
 
 const CONFIG = window.CONFIG || {
-  currency:'EUR', rates:{EUR:1,USD:1.08,GBP:0.85}, shipping:30, taxRate:0,
-  coupons:{}, payment:{ stripe:{configured:false,accepted:['visa','mastercard']}, paypal:{configured:false}, mbway:{configured:false} },
+  currency:'EUR', rates:{EUR:1,USD:1.08,GBP:0.85}, shipping:30, shippingEta:'6–10 days', taxRate:0,
+  coupons:{}, payment:{ pending:{configured:false} },
   whatsapp:'351914522508', email:'asheerahhair@gmail.com',
   backendURL:'', stripePublishable:'', paypalClientId:'', mbwayKey:'',
 };
@@ -711,6 +711,7 @@ function renderCartPage(){
       <div class="row"><span>${uiTxt('subtotal')}</span><span>${money(t.subtotalOriginal,cur)}</span></div>
       ${t.itemDiscount>0?`<div class="row disc"><span>${uiTxt('discount_total')}</span><span>−${money(t.itemDiscount,cur)}</span></div>`:''}
       <div class="row"><span>${uiTxt('shipping')}</span><span>${money(t.shipping,cur)}</span></div>
+      <div class="shipping-eta">${uiTxt('shipping_eta')}: ${escapeHTML(CONFIG.shippingEta || '6–10 days')}</div>
       <div class="row total"><span>${uiTxt('total')}</span><span>${money(t.totalFinal,cur)}</span></div>
       <a href="checkout.html" class="btn-primary" style="width:100%;text-align:center;margin-top:1rem">${uiTxt('checkout')}</a>
     </div>
@@ -787,9 +788,9 @@ function renderCheckoutPage(){
       </fieldset>
 
       <fieldset>
-        <legend>${uiTxt('payment_methods')}</legend>
+        <legend>${uiTxt('payment_method')}</legend>
         <div class="methods" id="payMethods">
-          ${['stripe','paypal','mbway'].map((m,idx)=> paymentMethodHTML(m,idx)).join('')}
+          ${paymentMethodHTML('pending',0)}
         </div>
         <div id="payArea" class="pay-area" aria-live="polite"></div>
       </fieldset>
@@ -817,6 +818,7 @@ function renderCheckoutPage(){
           <div class="row"><span>${uiTxt('subtotal_original')}</span><span>${money(t.subtotalOriginal,cur)}</span></div>
           ${t.totalDiscount>0?`<div class="row disc"><span>${uiTxt('discount_total')}</span><span>−${money(t.totalDiscount,cur)}</span></div>`:''}
           <div class="row"><span>${uiTxt('shipping')}</span><span>${money(t.shipping,cur)}</span></div>
+      <div class="shipping-eta">${uiTxt('shipping_eta')}: ${escapeHTML(CONFIG.shippingEta || '6–10 days')}</div>
           ${t.taxes>0?`<div class="row"><span>${uiTxt('taxes')}</span><span>${money(t.taxes,cur)}</span></div>`:''}
           <div class="row total"><span>${uiTxt('final_total')}</span><span>${money(t.totalFinal,cur)}</span></div>
         </div>
@@ -897,6 +899,13 @@ function renderCheckoutPage(){
   if (getAppliedCoupon()){ /* coupon UI already handled above */ }
 }
 function paymentMethodHTML(m, idx){
+  if (m === 'pending'){
+    return `<label class="method active">
+      <input type="radio" name="pay" value="pending" checked>
+      <span class="m-radio"></span>
+      <span class="m-body"><span class="m-name">${uiTxt('pay_pending')}</span><span class="m-pending-tag">${uiTxt('pay_pending_note')}</span></span>
+    </label>`;
+  }
   const cfg = CONFIG.payment && CONFIG.payment[m];
   const configured = cfg && cfg.configured;
   const labels = { stripe:'pay_card', paypal:'pay_paypal', mbway:'pay_mbway' };
@@ -951,7 +960,7 @@ function placeOrder(btn){
   const cur = 'EUR'; // settlement currency
   const cart = getCart();
   const t = cartTotals(getAppliedCoupon());
-  const method = (document.querySelector('input[name=pay]:checked')?.value) || 'mbway';
+  const method = (document.querySelector('input[name=pay]:checked')?.value) || 'pending';
   const mbwayPhone = document.getElementById('mbwayPhone')?.value || '';
   const coupon = getAppliedCoupon();
   const data = {
