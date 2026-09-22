@@ -66,7 +66,13 @@ function toggleChat(force){
   if(!win)return;
   const nextOpen=typeof force==='boolean'?force:!win.classList.contains('open');
   chatOpen=nextOpen;
-  win.classList.toggle('open',nextOpen);
+  if(nextOpen){
+    win.hidden=false;
+    win.classList.add('open');
+  }else{
+    win.classList.remove('open');
+    win.hidden=true;
+  }
   win.setAttribute('aria-hidden',String(!nextOpen));
   if(launcher)launcher.setAttribute('aria-expanded',String(nextOpen));
   if(nextOpen){const input=document.getElementById('chatInput');if(input)input.focus();}
@@ -104,7 +110,7 @@ if(typeof window!=='undefined')window.chatLanguageChanged=chatLanguageChanged;
 
 if(typeof document!=='undefined')document.addEventListener('DOMContentLoaded',async()=>{
   const win=document.getElementById('chatWindow'),input=document.getElementById('chatInput'),launcher=document.querySelector('.chat-btn');
-  if(win){win.setAttribute('role','dialog');win.setAttribute('aria-label','Asheerah Hair');win.setAttribute('aria-hidden','true');}
+  if(win){win.hidden=true;win.classList.remove('open');win.setAttribute('role','dialog');win.setAttribute('aria-label','Asheerah Hair');win.setAttribute('aria-hidden','true');}
   if(launcher){launcher.setAttribute('aria-controls','chatWindow');launcher.setAttribute('aria-expanded','false');}if(input)input.setAttribute('maxlength','500');
   document.addEventListener('keydown',event=>{if(event.key==='Escape'&&win&&win.classList.contains('open'))toggleChat(false);});
   await chatLoadKnowledge();chatApplyLanguage();const body=document.getElementById('chatBody');if(body&&!body.children.length)chatLanguageChanged();
