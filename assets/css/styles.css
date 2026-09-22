@@ -22,9 +22,10 @@ body{font-family:'DM Sans',system-ui,-apple-system,Segoe UI,sans-serif;backgroun
 h1,h2,h3,.brand,.serif{font-family:'Cormorant Garamond',Georgia,serif;font-weight:600;letter-spacing:.2px}
 a{color:inherit;text-decoration:none}
 img{max-width:100%;display:block}
-button{font-family:inherit;cursor:pointer;border:none}
+button{font-family:inherit;cursor:pointer;border:none;color:var(--ink);background:transparent}
 input,select,textarea{font-family:inherit;font-size:1rem;padding:.7rem .9rem;border:1.5px solid var(--border);border-radius:12px;background:#fff;color:var(--ink);width:100%}
 input:focus,select:focus,textarea:focus{outline:2px solid var(--gold);outline-offset:-1px}
+input[type="radio"],input[type="checkbox"]{accent-color:var(--gold)}
 .container{width:min(1180px,100% - 2.5rem);margin-inline:auto}
 
 /* ---- Header (premium framed) ---- */
@@ -257,7 +258,9 @@ section{padding:4rem 0}
 .pill:hover{border-color:var(--gold)}
 .pill.active{background:var(--ink);color:#fff;border-color:var(--ink)}
 .qty{display:flex;align-items:center;gap:.8rem;margin:1.2rem 0}
-.qty button{width:38px;height:38px;border-radius:10px;background:var(--soft);font-size:1.2rem}
+.qty button{width:38px;height:38px;border:1px solid var(--border);border-radius:10px;background:var(--soft);color:var(--ink);font-size:1.2rem;font-weight:700;line-height:1;display:grid;place-items:center;transition:background .15s ease,color .15s ease,border-color .15s ease}
+.qty button:hover{background:var(--gold-soft);color:var(--ink);border-color:var(--gold)}
+.qty button:focus-visible{outline:3px solid var(--gold);outline-offset:2px;color:var(--ink)}
 .qty span{font-weight:700;min-width:30px;text-align:center}
 .add-btn{width:100%;padding:1rem;font-size:1.05rem;background:var(--gold);color:#fff;border-radius:999px;font-weight:700;transition:.2s}
 .add-btn:hover{background:var(--gold-d);transform:translateY(-2px)}
