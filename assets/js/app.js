@@ -181,6 +181,9 @@ function removeCoupon(){ localStorage.removeItem('ash_coupon'); }
 // ---------- Cart drawer / page UI ----------
 function updateCartUI(){
   document.querySelectorAll('[data-cart-count]').forEach(el => el.textContent = cartCount());
+  const page = document.body && document.body.dataset.page;
+  if (page === 'cart'){ renderCartPage(); return; }
+  if (page === 'checkout'){ renderCheckoutPage(); return; }
   renderCartDrawer();
 }
 function optionLabel(i, idx){
@@ -226,14 +229,20 @@ function renderCartDrawer(){
           <span class="ci-unit-sub">${uiTxt('line_subtotal')}: <b>${subtotal}</b></span>
         </div>
         <div class="qty ci-qty">
-          <button type="button" onclick="changeQty('${i.key.replace(/'/g,"\\'")}',-1)" aria-label="${uiTxt('quantity')} −">−</button>
+          <button type="button" data-cart-key="${escapeHTML(i.key)}" data-cart-qty="-1" aria-label="${uiTxt('quantity')} −">−</button>
           <span aria-live="polite">${i.qty}</span>
-          <button type="button" onclick="changeQty('${i.key.replace(/'/g,"\\'")}',1)" aria-label="${uiTxt('quantity')} +">+</button>
+          <button type="button" data-cart-key="${escapeHTML(i.key)}" data-cart-qty="1" aria-label="${uiTxt('quantity')} +">+</button>
         </div>
       </div>
-      <button type="button" class="remove" onclick="changeQty('${i.key.replace(/'/g,"\\'")}',-999)" aria-label="${uiTxt('remove_item')}">×</button>
+      <button type="button" class="remove" data-cart-key="${escapeHTML(i.key)}" data-cart-remove="true" aria-label="${uiTxt('remove_item')}">×</button>
     </div>`;
   }).join('');
+  el.querySelectorAll('button[data-cart-qty]').forEach(button => {
+    button.addEventListener('click', () => changeQty(button.dataset.cartKey, Number(button.dataset.cartQty)));
+  });
+  el.querySelectorAll('button[data-cart-remove]').forEach(button => {
+    button.addEventListener('click', () => changeQty(button.dataset.cartKey, -999));
+  });
 }
 
 // ---------- Nav ----------
