@@ -4,13 +4,13 @@ const fs = require('node:fs');
 const path = require('node:path');
 const vm = require('node:vm');
 
-test('all approved ambassador and personal codes carry fixed EUR discounts', () => {
+test('public ambassador codes are enabled but personal-use codes are not exposed client-side', () => {
   const context = {window:{}};
   vm.runInNewContext(fs.readFileSync(path.join(__dirname, '../config.js'), 'utf8'), context);
   const coupons = JSON.parse(JSON.stringify(context.window.CONFIG.coupons));
-  const sevenEuro = ['ONIKA10','LILIAN10','TUCHA10','CASSIE10'];
-  const personal = ['ONIKAAH','LILIANAH','TUCHAAH','CASSIEAH'];
-  assert.deepEqual(Object.keys(coupons).sort(), [...sevenEuro,...personal].sort());
-  for (const code of sevenEuro) assert.deepEqual(coupons[code], {type:'fixed',value:7,minSubtotalEur:0});
-  for (const code of personal) assert.deepEqual(coupons[code], {type:'fixed',value:15,minSubtotalEur:0});
+  const publicCodes = ['ONIKA10','LILIAN10','TUCHA10','CASSIE10'];
+  assert.deepEqual(Object.keys(coupons).sort(), publicCodes.sort());
+  for (const code of publicCodes) assert.deepEqual(coupons[code], {type:'fixed',value:7,minSubtotalEur:0});
+  assert.equal(Object.keys(coupons).some(code => /AH$/i.test(code)), false);
+  assert.equal(Object.values(coupons).some(coupon => coupon.value === 15), false);
 });

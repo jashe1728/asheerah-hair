@@ -22,10 +22,6 @@ window.CONFIG = {
     LILIAN10: { type: 'fixed', value: 7, minSubtotalEur: 0 },
     TUCHA10: { type: 'fixed', value: 7, minSubtotalEur: 0 },
     CASSIE10: { type: 'fixed', value: 7, minSubtotalEur: 0 },
-    ONIKAAH: { type: 'fixed', value: 15, minSubtotalEur: 0 },
-    LILIANAH: { type: 'fixed', value: 15, minSubtotalEur: 0 },
-    TUCHAAH: { type: 'fixed', value: 15, minSubtotalEur: 0 },
-    CASSIEAH: { type: 'fixed', value: 15, minSubtotalEur: 0 },
   },
 
   // ---- Payment methods ----
