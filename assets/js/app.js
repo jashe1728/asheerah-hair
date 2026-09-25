@@ -84,7 +84,8 @@ function matchVariant(p, opts){
   return p.variants.find(v =>
     String(v.opt1||'')===String(opts.opt1||'') &&
     String(v.opt2||'')===String(opts.opt2||'') &&
-    String(v.opt3||'')===String(opts.opt3||'')) || null;
+    String(v.opt3||'')===String(opts.opt3||'') &&
+    String(v.opt4||'')===String(opts.opt4||'')) || null;
 }
 
 // ---------- Cart (localStorage) ----------
@@ -193,11 +194,11 @@ function optionLabel(i, idx){
 }
 function itemMetaHTML(i){
   const parts = [];
-  for (let k=1;k<=3;k++){
+  for (let k=1;k<=4;k++){
     const o = i.opts ? i.opts['opt'+k] : '';
     if (o) parts.push({ name:(i.optionNames&&i.optionNames[k-1])||'', val:o });
   }
-  return parts.map(p=>`<span class="meta-line"><b>${escapeHTML(p.name)}:</b> ${escapeHTML(p.val)}</span>`).join('');
+  return parts.map(p=>`<span class="meta-line"><b>${escapeHTML(optionDisplayLabel(p.name))}:</b> ${escapeHTML(optionDisplayLabel(p.val))}</span>`).join('');
 }
 function escapeHTML(s){
   return String(s==null?'':s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
@@ -556,8 +557,15 @@ function renderFeatured(){
   const grid = document.getElementById('featuredGrid'); if (!grid || !CATALOG) return;
   const cur = curCode();
   const preferred = ['wigs','bundles','crochet'];
-  const list = preferred.flatMap(cat => CATALOG.products.filter(p => p.category === cat && p.images && p.images[0]).slice(0,2));
-  grid.innerHTML = list.map(p => {
+  const pools = Object.fromEntries(preferred.map(cat => [cat, CATALOG.products.filter(p => p.category === cat && p.handle !== 'colored-crochet-human-hair' && p.images && p.images[0])]));
+  // Keep the homepage as a four-card static edit: one item from each category,
+  // then a second wig, with the full catalogue one click away below.
+  const list = preferred.map(cat => pools[cat][0]).filter(Boolean);
+  for (const cat of preferred){
+    if (list.length >= 4) break;
+    if (pools[cat][1]) list.push(pools[cat][1]);
+  }
+  grid.innerHTML = list.slice(0,4).map(p => {
     const pricing = variantPricing(p, defaultOpts(p));
     const price = priceHTML(pricing.priceEur, pricing.hasPromo ? pricing.compareEur : null, cur);
     return `<a class="product-card featured-card" href="product.html?h=${encodeURIComponent(p.handle)}">
@@ -670,7 +678,7 @@ function renderProduct(){
         <div class="buy">
           <h1>${escapeHTML(p.title)}</h1>
           ${priceRow}
-          ${opts.map((o,i)=> optionGroupHTML(o, sel, i, cur)).join('')}
+          ${productOptionGroupsHTML(opts, sel, cur)}
           <div class="qty">
             <span class="sr-only">${uiTxt('quantity')}</span>
             <button type="button" onclick="qtyChange(-1)" aria-label="${uiTxt('quantity')} −">−</button>
@@ -707,15 +715,34 @@ function renderProduct(){
     if (t){ t.textContent = uiTxt('added'); setTimeout(()=>{ t.textContent = uiTxt('add_to_cart'); }, 1400); }
   };
 }
+function productOptionGroupsHTML(opts, sel, cur){
+  const groups = (opts || []).map((o,i)=>optionGroupHTML(o,sel,i,cur)).join('');
+  return opts.length === 4 ? `<div class="pd-option-grid">${groups}</div>` : groups;
+}
 function cartOpts(sel, opts){
-  return { opt1: sel[opts[0]?.name||'']||'', opt2: sel[opts[1]?.name||'']||'', opt3: sel[opts[2]?.name||'']||'' };
+  return {
+    opt1: sel[opts[0]?.name||'']||'',
+    opt2: sel[opts[1]?.name||'']||'',
+    opt3: sel[opts[2]?.name||'']||'',
+    opt4: sel[opts[3]?.name||'']||'',
+  };
 }
 function isLaceOption(o){ return /lace/i.test(o.name||''); }
 
 /* Render one option group. Lace options on wigs render as a 2-column
  * Transparent | HD comparison by size; everything else renders as pills. */
+function optionDisplayLabel(value){
+  const raw = String(value == null ? '' : value);
+  const names = {
+    'Hair Length':'option_hair_length','Lace':'option_lace','Hair Density':'option_hair_density',
+    'Cap Size':'option_cap_size','Weight':'option_weight','Bundle Weight':'option_bundle_weight',
+  };
+  const values = { SMALL:'cap_small', MEDIUM:'cap_medium', LARGE:'cap_large' };
+  const key = names[raw] || values[raw.toUpperCase()];
+  return key ? (uiTxt(key) || raw) : raw;
+}
 function optionGroupHTML(o, sel, idx, cur){
-  const label = escapeHTML(o.name);
+  const label = escapeHTML(optionDisplayLabel(o.name));
   if (isLaceOption(o) && hasLaceTypes(o.values)){
     const { transparent, hd } = laceColumns(o.values);
     const curVal = sel[o.name];
@@ -742,7 +769,7 @@ function optionGroupHTML(o, sel, idx, cur){
   return `<div class="option-group">
     <label>${label}</label>
     <div class="pills">
-      ${o.values.map(vl=>`<button type="button" class="pill ${sel[o.name]===vl?'active':''}" onclick="selectOpt(${idx},'${escapeAttr(vl)}')" aria-pressed="${sel[o.name]===vl}">${escapeHTML(vl)}</button>`).join('')}
+      ${o.values.map(vl=>`<button type="button" class="pill ${sel[o.name]===vl?'active':''}" onclick="selectOpt(${idx},'${escapeAttr(vl)}')" aria-pressed="${sel[o.name]===vl}">${escapeHTML(optionDisplayLabel(vl))}</button>`).join('')}
     </div>
   </div>`;
 }

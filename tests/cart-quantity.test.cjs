@@ -84,3 +84,28 @@ test('cart quantity changes rerender the cart page totals', () => {
   context.updateCartUI();
   assert.deepEqual(calls, { cart: 1, checkout: 0, drawer: 0 });
 });
+
+test('fixed coupon stacks with the product sale discount and contributes to checkout total', () => {
+  const context = {
+    getCart: () => [{ priceEur: 100, compareEur: 150, qty: 1 }],
+    itemOriginalEur: item => item.compareEur > item.priceEur ? item.compareEur : item.priceEur,
+    round2: value => Math.round((value + Number.EPSILON) * 100) / 100,
+    CONFIG: { shipping: 0, taxRate: 0 },
+  };
+  vm.runInNewContext(functionBlock('cartTotals', 'function addToCart'), context);
+  const totals = context.cartTotals({ type: 'fixed', value: 7 });
+  assert.equal(totals.itemDiscount, 50);
+  assert.equal(totals.couponDiscount, 7);
+  assert.equal(totals.totalDiscount, 57);
+  assert.equal(totals.totalFinal, 93);
+});
+
+test('cart displays the fourth wig option (cap size)', () => {
+  const context = { escapeHTML: value => String(value), optionDisplayLabel: value => value };
+  vm.runInNewContext(functionBlock('itemMetaHTML', 'function escapeHTML'), context);
+  const html = context.itemMetaHTML({
+    optionNames: ['Hair Length','Lace','Hair Density','Cap Size'],
+    opts: { opt1:'16', opt2:'5x5 HD', opt3:'180%', opt4:'MEDIUM' },
+  });
+  assert.match(html, /Cap Size:<\/b> MEDIUM/);
+});

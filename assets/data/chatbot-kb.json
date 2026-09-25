@@ -2,141 +2,371 @@
   "version": "2026-08-25",
   "entries": [
     {
-      "id": "P01", "bucket": "product", "tier": 1, "status": "needs_owner_approval",
+      "id": "P01",
+      "bucket": "product",
+      "tier": 1,
+      "status": "needs_owner_approval",
       "question": "Where is the hair from?",
-      "triggers": ["where is the hair from", "hair origin", "country of origin", "sourced from"],
+      "triggers": [
+        "where is the hair from",
+        "hair origin",
+        "country of origin",
+        "sourced from"
+      ],
       "answer": ""
     },
     {
-      "id": "P02", "bucket": "product", "tier": 1, "status": "approved",
+      "id": "P02",
+      "bucket": "product",
+      "tier": 1,
+      "status": "approved",
       "question": "What do virgin and Remy mean?",
-      "triggers": ["virgin meaning", "remy meaning", "what is remy", "what is virgin hair", "virgin hair"],
+      "triggers": [
+        "virgin meaning",
+        "remy meaning",
+        "what is remy",
+        "what is virgin hair",
+        "virgin hair"
+      ],
       "answer": "Virgin usually means the hair has not been chemically processed. Remy describes hair whose cuticles are kept aligned in one direction, which helps reduce tangling. Our products are listed as 100% virgin human hair; for the exact supplier classification of a particular piece, I’ll help you check with the owner."
     },
     {
-      "id": "P03", "bucket": "product", "tier": 1, "status": "approved",
+      "id": "P03",
+      "bucket": "product",
+      "tier": 1,
+      "status": "approved",
       "question": "What products and textures do you have?",
-      "triggers": ["what hair", "what type of hair do you sell", "hair products", "products", "textures", "straight", "body wave", "deep wave", "loose wave", "water wave", "burmese curly"],
+      "triggers": [
+        "what hair",
+        "what type of hair do you sell",
+        "hair products",
+        "products",
+        "textures",
+        "straight",
+        "body wave",
+        "deep wave",
+        "loose wave",
+        "water wave",
+        "burmese curly"
+      ],
       "answer": "We offer wigs, 300g bundle sets, and crochet human hair. Textures shown on the shop include Straight, Body Wave, Deep Wave, Loose Wave, Water Wave, and Burmese Curly. Availability depends on the product, so check the product page or ask me to take you to the owner for a specific piece."
     },
     {
-      "id": "P04", "bucket": "product", "tier": 1, "status": "approved",
+      "id": "P04",
+      "bucket": "product",
+      "tier": 1,
+      "status": "approved",
       "question": "What lengths and densities are available?",
-      "triggers": ["lengths", "density", "densities", "how many inches", "wig density"],
-      "answer": "Wigs are listed in 10–32 inches, bundles in 12–28 inches, and crochet hair in 16–26 inches. Wig densities shown are 180%, 200%, and 250%. The exact choices appear on each product page."
+      "triggers": [
+        "lengths",
+        "density",
+        "densities",
+        "how many inches",
+        "wig density"
+      ],
+      "answer": "Wigs: 16–32 inches, HD lace in 5×5, 13×4, or 13×6, cap sizes Small, Medium, or Large, and densities 180%, 200%, or 250%. Bundles: 12–28 inches. Crochet: 16–22 inches. Check each product page for available combinations."
     },
     {
-      "id": "PR05", "bucket": "pricing", "tier": 2, "status": "approved",
+      "id": "PR05",
+      "bucket": "pricing",
+      "tier": 2,
+      "status": "approved",
       "question": "How much is this item?",
-      "triggers": ["price", "how much", "cost", "eur", "€"],
+      "triggers": [
+        "price",
+        "how much",
+        "cost",
+        "eur",
+        "€"
+      ],
       "answer": "Prices are shown in EUR on each product page and change with the style, length, density, and lace. For an exact quote, send the product or a screenshot plus the options you want and the owner will confirm the total before payment."
     },
     {
-      "id": "PR06", "bucket": "pricing", "tier": 1, "status": "approved",
+      "id": "PR06",
+      "bucket": "pricing",
+      "tier": 1,
+      "status": "approved",
       "question": "Is shipping included in the price?",
-      "triggers": ["shipping included", "delivery included", "postage included", "include shipping"],
+      "triggers": [
+        "shipping included",
+        "delivery included",
+        "postage included",
+        "include shipping"
+      ],
       "answer": "Shipping is separate from the product price. The full EUR total is shown or confirmed before you pay."
     },
     {
-      "id": "PAY07", "bucket": "payment", "tier": 1, "status": "approved",
+      "id": "PAY07",
+      "bucket": "payment",
+      "tier": 1,
+      "status": "approved",
       "question": "How can I pay?",
-      "triggers": ["how can i pay", "payment", "pay", "mb way", "mbway", "paypal", "stripe", "card"],
+      "triggers": [
+        "how can i pay",
+        "payment",
+        "pay",
+        "mb way",
+        "mbway",
+        "paypal",
+        "stripe",
+        "card"
+      ],
       "answer": "There is currently one payment method, but its name and instructions are still being finalised. The payment details or link will be confirmed before the order is completed. Please never send card details, PINs, passwords, or security codes in chat."
     },
     {
-      "id": "PAY08", "bucket": "payment", "tier": 2, "status": "approved",
+      "id": "PAY08",
+      "bucket": "payment",
+      "tier": 2,
+      "status": "approved",
       "question": "Can I pay in installments?",
-      "triggers": ["installments", "instalments", "pay monthly", "split payment", "payment plan"],
+      "triggers": [
+        "installments",
+        "instalments",
+        "pay monthly",
+        "split payment",
+        "payment plan"
+      ],
       "answer": "Installments are not listed as a standard payment option. Tell the owner which item you want and how you hoped to split the payment, and she’ll confirm whether anything is possible before you order."
     },
     {
-      "id": "S09", "bucket": "shipping", "tier": 1, "status": "approved",
+      "id": "S09",
+      "bucket": "shipping",
+      "tier": 1,
+      "status": "approved",
       "question": "Do you ship worldwide?",
-      "triggers": ["ship worldwide", "international shipping", "ship internationally", "ship to", "deliver to", "worldwide"],
-      "answer": "Yes, we ship worldwide to the destinations listed in our shipping policy. Send your country and postcode if you’d like the owner to confirm the route and shipping cost before you order."
+      "triggers": [
+        "ship worldwide",
+        "international shipping",
+        "ship internationally",
+        "ship to",
+        "deliver to",
+        "worldwide"
+      ],
+      "answer": "We ship to the countries listed in our Shipping Policy. Send your delivery country and postcode so we can confirm the route and fee."
     },
     {
-      "id": "S10", "bucket": "shipping", "tier": 1, "status": "approved",
+      "id": "S10",
+      "bucket": "shipping",
+      "tier": 1,
+      "status": "approved",
       "question": "How long does delivery take?",
-      "triggers": ["delivery time", "how long does shipping take", "how long", "when will it arrive", "shipping time"],
-      "answer": "The current estimated delivery time is 6–10 days. Timing can vary by destination and starts according to order confirmation and dispatch."
+      "triggers": [
+        "delivery time",
+        "how long does shipping take",
+        "how long",
+        "when will it arrive",
+        "shipping time"
+      ],
+      "answer": "Transit estimates: Europe 6–10 business days by standard shipping, excluding hair processing time; Africa 7–15 days via FedEx or DHL; Americas 3–7 days via FedEx. Please confirm the hair-processing time before ordering."
     },
     {
-      "id": "S11", "bucket": "shipping", "tier": 1, "status": "approved",
+      "id": "S11",
+      "bucket": "shipping",
+      "tier": 1,
+      "status": "approved",
       "question": "Can I track my order?",
-      "triggers": ["track", "tracking", "tracking number", "where is my order"],
+      "triggers": [
+        "track",
+        "tracking",
+        "tracking number",
+        "where is my order"
+      ],
       "answer": "Yes. Tracking information is sent by email after the order is dispatched. If you have already ordered and need help, take this chat to the owner with your order number."
     },
     {
-      "id": "S12", "bucket": "shipping", "tier": 2, "status": "approved",
+      "id": "S12",
+      "bucket": "shipping",
+      "tier": 2,
+      "status": "approved",
       "question": "Will I pay customs or import taxes?",
-      "triggers": ["customs", "import tax", "import taxes", "duties", "duty", "tariff", "vat"],
+      "triggers": [
+        "customs",
+        "import tax",
+        "import taxes",
+        "duties",
+        "duty",
+        "tariff",
+        "vat"
+      ],
       "answer": "Customs, VAT, import taxes, or destination fees are set by the destination country and are the customer’s responsibility under the current shipping policy. The shop cannot promise or calculate the exact charge, so send your country to the owner if you need route-specific guidance."
     },
     {
-      "id": "R13", "bucket": "returns_refunds", "tier": 1, "status": "approved",
+      "id": "R13",
+      "bucket": "returns_refunds",
+      "tier": 1,
+      "status": "approved",
       "question": "What is your return policy?",
-      "triggers": ["return policy", "returns", "refund", "exchange", "change my mind", "money back"],
+      "triggers": [
+        "return policy",
+        "returns",
+        "refund",
+        "exchange",
+        "change my mind",
+        "money back"
+      ],
       "answer": "The current policy treats sales as final because these are personal-use hair products. The exception is an item that arrives damaged, defective, or different from what was ordered; those cases are handled personally by the owner. If that happened, please use the WhatsApp handoff straight away."
     },
     {
-      "id": "R14", "bucket": "returns_refunds", "tier": 3, "status": "approved",
+      "id": "R14",
+      "bucket": "returns_refunds",
+      "tier": 3,
+      "status": "approved",
       "question": "My order arrived damaged or wrong. What do I do?",
-      "triggers": ["damaged", "wrong item", "wrong order", "defective", "faulty", "broken", "not what i ordered", "lace torn", "complaint"],
+      "triggers": [
+        "damaged",
+        "wrong item",
+        "wrong order",
+        "defective",
+        "faulty",
+        "broken",
+        "not what i ordered",
+        "lace torn",
+        "complaint"
+      ],
       "answer": ""
     },
     {
-      "id": "C15", "bucket": "care", "tier": 1, "status": "approved",
+      "id": "C15",
+      "bucket": "care",
+      "tier": 1,
+      "status": "approved",
       "question": "How do I wash and care for the hair?",
-      "triggers": ["wash", "care", "maintain", "maintenance", "shampoo", "condition"],
+      "triggers": [
+        "wash",
+        "care",
+        "maintain",
+        "maintenance",
+        "shampoo",
+        "condition"
+      ],
       "answer": "Gently detangle from the ends upward before washing. Use lukewarm water, a mild sulfate-free shampoo, and conditioner without rubbing or twisting. Rinse well and air-dry; use low heat with protectant if styling. Follow any product-specific care instructions included with your order."
     },
     {
-      "id": "C16", "bucket": "care", "tier": 1, "status": "approved",
+      "id": "C16",
+      "bucket": "care",
+      "tier": 1,
+      "status": "approved",
       "question": "How do I install it?",
-      "triggers": ["install", "installation", "fit wig", "apply lace", "wig glue", "sew in", "crochet install"],
+      "triggers": [
+        "install",
+        "installation",
+        "fit wig",
+        "apply lace",
+        "wig glue",
+        "sew in",
+        "crochet install"
+      ],
       "answer": "Installation depends on the piece. If you are not used to cutting lace, sewing in bundles, or using adhesive, a qualified stylist is the safest choice. Never apply adhesive to irritated skin, and follow the adhesive maker’s instructions."
     },
     {
-      "id": "CU17", "bucket": "customization", "tier": 2, "status": "approved",
+      "id": "CU17",
+      "bucket": "customization",
+      "tier": 2,
+      "status": "approved",
       "question": "Can I get a custom color?",
-      "triggers": ["custom color", "custom colour", "color code", "colour code", "dye", "bleach", "highlights"],
+      "triggers": [
+        "custom color",
+        "custom colour",
+        "color code",
+        "colour code",
+        "dye",
+        "bleach",
+        "highlights"
+      ],
       "answer": "Custom color may be possible. Send a clear inspiration photo, the product, length, and the date you need it. The owner will confirm what is realistic, the price, and timing before you pay."
     },
     {
-      "id": "CU18", "bucket": "customization", "tier": 1, "status": "approved",
+      "id": "CU18",
+      "bucket": "customization",
+      "tier": 1,
+      "status": "approved",
       "question": "What lace sizes are available?",
-      "triggers": ["lace size", "6x6", "7x7", "13x4", "13x6", "hd lace", "transparent lace"],
-      "answer": "The shop lists 6×6, 7×7, 13×4, and 13×6 lace in HD or Transparent options, depending on the wig. Please check the product page for its exact choices."
+      "triggers": [
+        "lace size",
+        "6x6",
+        "7x7",
+        "13x4",
+        "13x6",
+        "hd lace",
+        "transparent lace"
+      ],
+      "answer": "All wigs use HD lace, available in 5×5, 13×4, or 13×6. Each wig page lists its cap-size options."
     },
     {
-      "id": "CU19", "bucket": "customization", "tier": 2, "status": "approved",
+      "id": "CU19",
+      "bucket": "customization",
+      "tier": 2,
+      "status": "approved",
       "question": "Can I choose a different length?",
-      "triggers": ["different length", "custom length", "longer", "shorter", "other inches"],
+      "triggers": [
+        "different length",
+        "custom length",
+        "longer",
+        "shorter",
+        "other inches"
+      ],
       "answer": "The product pages show the standard length choices. If the length you want is not shown, send the product and desired inches to the owner so she can confirm availability, price, and timing."
     },
     {
-      "id": "O20", "bucket": "contact_ordering", "tier": 1, "status": "approved",
+      "id": "O20",
+      "bucket": "contact_ordering",
+      "tier": 1,
+      "status": "approved",
       "question": "How do I place an order?",
-      "triggers": ["place an order", "how to order", "how do i order", "order on whatsapp", "whatsapp order", "buy this"],
+      "triggers": [
+        "place an order",
+        "how to order",
+        "how do i order",
+        "order on whatsapp",
+        "whatsapp order",
+        "buy this"
+      ],
       "answer": "You can place your order through WhatsApp. Send the product or screenshot, texture, length, lace or density if relevant, quantity, and delivery country. The owner will confirm availability and the full EUR total before sending payment details."
     },
     {
-      "id": "O21", "bucket": "contact_ordering", "tier": 2, "status": "approved",
+      "id": "O21",
+      "bucket": "contact_ordering",
+      "tier": 2,
+      "status": "approved",
       "question": "Is this in stock?",
-      "triggers": ["in stock", "stock", "available now", "ready to ship", "availability"],
+      "triggers": [
+        "in stock",
+        "stock",
+        "available now",
+        "ready to ship",
+        "availability"
+      ],
       "answer": "Stock can change, so I don’t want to guess. Send the product or screenshot plus the length, texture, density, and lace you want, and the owner will confirm it for you."
     },
     {
-      "id": "O22", "bucket": "contact_ordering", "tier": 1, "status": "needs_owner_approval",
+      "id": "O22",
+      "bucket": "contact_ordering",
+      "tier": 1,
+      "status": "needs_owner_approval",
       "question": "What are your hours?",
-      "triggers": ["hours", "opening times", "when are you open", "reply time", "business hours"],
+      "triggers": [
+        "hours",
+        "opening times",
+        "when are you open",
+        "reply time",
+        "business hours"
+      ],
       "answer": ""
     },
     {
-      "id": "O23", "bucket": "contact_ordering", "tier": 1, "status": "approved",
+      "id": "O23",
+      "bucket": "contact_ordering",
+      "tier": 1,
+      "status": "approved",
       "question": "How can I contact you?",
-      "triggers": ["how do i contact you", "how can i contact you", "contact details", "email address", "instagram", "tiktok"],
+      "triggers": [
+        "how do i contact you",
+        "how can i contact you",
+        "contact details",
+        "email address",
+        "instagram",
+        "tiktok"
+      ],
       "answer": "You can reach Asheerah Hair on WhatsApp at +351 914 522 508, by email at asheerahhair@gmail.com, on Instagram at @asheerah_hair, or on TikTok at @asheerahhair. For an order or personal help, WhatsApp is best."
     }
   ]

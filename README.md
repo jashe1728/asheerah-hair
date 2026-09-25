@@ -2,13 +2,14 @@
 
 Shopify-free rebuild of asheerahhair.com for Asheerah Hair (luxury 100% virgin
 human hair: wigs, bundles, crochet). Rebuilt from a full reverse-engineering of
-the original site (see `docs/REBUILD_SPEC.md`) and the authoritative EUR pricing
-engine (see `docs/price_engine.json`).
+the original site (see `docs/REBUILD_SPEC.md`). The current catalog prices use
+the latest supplied pricing workbook; `docs/price_engine.json` is an earlier
+reference snapshot, not the current import source.
 
 ## Stack
 - Static HTML/CSS/JS (GitHub Pages) — no platform lock-in
-- `catalog.json` — full product catalog (17 products, 1,757 priced variants),
-  built from the Excel pricing engine (EUR base)
+- `catalog.json` — full product catalog (18 products, 1,689 priced variants),
+  with updated EUR minimum prices and new Pixie Curly Bundles + P6/27 Deep Wave Crochet
 - Google Sheets + Apps Script backend for orders (see `backend/Code.gs` and
   `SETUP.md`)
 - Warm three-tier website chatbot with owner-approved answers, safe matching,

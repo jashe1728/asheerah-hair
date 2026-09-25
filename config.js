@@ -15,14 +15,18 @@ window.CONFIG = {
   // Taxes rate (0 = none currently). Set to e.g. 0.23 (23% IVA) when applicable.
   taxRate: 0,
 
-  // ---- Coupons / discount codes ----
-  // Empty by default — no codes are active until the business defines them.
-  // Structure per code: { type:'percent'|'fixed', value:<number>, minSubtotalEur:<number|0> }
-  //  - percent: value is a percentage (e.g. 10 = 10% off the pre-discount item subtotal)
-  //  - fixed:   value is an absolute EUR amount
-  //  - minSubtotalEur: minimum pre-discount item subtotal (EUR) required to use it.
-  // Example:  coupons:{ 'WELCOME10': { type:'percent', value:10, minSubtotalEur:0 } }
-  coupons: {},
+  // Coupon codes are client-side in this static storefront; personal-use eligibility
+  // cannot be enforced until the backend validates customer identity server-side.
+  coupons: {
+    ONIKA10: { type: 'fixed', value: 7, minSubtotalEur: 0 },
+    LILIAN10: { type: 'fixed', value: 7, minSubtotalEur: 0 },
+    TUCHA10: { type: 'fixed', value: 7, minSubtotalEur: 0 },
+    CASSIE10: { type: 'fixed', value: 7, minSubtotalEur: 0 },
+    ONIKAAH: { type: 'fixed', value: 15, minSubtotalEur: 0 },
+    LILIANAH: { type: 'fixed', value: 15, minSubtotalEur: 0 },
+    TUCHAAH: { type: 'fixed', value: 15, minSubtotalEur: 0 },
+    CASSIEAH: { type: 'fixed', value: 15, minSubtotalEur: 0 },
+  },
 
   // ---- Payment methods ----
   // `configured:true` means a REAL processor integration is wired up and the
