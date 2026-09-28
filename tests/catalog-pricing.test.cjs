@@ -43,7 +43,7 @@ test('existing crochet products use the spreadsheet NTR medium 100g minimum pric
     '16': [118.99,169.99,219.99], '18': [125.99,179.99,233.99],
     '20': [135.99,194.99,254.99], '22': [141.99,203.99,265.99],
   };
-  for (const product of catalog.products.filter(item => item.category === 'crochet' && !['colored-crochet-human-hair','p6-27-deep-wave-crochet'].includes(item.handle))) {
+  for (const product of catalog.products.filter(item => item.category === 'crochet' && item.handle !== 'p6-27-deep-wave-crochet')) {
     assert.deepEqual(product.options[0].values, Object.keys(prices), product.handle + ' lengths');
     for (const [length, values] of Object.entries(prices)) {
       for (const [i, grams] of ['100g','200g','300g'].entries()) {

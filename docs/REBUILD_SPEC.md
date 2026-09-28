@@ -65,14 +65,14 @@ Status: reverse-engineering complete (data current as of 2026-08-14).
 | Deep Wave bundles | deep-wave-bundles | 8 | 184–325 / 254–395 |
 | 4B/4C bundles | 4b-4c-bundles | 8 | 184–325 / 254–395 |
 
-### Crochet (5) — $137–$421 (was $182–$466)
+### Crochet (4) — $137–$421 (was $182–$466)
 | Product | Handle | Variants | Price range |
 |---|---|---|---|
 | Pixie Curly Crochet human hair | pixie-curly-crochet-human-hair | 18 | 137–421 / 182–466 |
 | Water wave Crochet human hair | water-wave-crochet-human-hair | 18 | 137–421 / 182–466 |
 | Water Curly Crochet Human hair | water-curly-crochet-human-hair | 18 | 137–421 / 182–466 |
 | Burmese Curly Crochet Human hair | burmese-curly-crochet-human-hair | 18 | 137–421 / 182–466 |
-| Colored crochet Human hair | colored-crochet-human-hair | 117 | 10 (color option service) |
+
 
 ## 4. PRODUCT OPTION STRUCTURE
 
@@ -93,9 +93,6 @@ Status: reverse-engineering complete (data current as of 2026-08-14).
 ### Custom Hair Color (Wigs & Bundles) — 1 option
 - **Color Code:** 1, 1B, 2, 3, 4, 6, 10, 12, 16, 18, 27, 28, 99J, 22, 30, 35, 135, 613, 144, Vermelho, Azul, Violeta, Pucsia, Rosa, Verde ($15 add-on service)
 
-### Colored crochet — 2 option groups
-- **One Color:** 1, 1B, 2, NC, 4, 6, 8, 16, 18, 24, 27, 70, 613
-- **Mixed Colors:** 1000, P18/613, Grey, 2/8/24, 2/8/2, P8/16, P8/70, 26/13/2, T2/70
 
 ## 5. PRICING MODEL (reconstructed)
 

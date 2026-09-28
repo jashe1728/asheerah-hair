@@ -11,7 +11,7 @@ test('homepage featured hair renders exactly four static product cards', () => {
   const products = [
     ['wig-1','wigs'], ['wig-2','wigs'], ['wig-3','wigs'],
     ['bundle-1','bundles'], ['bundle-2','bundles'],
-    ['colored-crochet-human-hair','crochet'], ['crochet-2','crochet'],
+    ['crochet-1','crochet'], ['crochet-2','crochet'],
   ].map(([handle,category]) => ({handle,category,title:handle,images:['photo.jpg']}));
   const grid = { innerHTML:'' };
   const context = {
@@ -26,5 +26,4 @@ test('homepage featured hair renders exactly four static product cards', () => {
   context.renderFeatured();
   assert.equal((grid.innerHTML.match(/class="product-card featured-card"/g)||[]).length,4);
   assert.equal(grid.innerHTML.includes('carousel'),false);
-  assert.equal(grid.innerHTML.includes('colored-crochet-human-hair'),false,'custom-color/service listing is not a featured crochet product');
 });

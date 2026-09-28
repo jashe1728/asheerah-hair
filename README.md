@@ -8,7 +8,7 @@ reference snapshot, not the current import source.
 
 ## Stack
 - Static HTML/CSS/JS (GitHub Pages) — no platform lock-in
-- `catalog.json` — full product catalog (18 products, 1,689 priced variants),
+- `catalog.json` — full product catalog (17 products, 1,572 priced variants),
   with updated EUR minimum prices and new Pixie Curly Bundles + P6/27 Deep Wave Crochet
 - Google Sheets + Apps Script backend for orders (see `backend/Code.gs` and
   `SETUP.md`)

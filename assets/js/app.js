@@ -557,7 +557,7 @@ function renderFeatured(){
   const grid = document.getElementById('featuredGrid'); if (!grid || !CATALOG) return;
   const cur = curCode();
   const preferred = ['wigs','bundles','crochet'];
-  const pools = Object.fromEntries(preferred.map(cat => [cat, CATALOG.products.filter(p => p.category === cat && p.handle !== 'colored-crochet-human-hair' && p.images && p.images[0])]));
+  const pools = Object.fromEntries(preferred.map(cat => [cat, CATALOG.products.filter(p => p.category === cat && p.images && p.images[0])]));
   // Keep the homepage as a four-card static edit: one item from each category,
   // then a second wig, with the full catalogue one click away below.
   const list = preferred.map(cat => pools[cat][0]).filter(Boolean);
