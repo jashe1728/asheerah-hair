@@ -248,12 +248,16 @@ section{padding:4rem 0}
 .pd-option-grid .pill{padding:.45rem .65rem;font-size:.86rem}
 @media(max-width:360px){.pd-option-grid{grid-template-columns:1fr}}
 .pd{display:grid;grid-template-columns:1fr 1fr;gap:2.5rem;align-items:start}
-.pd .gallery{position:sticky;top:90px}
-.pd .main-img{border-radius:var(--r-lg);overflow:hidden;box-shadow:var(--shadow)}
-.pd .thumbs{display:flex;gap:.6rem;margin-top:.8rem;flex-wrap:wrap}
-.pd .thumbs img{width:64px;height:64px;object-fit:cover;border-radius:10px;border:2px solid transparent;cursor:pointer}
-.pd .thumbs img.active{border-color:var(--gold)}
-.pd h1{font-size:2.1rem}
+.pd .gallery{position:sticky;top:90px;min-width:0}
+.pd .main-img{aspect-ratio:1/1;display:grid;place-items:center;border-radius:var(--r-lg);overflow:hidden;background:linear-gradient(145deg,var(--card),var(--soft));border:1px solid var(--border);box-shadow:var(--shadow)}
+.pd .main-img img{width:100%;height:100%;object-fit:contain}
+.pd .thumbs{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:.65rem;margin-top:.85rem}
+.pd .thumbs button{aspect-ratio:1/1;min-width:0;padding:0;overflow:hidden;border:1.5px solid var(--border);border-radius:12px;background:var(--card);transition:border-color .18s,box-shadow .18s,transform .18s}
+.pd .thumbs button:hover{border-color:var(--gold);transform:translateY(-2px)}
+.pd .thumbs button:focus-visible{outline:3px solid var(--gold);outline-offset:2px}
+.pd .thumbs button.active{border:2px solid var(--gold);box-shadow:0 0 0 2px var(--gold-soft)}
+.pd .thumbs img{width:100%;height:100%;object-fit:cover}
+.pd h1{font-size:clamp(2rem,3vw,2.6rem);line-height:1.08}
 .pd .price-row{display:flex;align-items:baseline;gap:.8rem;margin:1rem 0 1.5rem}
 .pd .price-row .now{font-size:1.9rem;font-weight:700;color:var(--gold-d)}
 .pd .price-row s{color:var(--muted);font-size:1.1rem}
@@ -272,6 +276,12 @@ section{padding:4rem 0}
 .add-btn:hover{background:var(--gold-d);transform:translateY(-2px)}
 .pd .desc{margin-top:2rem;color:var(--ink-soft)}
 .pd .desc ul{margin:.6rem 0 0 1.2rem}
+@media(max-width:640px){
+  .pd{gap:1.5rem}
+  .pd .gallery{position:static;width:100%;max-width:560px;margin:0 auto}
+  .pd .thumbs{grid-template-columns:repeat(5,minmax(0,1fr));gap:.55rem}
+  .pd .buy{width:100%;min-width:0}
+}
 .product-recommendations,.product-reviews{margin-top:4rem;padding-top:3rem;border-top:1px solid var(--border)}
 .recommended-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:1.5rem}
 .recommended-card .info{padding:1rem}.recommended-card .info h3{font-size:1.15rem;line-height:1.15}.recommended-card .price{color:var(--gold-d);font-weight:700;margin-top:.35rem}.recommended-card .buy-btn{margin-top:.65rem}

@@ -673,7 +673,7 @@ function renderProduct(){
       <div class="pd">
         <div class="gallery">
           <div class="main-img"><img id="mainImg" src="${p.images[0]||''}" alt="${escapeHTML(p.title)}"></div>
-          <div class="thumbs">${p.images.slice(0,6).map((im,i)=>`<img src="${im}" class="${i===0?'active':''}" data-src="${im}" alt="${escapeHTML(p.title)} ${i+1}" onclick="setMain('${im}',this)">`).join('')}</div>
+          <div class="thumbs" role="group" aria-label="Product images">${p.images.slice(0,6).map((im,i)=>`<button type="button" class="thumb ${i===0?'active':''}" data-src="${escapeHTML(im)}" data-alt="${escapeHTML(p.title)} image ${i+1}" aria-label="View ${escapeHTML(p.title)} image ${i+1}" aria-pressed="${i===0?'true':'false'}"><img src="${escapeHTML(im)}" alt="" loading="lazy"></button>`).join('')}</div>
         </div>
         <div class="buy">
           <h1>${escapeHTML(p.title)}</h1>
@@ -691,6 +691,9 @@ function renderProduct(){
       </div>
       ${recommendationsHTML(p)}
       ${productReviewsHTML(p)}`;
+    root.querySelectorAll('.thumbs button').forEach(thumb => {
+      thumb.addEventListener('click', () => window.setMain(thumb.dataset.src, thumb));
+    });
     // wire lace comparison if present
     opts.forEach((o,i)=>{ if (isLaceOption(o)) wireLaceTable(i); });
   };
@@ -703,9 +706,15 @@ function renderProduct(){
   };
   window.qtyChange = d => { window.qtyVal = Math.max(1, (window.qtyVal||1)+d); const e=document.getElementById('qtyVal'); if(e)e.textContent=window.qtyVal; };
   window.setMain = (src,el) => {
-    document.getElementById('mainImg').src = src;
-    document.querySelectorAll('.thumbs img').forEach(t=>t.classList.remove('active'));
-    el.classList.add('active');
+    const image = document.getElementById('mainImg');
+    if (!image || !el) return;
+    image.src = src;
+    image.alt = el.dataset.alt || _product.title;
+    document.querySelectorAll('.thumbs button').forEach(t=>{
+      const active = t === el;
+      t.classList.toggle('active', active);
+      t.setAttribute('aria-pressed', active ? 'true' : 'false');
+    });
   };
   window.addCurrentToCart = () => {
     const o = cartOpts(sel, opts);
