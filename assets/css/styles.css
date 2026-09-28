@@ -93,7 +93,7 @@ input[type="radio"],input[type="checkbox"]{accent-color:var(--gold)}
   .header-row .brand{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%)}
   .header-row .logo{height:58px}
   #currencyDropdown{display:none}
-  #langDropdown{display:block}
+  #langDropdown{display:block;position:absolute;left:0;top:50%;transform:translateY(-50%);z-index:2}
   .header-right{gap:.6rem}
   .header-icons{gap:.7rem}
   .currency-btn,.lang-btn{font-size:.72rem;padding:.22rem .5rem}

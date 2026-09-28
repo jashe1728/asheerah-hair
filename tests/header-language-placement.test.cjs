@@ -25,4 +25,6 @@ test('language dropdown opens toward the right from its new left-side position',
   assert.match(css, /#langDropdown\{[^}]*flex:none/);
   assert.match(css, /\.lang-menu\{[^}]*left:0/);
   assert.doesNotMatch(css, /\.lang-menu\{[^}]*right:0/);
+  const mobile = css.match(/@media\(max-width:640px\)\{([\s\S]*?)\n\}/)?.[1] || '';
+  assert.match(mobile, /#langDropdown\{[^}]*position:absolute[^}]*left:0/);
 });
