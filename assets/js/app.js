@@ -726,7 +726,7 @@ function renderProduct(){
 }
 function productOptionGroupsHTML(opts, sel, cur){
   const groups = (opts || []).map((o,i)=>optionGroupHTML(o,sel,i,cur)).join('');
-  return opts.length === 4 ? `<div class="pd-option-grid">${groups}</div>` : groups;
+  return `<div class="pd-option-groups">${groups}</div>`;
 }
 function cartOpts(sel, opts){
   return {
@@ -752,6 +752,7 @@ function optionDisplayLabel(value){
 }
 function optionGroupHTML(o, sel, idx, cur){
   const label = escapeHTML(optionDisplayLabel(o.name));
+  const kind = /length/i.test(o.name) ? 'length' : /density/i.test(o.name) ? 'density' : /cap/i.test(o.name) ? 'cap-size' : 'standard';
   if (isLaceOption(o) && hasLaceTypes(o.values)){
     const { transparent, hd } = laceColumns(o.values);
     const curVal = sel[o.name];
@@ -764,7 +765,7 @@ function optionGroupHTML(o, sel, idx, cur){
         <div class="lace-col">${btn(transparent[size])}</div>
         <div class="lace-col">${btn(hd[size])}</div>
       </div>`).join('');
-    return `<div class="option-group">
+    return `<div class="option-group option-group--lace">
       <label>${label}</label>
       <div class="lace-cmp" role="group" aria-label="${escapeHTML(label)}">
         <div class="lace-head">
@@ -775,7 +776,7 @@ function optionGroupHTML(o, sel, idx, cur){
       </div>
     </div>`;
   }
-  return `<div class="option-group">
+  return `<div class="option-group option-group--${kind}">
     <label>${label}</label>
     <div class="pills">
       ${o.values.map(vl=>`<button type="button" class="pill ${sel[o.name]===vl?'active':''}" onclick="selectOpt(${idx},'${escapeAttr(vl)}')" aria-pressed="${sel[o.name]===vl}">${escapeHTML(optionDisplayLabel(vl))}</button>`).join('')}
