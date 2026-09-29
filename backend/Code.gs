@@ -46,6 +46,14 @@ function doPost(e) {
   try {
     var body = JSON.parse(e.postData.contents);
 
+    // Only the Cloudflare Worker may record Stripe events. It verifies Stripe's
+    // signature, then HMAC-signs this exact payload for the Apps Script backend.
+    if (body && typeof body.payload === 'string' && typeof body.signature === 'string') {
+      var stripeEvent = verifyWorkerPayload_(body);
+      if (!stripeEvent) return json_({ ok:false, error:'Unauthorized payment event' });
+      return json_(processStripeWorkerPayload_(stripeEvent));
+    }
+
     if (body.type === 'order') {
       var row = buildOrderRow_(body);
       getSheet_(SHEET_NAME, ORDERS_HEADER).appendRow(row);
@@ -332,6 +340,110 @@ function getSheet_(name, header) {
     }
   }
   return sheet;
+}
+
+function verifyWorkerPayload_(wrapper) {
+  try {
+    var secret = PropertiesService.getScriptProperties().getProperty('WORKER_GAS_SECRET');
+    if (!secret || !wrapper || typeof wrapper.payload !== 'string' || !/^[a-f0-9]{64}$/i.test(wrapper.signature)) return null;
+    var bytes = Utilities.computeHmacSha256Signature(wrapper.payload, secret);
+    var expected = bytes.map(function(b){ return ('0' + ((b + 256) % 256).toString(16)).slice(-2); }).join('');
+    if (expected.length !== wrapper.signature.length) return null;
+    var diff = 0;
+    for (var i=0; i<expected.length; i++) diff |= expected.charCodeAt(i) ^ wrapper.signature.toLowerCase().charCodeAt(i);
+    if (diff !== 0) return null;
+    return JSON.parse(wrapper.payload);
+  } catch (err) { return null; }
+}
+
+function processStripeWorkerPayload_(payload) {
+  if (!payload || !payload.action) return { ok:false, error:'Invalid worker action' };
+  if (payload.action === 'stripe_pending') return recordStripePending_(payload);
+  if (payload.action === 'stripe_session_created') return recordStripeSession_(payload);
+  if (payload.action === 'stripe_checkout_failed') return recordStripeCheckoutFailure_(payload);
+  if (payload.action === 'stripe_event') return recordStripeEvent_(payload);
+  return { ok:false, error:'Unsupported worker action' };
+}
+
+function stripePaymentsSheet_() {
+  return getSheet_('Stripe Payments', ['Event ID','Order ID','Status','Stripe Session ID','Payment Intent ID','Customer Email','Customer Phone','Ship To','Shipping Address','Items','Amount €','Currency','Updated At']);
+}
+function stripeOrderRow_(rows, orderId) {
+  for (var i=1; i<rows.length; i++) if (String(rows[i][1]) === String(orderId)) return i+1;
+  return 0;
+}
+function recordStripePending_(payload) {
+  var c=payload.customer||{};
+  var orderId=String(payload.orderId||'');
+  var expected=Number(payload.expectedTotalCents), subtotal=Number(payload.subtotalCents), shipping=Number(payload.shippingCents);
+  if (!/^[a-f0-9-]{36}$/i.test(orderId) || payload.currency!=='EUR' || !Number.isSafeInteger(expected) || expected<=0 || expected!==subtotal+shipping || !c.email || !c.name) return {ok:false,error:'Invalid pending order'};
+  var lock=LockService.getScriptLock(); lock.waitLock(10000);
+  try {
+    var sheet=stripePaymentsSheet_(), rows=sheet.getDataRange().getValues(), found=stripeOrderRow_(rows,orderId);
+    if (found) return Math.round(Number(rows[found-1][10])*100)===expected ? {ok:true,duplicate:true} : {ok:false,error:'Order already exists with different amount'};
+    var address=[c.address,c.city,c.postalCode,c.country].filter(Boolean).join(', ');
+    sheet.appendRow(['pending:'+orderId,orderId,'pending','','',safeCell_(c.email,254),safeCell_(c.phone,40),safeCell_(c.name,120),safeCell_(address,500),safeCell_(payload.itemsSummary,450),expected/100,'EUR',new Date()]);
+    return {ok:true,saved:true};
+  } finally { lock.releaseLock(); }
+}
+function recordStripeSession_(payload) {
+  var orderId=String(payload.orderId||''), sessionId=String(payload.sessionId||'');
+  if (!orderId || !/^cs_[A-Za-z0-9_]+$/.test(sessionId)) return {ok:false,error:'Invalid Checkout Session'};
+  var lock=LockService.getScriptLock(); lock.waitLock(10000);
+  try {
+    var sheet=stripePaymentsSheet_(), rows=sheet.getDataRange().getValues(), row=stripeOrderRow_(rows,orderId);
+    if (!row) return {ok:false,error:'Pending order not found'};
+    if (rows[row-1][2]==='paid') return {ok:false,error:'Order already paid'};
+    sheet.getRange(row,4).setValue(sessionId); sheet.getRange(row,13).setValue(new Date());
+    return {ok:true,updated:true};
+  } finally { lock.releaseLock(); }
+}
+function recordStripeCheckoutFailure_(payload) {
+  var orderId=String(payload.orderId||'');
+  if (!orderId) return {ok:false,error:'Invalid order'};
+  var lock=LockService.getScriptLock(); lock.waitLock(10000);
+  try {
+    var sheet=stripePaymentsSheet_(), rows=sheet.getDataRange().getValues(), row=stripeOrderRow_(rows,orderId);
+    if (!row) return {ok:true,missing:true};
+    if (rows[row-1][2]!=='paid') { sheet.getRange(row,3).setValue('checkout_failed'); sheet.getRange(row,13).setValue(new Date()); }
+    return {ok:true,updated:true};
+  } finally { lock.releaseLock(); }
+}
+
+/** Persist only Worker-authenticated Stripe events; browser redirects never call this. */
+function recordStripeEvent_(event) {
+  var session = event && event.session;
+  var allowed = ['checkout.session.completed','checkout.session.expired','checkout.session.async_payment_succeeded','checkout.session.async_payment_failed'];
+  if (!event || !/^evt_[A-Za-z0-9_]+$/.test(String(event.eventId||'')) || allowed.indexOf(event.eventType) === -1 || !session || !session.id) return {ok:false,error:'Invalid payment event'};
+  var orderId=String(session.client_reference_id||''), metadataOrder=String(session.metadata&&session.metadata.order_id||'');
+  var expected=Number(session.metadata&&session.metadata.expected_total_cents), actual=Number(session.amount_total);
+  if (!orderId || orderId!==metadataOrder || !Number.isSafeInteger(expected) || expected<=0 || actual!==expected || String(session.currency).toLowerCase()!=='eur') return {ok:false,error:'Payment amount verification failed'};
+  var status='pending';
+  if ((event.eventType==='checkout.session.completed'||event.eventType==='checkout.session.async_payment_succeeded') && session.payment_status==='paid') status='paid';
+  else if (event.eventType==='checkout.session.expired') status='expired';
+  else if (event.eventType==='checkout.session.async_payment_failed') status='failed';
+  var lock=LockService.getScriptLock(); lock.waitLock(10000);
+  try {
+    var sheet=stripePaymentsSheet_(), rows=sheet.getDataRange().getValues(), row=stripeOrderRow_(rows,orderId);
+    if (!row) return {ok:false,error:'Pending order not found'};
+    var current=rows[row-1], seen=String(current[0]||'').split(',');
+    if (seen.indexOf(event.eventId)!==-1) return {ok:true,duplicate:true,status:current[2]};
+    if (Math.round(Number(current[10])*100)!==expected || (current[3] && String(current[3])!==String(session.id))) return {ok:false,error:'Pending order/session mismatch'};
+    if (current[2]==='paid') status='paid';
+    var ship=session.shipping_details||{}, shipAddr=ship.address||{};
+    var shipAddressText=[shipAddr.line1,shipAddr.line2,shipAddr.city,shipAddr.state,shipAddr.postal_code,shipAddr.country].filter(Boolean).join(', ');
+    var newIds=seen.filter(function(id){return id && id.indexOf('pending:')!==0;}); newIds.push(event.eventId); newIds=newIds.slice(-20);
+    var values=[newIds.join(','),orderId,status,session.id,session.payment_intent||current[4],
+      (session.customer_details&&session.customer_details.email)||session.customer_email||current[5],
+      (session.customer_details&&session.customer_details.phone)||current[6],ship.name||current[7],shipAddressText||current[8],
+      (session.metadata&&session.metadata.items_summary)||current[9],expected/100,'EUR',new Date()];
+    values=values.map(function(v,i){return i===12?v:safeCell_(v, i===8?500: i===9?450: i===5?254:120);});
+    for (var col=1;col<=values.length;col++) sheet.getRange(row,col).setValue(values[col-1]);
+    if (status==='paid' && current[2]!=='paid') {
+      try { MailApp.sendEmail({to:OWNER_EMAIL,subject:'Stripe payment received — '+orderId,body:'A Stripe Checkout payment was confirmed by webhook.\nOrder: '+orderId+'\nAmount: €'+r2(expected/100)+'\nItems: '+safeCell_(session.metadata&&session.metadata.items_summary,450)}); } catch (mailErr) {}
+    }
+    return {ok:true,recorded:true,status:status};
+  } finally { lock.releaseLock(); }
 }
 
 function json_(obj) {

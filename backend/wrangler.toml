@@ -1,0 +1,13 @@
+name = "asheerah-stripe-checkout"
+main = "stripe-worker.cjs"
+compatibility_date = "2025-06-01"
+compatibility_flags = ["nodejs_compat"]
+
+[vars]
+# Set these non-secret values in Cloudflare dashboard before enabling checkout.
+# SITE_ORIGIN is a bare origin (no path), while SITE_BASE_URL includes the Pages path.
+SITE_ORIGIN = "https://jashe1728.github.io"
+SITE_BASE_URL = "https://jashe1728.github.io/asheerah-hair"
+CATALOG_URL = "https://jashe1728.github.io/asheerah-hair/catalog.json"
+# Shipping amounts are derived from the entered destination in stripe-worker.cjs.
+# GAS_WEBHOOK_URL must be set to the existing Apps Script web app /exec URL.

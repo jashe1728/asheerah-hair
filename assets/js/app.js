@@ -8,10 +8,10 @@
 let checkoutSubmitting = false; // guards against double order submission
 
 const CONFIG = window.CONFIG || {
-  currency:'EUR', rates:{EUR:1,USD:1.08,GBP:0.85}, shipping:30, shippingEta:'6–10 days', taxRate:0,
+  currency:'EUR', rates:{EUR:1,USD:1.08,GBP:0.85}, shipping:null, shippingEta:'6–10 days', taxRate:0,
   coupons:{}, payment:{ pending:{configured:false} },
   whatsapp:'351914522508', email:'asheerahhair@gmail.com',
-  backendURL:'', stripePublishable:'', paypalClientId:'', mbwayKey:'',
+  backendURL:'', stripeCheckoutURL:'', stripePublishable:'', paypalClientId:'', mbwayKey:'',
 };
 
 const CURRENCIES = {
@@ -97,7 +97,7 @@ function cartCount(){ return getCart().reduce((n,i)=>n+i.qty,0); }
 function itemOriginalEur(i){ const o = i.compareEur && i.compareEur > i.priceEur ? i.compareEur : i.priceEur; return o; }
 
 /* Cart financial summary (all in EUR, integer cents internally). */
-function cartTotals(coupon){
+function cartTotals(coupon, shippingAmount=CONFIG.shipping){
   const cart = getCart();
   let subtotalOriginal = 0, itemDiscount = 0;
   cart.forEach(i => {
@@ -118,10 +118,17 @@ function cartTotals(coupon){
   }
   const totalDiscount = round2(itemDiscount + couponDiscount);
   const subtotalFinal = round2(subtotalOriginal - totalDiscount);
-  const shipping = cart.length ? CONFIG.shipping : 0;
+  const shippingKnown = !cart.length || Number.isFinite(shippingAmount);
+  const shipping = cart.length ? (shippingKnown ? shippingAmount : null) : 0;
   const taxes = round2(subtotalFinal * (CONFIG.taxRate || 0));
-  const totalFinal = round2(subtotalFinal + shipping + taxes);
-  return { subtotalOriginal, itemDiscount, couponDiscount, totalDiscount, subtotalFinal, shipping, taxes, totalFinal };
+  const totalFinal = round2(subtotalFinal + (shippingKnown ? shipping : 0) + taxes);
+  return { subtotalOriginal, itemDiscount, couponDiscount, totalDiscount, subtotalFinal, shipping, shippingKnown, taxes, totalFinal };
+}
+
+function stripeWorkerURL(path){
+  if (!CONFIG.stripeCheckoutURL) return '';
+  try { const url=new URL(CONFIG.stripeCheckoutURL,window.location.href); url.pathname='/'+path; url.search=''; url.hash=''; return url.href; }
+  catch { return ''; }
 }
 
 function addToCart(handle, opts, qty){
@@ -822,9 +829,9 @@ function renderCartPage(){
     <div class="summary">
       <div class="row"><span>${uiTxt('subtotal')}</span><span>${money(t.subtotalOriginal,cur)}</span></div>
       ${t.itemDiscount>0?`<div class="row disc"><span>${uiTxt('discount_total')}</span><span>−${money(t.itemDiscount,cur)}</span></div>`:''}
-      <div class="row"><span>${uiTxt('shipping')}</span><span>${money(t.shipping,cur)}</span></div>
+      <div class="row"><span>${uiTxt('shipping')}</span><span>${t.shippingKnown?money(t.shipping,cur):uiTxt('shipping_calc_checkout')}</span></div>
       <div class="shipping-eta">${uiTxt('shipping_eta')}: ${escapeHTML(CONFIG.shippingEta || '6–10 days')}</div>
-      <div class="row total"><span>${uiTxt('total')}</span><span>${money(t.totalFinal,cur)}</span></div>
+      <div class="row total"><span>${uiTxt('total')}</span><span>${t.shippingKnown?money(t.totalFinal,cur):uiTxt('shipping_calc_checkout')}</span></div>
       <a href="checkout.html" class="btn-primary" style="width:100%;text-align:center;margin-top:1rem">${uiTxt('checkout')}</a>
     </div>
     <div class="cart-actions"><a href="shop.html" class="btn-ghost">${uiTxt('continue_shopping')}</a></div>
@@ -839,6 +846,11 @@ function renderCartPage(){
 // ---------- Checkout ----------
 function renderCheckoutPage(){
   const root = document.getElementById('checkoutRoot'); if (!root) return;
+  const paymentReturn = new URLSearchParams(window.location.search).get('payment');
+  if (paymentReturn === 'success') {
+    root.innerHTML = `<div class="order-confirm"><h2>Payment submitted</h2><p>We are verifying your payment with Stripe. This page is not a payment receipt. Please do not submit the order again while confirmation is pending.</p><p>If the order is not confirmed after a few minutes, contact Asheerah Hair before retrying payment.</p><a href="pages/contact.html" class="btn-primary">Contact Asheerah Hair</a></div>`;
+    return;
+  }
   const cur = curCode();
   const cart = getCart();
 
@@ -930,14 +942,41 @@ function renderCheckoutPage(){
         <div class="totals">
           <div class="row"><span>${uiTxt('subtotal_original')}</span><span>${money(t.subtotalOriginal,cur)}</span></div>
           ${t.totalDiscount>0?`<div class="row disc"><span>${uiTxt('discount_total')}</span><span>−${money(t.totalDiscount,cur)}</span></div>`:''}
-          <div class="row"><span>${uiTxt('shipping')}</span><span>${money(t.shipping,cur)}</span></div>
+          <div class="row"><span>${uiTxt('shipping')}</span><span id="coShippingAmount">${t.shippingKnown?money(t.shipping,cur):uiTxt('shipping_calc_checkout')}</span></div>
       <div class="shipping-eta">${uiTxt('shipping_eta')}: ${escapeHTML(CONFIG.shippingEta || '6–10 days')}</div>
           ${t.taxes>0?`<div class="row"><span>${uiTxt('taxes')}</span><span>${money(t.taxes,cur)}</span></div>`:''}
-          <div class="row total"><span>${uiTxt('final_total')}</span><span>${money(t.totalFinal,cur)}</span></div>
+          <div class="row total"><span>${uiTxt('final_total')}</span><span id="coGrandTotal">${t.shippingKnown?money(t.totalFinal,cur):uiTxt('shipping_calc_checkout')}</span></div>
         </div>
       </div>
     </div>
   </form>`;
+
+  // ---- Destination-based shipping quote ----
+  const countryInput = document.getElementById('coCountry');
+  const shippingAmount = document.getElementById('coShippingAmount');
+  const grandTotal = document.getElementById('coGrandTotal');
+  let quoteSequence = 0;
+  async function refreshShippingQuote(){
+    const sequence = ++quoteSequence;
+    const country = countryInput.value.trim();
+    const endpoint = stripeWorkerURL('shipping-quote');
+    const pending = uiTxt('shipping_calc_checkout');
+    if (!country || !endpoint){ shippingAmount.textContent=pending; grandTotal.textContent=pending; return; }
+    shippingAmount.textContent=pending; grandTotal.textContent=pending;
+    try {
+      const response=await fetch(endpoint,{method:'POST',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify({country})});
+      const quote=await response.json();
+      if (sequence!==quoteSequence || countryInput.value.trim()!==country) return;
+      if (!response.ok || quote.currency!=='EUR' || !Number.isInteger(quote.shippingCents) || quote.shippingCents<0){ shippingAmount.textContent=uiTxt('shipping_unavailable'); grandTotal.textContent='—'; return; }
+      const totals=cartTotals(getAppliedCoupon(),quote.shippingCents/100);
+      shippingAmount.textContent=money(totals.shipping,cur);
+      grandTotal.textContent=money(totals.totalFinal,cur);
+    } catch {
+      if (sequence===quoteSequence){ shippingAmount.textContent=pending; grandTotal.textContent=pending; }
+    }
+  }
+  countryInput.addEventListener('change',refreshShippingQuote);
+  countryInput.addEventListener('blur',refreshShippingQuote);
 
   // ---- Coupon ----
   const couponInput = document.getElementById('coCoupon');
@@ -1062,6 +1101,30 @@ function focusFirstError(form){
   if (first){ first.focus(); }
 }
 
+async function startStripeCheckout(customer, cart, note, btn){
+  if (!CONFIG.stripeCheckoutURL) throw new Error('Stripe checkout is not configured');
+  if (getAppliedCoupon()) throw new Error('Coupon codes are not available on card checkout yet. Remove the code or contact us.');
+  const requestBody = {
+    customer: {
+      name:customer.name, email:customer.email, phone:customer.phone,
+      country:customer.country, address:[customer.address,customer.apt].filter(Boolean).join(', '),
+      city:customer.city, postalCode:customer.zip,
+    },
+    items:cart.map(i=>({handle:i.handle, options:i.opts, quantity:i.qty})),
+  };
+  const response = await fetch(CONFIG.stripeCheckoutURL, {
+    method:'POST', headers:{'Content-Type':'text/plain;charset=utf-8'}, body:JSON.stringify(requestBody),
+  });
+  const result = await response.json();
+  if (!response.ok || !result.checkoutUrl){
+    if (response.status===422 && typeof result.error==='string') throw new Error(result.error);
+    throw new Error('Secure checkout could not be started. Your cart is unchanged.');
+  }
+  const checkoutURL = new URL(result.checkoutUrl);
+  if (checkoutURL.protocol !== 'https:' || checkoutURL.hostname !== 'checkout.stripe.com') throw new Error('Invalid checkout destination.');
+  window.location.assign(checkoutURL.href);
+}
+
 /* Send the order to the backend (Google Apps Script) and fall back to WhatsApp. */
 function placeOrder(btn){
   const cur = 'EUR'; // settlement currency
@@ -1089,7 +1152,9 @@ function placeOrder(btn){
   ).join('\n');
   const addressLine = [data.address, data.apt].filter(Boolean).join(', ') + ', ' + data.zip + ' ' + data.city + (data.district?', '+data.district:'') + (data.country?', '+data.country:'');
 
-  const text = `NOVO PEDIDO DE PAGAMENTO (Asheerah Hair)\n${lines}\n\nSubtotal original: ${money(t.subtotalOriginal,'EUR')}\nDesconto: −${money(t.totalDiscount,'EUR')}\nEnvio: ${money(t.shipping,'EUR')}\nTOTAL ESTIMADO: ${money(t.totalFinal,'EUR')}\nMétodo preferido: ${method}${mbwayPhone?'\nTelemóvel MB Way: '+mbwayPhone:''}\n\nCliente: ${data.name}\nEmail: ${data.email}\nTelefone: ${data.phone}\nMorada: ${addressLine}${data.notes?'\nNotas: '+data.notes:''}`;
+  const shippingText = t.shippingKnown ? money(t.shipping,'EUR') : uiTxt('shipping_calc_checkout');
+  const totalText = t.shippingKnown ? money(t.totalFinal,'EUR') : uiTxt('shipping_calc_checkout');
+  const text = `NOVO PEDIDO DE PAGAMENTO (Asheerah Hair)\n${lines}\n\nSubtotal original: ${money(t.subtotalOriginal,'EUR')}\nDesconto: −${money(t.totalDiscount,'EUR')}\nEnvio: ${shippingText}\nTOTAL ESTIMADO: ${totalText}\nMétodo preferido: ${method}${mbwayPhone?'\nTelemóvel MB Way: '+mbwayPhone:''}\n\nCliente: ${data.name}\nEmail: ${data.email}\nTelefone: ${data.phone}\nMorada: ${addressLine}${data.notes?'\nNotas: '+data.notes:''}`;
 
   const payload = {
     type:'order',
@@ -1097,8 +1162,8 @@ function placeOrder(btn){
     method, mbwayPhone,
     items,
     subtotalEur: t.subtotalOriginal,
-    shippingEur: t.shipping,
-    totalEur: t.totalFinal,
+    shippingEur: t.shippingKnown ? t.shipping : null,
+    totalEur: t.shippingKnown ? t.totalFinal : null,
     totalDiscountEur: t.totalDiscount,
     coupon: coupon ? coupon.code : null,
     currency:'EUR',
@@ -1106,10 +1171,18 @@ function placeOrder(btn){
     // Values below are what the browser computed. The backend MUST re-validate
     // prices server-side before treating the order as paid. This frontend value
     // is informational only and never authoritative.
-    clientComputed:{ subtotalOriginalEur:t.subtotalOriginal, totalDiscountEur:t.totalDiscount, totalFinalEur:t.totalFinal },
+    clientComputed:{ subtotalOriginalEur:t.subtotalOriginal, totalDiscountEur:t.totalDiscount, totalFinalEur:t.shippingKnown?t.totalFinal:null },
   };
 
   const note = document.getElementById('orderNote');
+  if (method === 'stripe') {
+    startStripeCheckout(data, cart, note, btn).catch(err=>{
+      if (note){ note.textContent = err.message; note.className='order-note error'; }
+      if (btn){ btn.textContent = uiTxt('place_order'); btn.disabled = false; }
+      checkoutSubmitting = false;
+    });
+    return;
+  }
   const fallback = () => {
     window.open(`https://wa.me/${CONFIG.whatsapp}?text=${encodeURIComponent(text)}`,'_blank');
     if (note){ note.textContent = uiTxt('order_saved_confirm'); note.className='order-note ok'; }

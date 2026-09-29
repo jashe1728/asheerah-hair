@@ -8,8 +8,8 @@ window.CONFIG = {
   // All charges settle in EUR; this is display-only.
   rates: { EUR: 1, USD: 1.08, GBP: 0.85 },
 
-  // Fixed shipping (EUR). Confirm the final shipping price before launch.
-  shipping: 30,
+  // Shipping is destination-based; the Worker provides the quote at checkout.
+  shipping: null,
   shippingEta: '6–10 days',
 
   // Taxes rate (0 = none currently). Set to e.g. 0.23 (23% IVA) when applicable.
@@ -44,6 +44,7 @@ window.CONFIG = {
 
   // ---- Payment keys (PUBLISHABLE only — never put secret keys here) ----
   // Stripe: Dashboard → Developers → API keys → Publishable key (pk_live_...)
+  stripeCheckoutURL: '', // Deployed Worker endpoint only; never put a secret here.
   stripePublishable: '',
   // PayPal: Developer → Apps & Credentials → Client ID
   paypalClientId: '',
