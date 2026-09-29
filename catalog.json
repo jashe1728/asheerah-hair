@@ -14547,8 +14547,9 @@
       "category": "bundles",
       "description": "Pixie Curly bundles, sold as a 300g set of 3 pieces. Select your preferred length.",
       "images": [
-        "https://cdn.shopify.com/s/files/1/1018/3927/4361/files/photo_5893160885415513837_y.jpg",
-        "https://cdn.shopify.com/s/files/1/1018/3927/4361/files/photo_5893160885415513838_y.jpg"
+        "assets/img/pixie-curly-bundles-1.webp",
+        "assets/img/pixie-curly-bundles-2.webp",
+        "assets/img/pixie-curly-bundles-3.webp"
       ],
       "type": "Pixie Curly Bundles",
       "options": [
