@@ -23,13 +23,15 @@ var I18N = {
   announce: { pt:'Use Com Confiança', en:'Shop With Confidence', es:'Compre Con Confianza', de:'Kaufen Sie Mit Vertrauen', fr:'Achetez En Toute Confiance', it:'Acquista Con Fiducia' },
   announce2: { pt:'Cabelo Humano Virgem 100%', en:'100% Virgin Human Hair', es:'Cabello Humano Virgen 100%', de:'100% Echtes Menschenhaar', fr:'Cheveux Humains Vierges 100%', it:'Capelli Umani Vergini 100%' },
   announce3: { pt:'Envio para países selecionados', en:'Shipping to selected countries', es:'Envío a países seleccionados', de:'Versand in ausgewählte Länder', fr:'Livraison vers certains pays', it:'Spedizione in paesi selezionati' },
+  scroll_more: { pt:'Ver mais', en:'Scroll', es:'Ver más', de:'Weiter', fr:'Voir plus', it:'Scorri' },
+  all_products: { pt:'Todos os produtos', en:'All products', es:'Todos los productos', de:'Alle Produkte', fr:'Tous les produits', it:'Tutti i prodotti' },
   currency: { pt:'EUR / PT-PT', en:'EUR / PT-PT', es:'EUR / ES-ES', de:'EUR / DE-DE', fr:'EUR / FR-FR', it:'EUR / IT-IT' },
 
   nav_home:   { pt:'Início', en:'Home', es:'Inicio', de:'Start', fr:'Accueil', it:'Home' },
   nav_wigs:   { pt:'Perucas', en:'Wigs', es:'Pelucas', de:'Perücken', fr:'Perruques', it:'Parrucche' },
   nav_bundles:{ pt:'Tissagem', en:'Bundles', es:'Paquetes', de:'Bündel', fr:'Paquets', it:'Pacchetti' },
   nav_crochet:{ pt:'Cabelo de Crochê', en:'Crochet Hair', es:'Cabello de Crochet', de:'Gehäkeltes Haar', fr:'Cheveux au Crochet', it:'Capelli All\u2019uncinetto' },
-  nav_faq:    { pt:'FAQ', en:'FAQ', es:'Preguntas', de:'FAQ', fr:'FAQ', it:'FAQ' },
+  nav_faq:    { pt:'Perguntas frequentes', en:'FAQ', es:'Preguntas', de:'FAQ', fr:'FAQ', it:'FAQ' },
   nav_contact:{ pt:'Contacte-nos', en:'Contact', es:'Contáctenos', de:'Kontakt', fr:'Contact', it:'Contattaci' },
 
   hero_luxury: { pt:'Cabelo de Luxo.', en:'Luxury Hair.', es:'Cabello de Lujo.', de:'Luxuriöses Haar.', fr:'Cheveux de Luxe.', it:'Capelli di Lusso.' },
@@ -55,14 +57,14 @@ var I18N = {
   feat_ship: { pt:'Envio para países selecionados', en:'Shipping to Selected Countries', es:'Envío a países seleccionados', de:'Versand in ausgewählte Länder', fr:'Livraison vers certains pays', it:'Spedizione in paesi selezionati' },
   feat_ship_d: { pt:'Consulta os prazos de entrega por região na política de envio.', en:'See regional delivery estimates on our Shipping Policy page.', es:'Consulta los plazos de entrega por región en nuestra política de envío.', de:'Die regionalen Lieferzeiten findest du in unserer Versandrichtlinie.', fr:'Consultez les délais régionaux sur notre politique de livraison.', it:'Consulta i tempi di consegna regionali nella nostra politica di spedizione.' },
   feat_pay:  { pt:'Opções de Pagamento', en:'Payment Options', es:'Opciones de Pago', de:'Zahlungsoptionen', fr:'Options de Paiement', it:'Opzioni di Pagamento' },
-  feat_pay_d:{ pt:'Escolhe o método preferido no checkout. A configuração está a ser finalizada.', en:'Choose your preferred method at checkout. Setup is being finalised.', es:'Elige tu método en el checkout. La configuración está en curso.', de:'Wähle deine bevorzugte Methode. Die Einrichtung wird abgeschlossen.', fr:'Choisissez votre méthode. La configuration est en cours.', it:'Scegli il tuo metodo. La configurazione è in corso.' },
+  feat_pay_d:{ pt:'Escolhe o método preferido ao finalizar a compra. A configuração está a ser finalizada.', en:'Choose your preferred method at checkout. Setup is being finalised.', es:'Elige tu método en el checkout. La configuración está en curso.', de:'Wähle deine bevorzugte Methode. Die Einrichtung wird abgeschlossen.', fr:'Choisissez votre méthode. La configuration est en cours.', it:'Scegli il tuo metodo. La configurazione è in corso.' },
   feat_style:{ pt:'Feito para o Teu Estilo', en:'Made for Your Style', es:'Hecho para tu Estilo', de:'Für deinen Stil', fr:'Fait pour Votre Style', it:'Fatto per il Tuo Stile' },
-  feat_style_d:{ pt:'Escolhe o comprimento, lace e densidade.', en:'Choose your length, lace and density.', es:'Elige tu largo, lace y densidad.', de:'Wählen Sie Länge, Lace und Dichte.', fr:'Choisissez votre longueur, lace et densité.', it:'Scegli lunghezza, lace e densità.' },
+  feat_style_d:{ pt:'Escolhe o comprimento, o tipo de renda e a densidade.', en:'Choose your length, lace and density.', es:'Elige tu largo, lace y densidad.', de:'Wählen Sie Länge, Lace und Dichte.', fr:'Choisissez votre longueur, lace et densité.', it:'Scegli lunghezza, lace e densità.' },
 
   ig_follow: { pt:'Segue a Nossa Jornada', en:'Follow Our Hair Journey', es:'Sigue Nuestro Viaje', de:'Folge Unserer Reise', fr:'Suivez Notre Parcours', it:'Segui il Nostro Viaggio' },
   ig_view:   { pt:'Ver Mais no Instagram', en:'View More on Instagram', es:'Ver Más en Instagram', de:'Mehr Auf Instagram', fr:'Voir Plus Sur Instagram', it:'Guarda di Più su Instagram' },
 
-  reviews_label:{ pt:'Feedback de Clientes', en:'Customer Feedback', es:'Opiniones de Clientes', de:'Kundenfeedback', fr:'Retours Clients', it:'Feedback dei Clienti' },
+  reviews_label:{ pt:'Opiniões de clientes', en:'Customer Feedback', es:'Opiniones de Clientes', de:'Kundenfeedback', fr:'Retours Clients', it:'Feedback dei Clienti' },
   real_reviews:{ pt:'O que as Clientes Dizem', en:'What Customers Say', es:'Lo que Dicen las Clientas', de:'Was Kundinnen Sagen', fr:'Ce que Disent les Clientes', it:'Cosa Dicono le Clienti' },
   you_may_also_like:{ pt:'Também podes gostar', en:'You may also like', es:'También te puede gustar', de:'Das könnte dir auch gefallen', fr:'Vous aimerez peut-être aussi', it:'Potrebbe piacerti anche' },
   recommended_hair:{ pt:'Descobre mais produtos', en:'Discover more products', es:'Descubre más productos', de:'Weitere Produkte entdecken', fr:'Découvrez plus de produits', it:'Scopri altri prodotti' },
@@ -73,7 +75,7 @@ var I18N = {
   review_text_ph:{ pt:'Escreve a tua experiência com este produto', en:'Tell us about your experience with this product', es:'Cuéntanos tu experiencia con este producto', de:'Teile deine Erfahrung mit diesem Produkt', fr:'Parlez-nous de votre expérience avec ce produit', it:'Raccontaci la tua esperienza con questo prodotto' },
   submit_review:{ pt:'Adicionar avaliação', en:'Add review', es:'Añadir opinión', de:'Bewertung hinzufügen', fr:'Ajouter un avis', it:'Aggiungi recensione' },
   review_note:{ pt:'A avaliação fica guardada neste dispositivo.', en:'Your review is saved on this device.', es:'Tu opinión se guarda en este dispositivo.', de:'Deine Bewertung wird auf diesem Gerät gespeichert.', fr:'Votre avis est enregistré sur cet appareil.', it:'La tua recensione viene salvata su questo dispositivo.' },
-  customer_review:{ pt:'Feedback de cliente', en:'Customer feedback', es:'Opinión de cliente', de:'Kundenfeedback', fr:'Avis client', it:'Feedback del cliente' },
+  customer_review:{ pt:'Opinião de cliente', en:'Customer feedback', es:'Opinión de cliente', de:'Kundenfeedback', fr:'Avis client', it:'Feedback del cliente' },
   reviews_empty:{ pt:'Ainda não existem avaliações para este produto.', en:'There are no reviews for this product yet.', es:'Todavía no hay opiniones sobre este producto.', de:'Für dieses Produkt gibt es noch keine Bewertungen.', fr:'Aucun avis pour ce produit pour le moment.', it:'Non ci sono ancora recensioni per questo prodotto.' },
 
   featured_label:{ pt:'Começa Aqui', en:'Start Here', es:'Empieza Aquí', de:'Hier Beginnen', fr:'Commencez Ici', it:'Inizia Qui' },
@@ -86,7 +88,7 @@ var I18N = {
   luxury_bundles:{ pt:'Tissagem de Luxo', en:'Luxury Bundles', es:'Paquetes de Lujo', de:'Luxus-Bündel', fr:'Paquets de Luxe', it:'Pacchetti di Lusso' },
   crochet_hair:{ pt:'Cabelo de Crochê', en:'Crochet Hair', es:'Cabello de Crochet', de:'Gehäkeltes Haar', fr:'Cheveux au Crochet', it:'Capelli all\u2019uncinetto' },
   promo_wigs: { pt:'PERUCAS', en:'WIGS', es:'PELUCAS', de:'PERÜCKEN', fr:'PERRUQUES', it:'PARRUCCHE' },
-  promo_wigs_sub: { pt:'Perucas de lace para um look impecável', en:'Lace wigs for a flawless look', es:'Pelucas de lace para un look impecable', de:'Lace-Perücken für einen makellosen Look', fr:'Perruques lace pour un look impeccable', it:'Parrucche lace per un look impeccabile' },
+  promo_wigs_sub: { pt:'Perucas de renda para um visual impecável', en:'Lace wigs for a flawless look', es:'Pelucas de lace para un look impecable', de:'Lace-Perücken für einen makellosen Look', fr:'Perruques lace pour un look impeccable', it:'Parrucche lace per un look impeccabile' },
   promo_bundles: { pt:'TISSAGEM', en:'BUNDLES', es:'PAQUETES', de:'BÜNDEL', fr:'PAQUETS', it:'PACCHETTI' },
   promo_bundles_sub: { pt:'Tissagem premium para todos os estilos', en:'Premium bundles for every style', es:'Paquetes premium para cada estilo', de:'Premium-Bündel für jeden Stil', fr:'Paquets premium pour chaque style', it:'Pacchetti premium per ogni stile' },
   promo_crochet: { pt:'CABELO DE CROCHÊ', en:'CROCHET HAIR', es:'CABELLO DE CROCHET', de:'GEHÄKELTES HAAR', fr:'CHEVEUX AU CROCHET', it:'CAPELLI ALL\u2019UNCINETTO' },
@@ -95,7 +97,7 @@ var I18N = {
 
   your_cart: { pt:'O Teu Carrinho', en:'Your Cart', es:'Tu Carrito', de:'Dein Warenkorb', fr:'Votre Panier', it:'Il Tuo Carrello' },
   cart_empty:{ pt:'O teu carrinho está vazio.', en:'Your cart is empty.', es:'Tu carrito está vacío.', de:'Dein Warenkorb ist leer.', fr:'Votre panier est vide.', it:'Il tuo carrello è vuoto.' },
-  checkout:  { pt:'Checkout', en:'Checkout', es:'Pago', de:'Zur Kasse', fr:'Commander', it:'Pagamento' },
+  checkout:  { pt:'Finalizar compra', en:'Checkout', es:'Pago', de:'Zur Kasse', fr:'Commander', it:'Pagamento' },
   order_summary:{ pt:'Resumo da Encomenda', en:'Order summary', es:'Resumen del Pedido', de:'Bestellübersicht', fr:'Récapitulatif de Commande', it:'Riepilogo Ordine' },
   items:     { pt:'Artigos', en:'Items', es:'Artículos', de:'Artikel', fr:'Articles', it:'Articoli' },
   shipping:  { pt:'Envio', en:'Shipping', es:'Envío', de:'Versand', fr:'Livraison', it:'Spedizione' },
@@ -103,7 +105,7 @@ var I18N = {
   subtotal:  { pt:'Subtotal', en:'Subtotal', es:'Subtotal', de:'Zwischensumme', fr:'Sous-total', it:'Subtotale' },
   delivery_details:{ pt:'Dados de Entrega', en:'Delivery details', es:'Datos de Entrega', de:'Lieferdaten', fr:'Détails de Livraison', it:'Dettagli di Consegna' },
   full_name: { pt:'Nome completo', en:'Full name', es:'Nombre completo', de:'Vollständiger Name', fr:'Nom complet', it:'Nome completo' },
-  email_tracking:{ pt:'Email (para rastreamento)', en:'Email (for tracking)', es:'Email (para seguimiento)', de:'E-Mail (für Sendungsverfolgung)', fr:'Email (pour le suivi)', it:'Email (per il tracciamento)' },
+  email_tracking:{ pt:'E-mail (para acompanhamento)', en:'Email (for tracking)', es:'Email (para seguimiento)', de:'E-Mail (für Sendungsverfolgung)', fr:'Email (pour le suivi)', it:'Email (per il tracciamento)' },
   phone:     { pt:'Telefone', en:'Phone', es:'Teléfono', de:'Telefon', fr:'Téléphone', it:'Telefono' },
   address:   { pt:'Morada de entrega', en:'Delivery address', es:'Dirección de entrega', de:'Lieferadresse', fr:'Adresse de livraison', it:'Indirizzo di consegna' },
   payment:   { pt:'Pagamento', en:'Payment', es:'Pago', de:'Zahlung', fr:'Paiement', it:'Pagamento' },
@@ -119,13 +121,13 @@ var I18N = {
   not_found: { pt:'Produto não encontrado.', en:'Product not found.', es:'Producto no encontrado.', de:'Produkt nicht gefunden.', fr:'Produit introuvable.', it:'Prodotto non trovato.' },
 
   faq_title: { pt:'Perguntas Frequentes', en:'Frequently Asked Questions', es:'Preguntas Frecuentes', de:'Häufig Gestellte Fragen', fr:'Questions Fréquentes', it:'Domande Frequenti' },
-  faq_hint:  { pt:'Não encontraste resposta? Usa o assistente de chat ou contacta-nos.', en:"Can't find an answer? Use the chat assistant or contact us.", es:'¿No encuentras respuesta? Usa el asistente o contáctanos.', de:'Keine Antwort gefunden? Nutze den Chat-Assistenten oder kontaktiere uns.', fr:'Pas de réponse ? Utilisez l\u2019assistant ou contactez-nous.', it:'Non trovi risposta? Usa l\u2019assistente o contattaci.' },
+  faq_hint:  { pt:'Não encontraste resposta? Usa o assistente virtual ou contacta-nos.', en:"Can't find an answer? Use the chat assistant or contact us.", es:'¿No encuentras respuesta? Usa el asistente o contáctanos.', de:'Keine Antwort gefunden? Nutze den Chat-Assistenten oder kontaktiere uns.', fr:'Pas de réponse ? Utilisez l\u2019assistant ou contactez-nous.', it:'Non trovi risposta? Usa l\u2019assistente o contattaci.' },
 
   contact_title:{ pt:'Contacta-nos', en:'Contact Us', es:'Contáctenos', de:'Kontaktieren Sie Uns', fr:'Contactez-Nous', it:'Contattaci' },
   contact_blurb:{ pt:'Gostaríamos de ouvir de ti! Se tiveres dúvidas sobre os produtos ou precisares de ajuda com uma encomenda, contacta-nos.', en:"We'd love to hear from you! If you have any questions or need order assistance, contact us.", es:'¡Nos encantaría saber de ti! Si tienes dudas o necesitas ayuda con un pedido, contáctanos.', de:'Wir freuen uns auf Sie! Bei Fragen oder Hilfe mit einer Bestellung kontaktieren Sie uns.', fr:'Nous serions ravis de vous entendre ! Pour toute question ou aide, contactez-nous.', it:'Saremo felici di sentirvi! Per domande o assistenza, contattateci.' },
   get_in_touch:{ pt:'Fala Connosco', en:'Get in Touch', es:'Ponte en Contacto', de:'Kontakt Aufnehmen', fr:'Prenez Contact', it:'Mettiti in Contatto' },
   send_msg:  { pt:'Enviar Mensagem', en:'Send Message', es:'Enviar Mensaje', de:'Nachricht Senden', fr:'Envoyer le Message', it:'Invia Messaggio' },
-  email:     { pt:'Email', en:'Email', es:'Email', de:'E-Mail', fr:'Email', it:'Email' },
+  email:     { pt:'E-mail', en:'Email', es:'Email', de:'E-Mail', fr:'Email', it:'Email' },
   comment:   { pt:'Comentário', en:'Comment', es:'Comentario', de:'Kommentar', fr:'Commentaire', it:'Commento' },
 
   about_title:{ pt:'Sobre Nós', en:'About Us', es:'Sobre Nosotros', de:'Über Uns', fr:'À Propos', it:'Chi Siamo' },
@@ -151,7 +153,7 @@ var I18N = {
   // Newsletter
   nl_title:{ pt:'Junta-te à Nossa Lista', en:'Join Our List', es:'Únete a Nuestra Lista', de:'Werde Teil Unserer Liste', fr:'Rejoignez Notre Liste', it:'Unisciti alla Nostra Lista' },
   nl_sub:{ pt:'Recebe novidades, promoções e dicas de cabelo em primeira mão.', en:'Get news, exclusive offers and hair tips first.', es:'Recibe noticias, ofertas exclusivas y consejos de cabello.', de:'Erhalte Neuigkeiten, exklusive Angebote und Haar-Tipps zuerst.', fr:'Recevez nos actualités, offres exclusives et conseils capillaires.', it:'Ricevi notizie, offerte esclusive e consigli per i capelli.' },
-  nl_email_ph:{ pt:'O teu email', en:'Your email', es:'Tu email', de:'Deine E-Mail', fr:'Votre email', it:'La tua email' },
+  nl_email_ph:{ pt:'O teu e-mail', en:'Your email', es:'Tu email', de:'Deine E-Mail', fr:'Votre email', it:'La tua email' },
   nl_btn:{ pt:'Subscrever', en:'Subscribe', es:'Suscribirse', de:'Abonnieren', fr:'S\u2019abonner', it:'Iscriviti' },
   nl_ok:{ pt:'Obrigado por subscrever! Fica atento.', en:'Thanks for subscribing! Watch your inbox.', es:'¡Gracias por suscribirte! Revisa tu correo.', de:'Danke fürs Abonnieren! Prüfe dein Postfach.', fr:'Merci de vous être abonné ! Vérifiez votre boîte mail.', it:'Grazie per esserti iscritto! Controlla la tua email.' },
 
@@ -181,7 +183,7 @@ var I18N = {
   remove_item:{ pt:'Remover', en:'Remove', es:'Eliminar', de:'Entfernen', fr:'Retirer', it:'Rimuovi' },
   quantity:{ pt:'Quantidade', en:'Quantity', es:'Cantidad', de:'Menge', fr:'Quantité', it:'Quantità' },
   continue_shopping:{ pt:'Continuar a comprar', en:'Continue shopping', es:'Seguir comprando', de:'Weiter einkaufen', fr:'Continuer les achats', it:'Continua lo shopping' },
-  shipping_calc_checkout:{ pt:'Calculado no checkout', en:'Calculated at checkout', es:'Calculado al pagar', de:'Wird an der Kasse berechnet', fr:'Calculé au paiement', it:'Calcolato al checkout' },
+  shipping_calc_checkout:{ pt:'Calculado ao finalizar a compra', en:'Calculated at checkout', es:'Calculado al pagar', de:'Wird an der Kasse berechnet', fr:'Calculé au paiement', it:'Calcolato al checkout' },
   shipping_eta:{ pt:'Prazo estimado', en:'Estimated delivery', es:'Entrega estimada', de:'Voraussichtliche Lieferung', fr:'Livraison estimée', it:'Consegna stimata' },
 
   // Checkout: contact & delivery
@@ -198,7 +200,7 @@ var I18N = {
   delivery_notes:{ pt:'Notas de entrega (opcional)', en:'Delivery notes (optional)', es:'Notas de entrega (opcional)', de:'Lieferhinweise (optional)', fr:'Notes de livraison (facultatif)', it:'Note di consegna (facoltative)' },
   phone_required:{ pt:'Telefone com indicativo internacional', en:'Phone with country code', es:'Teléfono con código de país', de:'Telefon mit Ländervorwahl', fr:'Téléphone avec indicatif', it:'Telefono con prefisso internazionale' },
   fld_required:{ pt:'Campo obrigatório', en:'Required field', es:'Campo obligatorio', de:'Pflichtfeld', fr:'Champ obligatoire', it:'Campo obbligatorio' },
-  fld_email:{ pt:'Introduz um email válido', en:'Enter a valid email', es:'Introduce un email válido', de:'Gültige E-Mail eingeben', fr:'Saisissez un email valide', it:'Inserisci un\u2019email valida' },
+  fld_email:{ pt:'Introduz um e-mail válido', en:'Enter a valid email', es:'Introduce un email válido', de:'Gültige E-Mail eingeben', fr:'Saisissez un email valide', it:'Inserisci un\u2019email valida' },
 
   // Checkout: totals, coupon, security
   items_summary:{ pt:'Resumo dos Artigos', en:'Items Summary', es:'Resumen de Artículos', de:'Artikelübersicht', fr:'Récapitulatif des Articles', it:'Riepilogo Articoli' },
@@ -213,7 +215,7 @@ var I18N = {
   coupon_invalid:{ pt:'Cupão inválido ou não ativo', en:'Invalid or inactive code', es:'Código inválido o inactivo', de:'Ungültiger oder inaktiver Code', fr:'Code invalide ou inactif', it:'Codice non valido o inattivo' },
   coupon_removed:{ pt:'Cupão removido', en:'Code removed', es:'Código eliminado', de:'Code entfernt', fr:'Code retiré', it:'Codice rimosso' },
   coupon_applying:{ pt:'A aplicar…', en:'Applying…', es:'Aplicando…', de:'Wird angewendet…', fr:'Application…', it:'Applicazione…' },
-  apply_coupon_hint:{ pt:'O código será validado no checkout.', en:'The code will be validated at checkout.', es:'El código se validará al pagar.', de:'Der Code wird an der Kasse validiert.', fr:'Le code sera validé au paiement.', it:'Il codice sarà validato al checkout.' },
+  apply_coupon_hint:{ pt:'O código será validado ao finalizar a compra.', en:'The code will be validated at checkout.', es:'El código se validará al pagar.', de:'Der Code wird an der Kasse validiert.', fr:'Le code sera validé au paiement.', it:'Il codice sarà validato al checkout.' },
 
   // Checkout: payment & security
   payment_method:{ pt:'Método de Pagamento', en:'Payment Method', es:'Método de Pago', de:'Zahlungsmethode', fr:'Mode de Paiement', it:'Metodo di Pagamento' },
@@ -229,16 +231,16 @@ var I18N = {
   pay_preview:{ pt:'Disponível após configuração', en:'Available after setup', es:'Disponible después de la configuración', de:'Nach der Einrichtung verfügbar', fr:'Disponible après configuration', it:'Disponibile dopo la configurazione' },
   pay_ready:{ pt:'Disponível', en:'Available', es:'Disponible', de:'Verfügbar', fr:'Disponible', it:'Disponibile' },
   mbway_phone_hint:{ pt:'Telemóvel MB Way (com +351)', en:'MB Way phone (with +351)', es:'Teléfono MB Way (con +351)', de:'MB-Way-Telefon (mit +351)', fr:'Téléphone MB Way (avec +351)', it:'Telefono MB Way (con +351)' },
-  pay_config_note:{ pt:'Este método de pagamento está a ser configurado. A tua encomenda será confirmada por email/WhatsApp por agora.', en:'This payment method is being configured. Your order will be confirmed by email/WhatsApp for now.', es:'Este método de pago se está configurando. Tu pedido se confirmará por email/WhatsApp por ahora.', de:'Diese Zahlungsmethode wird gerade eingerichtet. Ihre Bestellung wird vorerst per E-Mail/WhatsApp bestätigt.', fr:'Ce moyen de paiement est en cours de configuration. Votre commande sera confirmée par email/WhatsApp pour le moment.', it:'Questo metodo di pagamento è in configurazione. Il tuo ordine sarà confermato via email/WhatsApp per ora.' },
+  pay_config_note:{ pt:'Este método de pagamento está a ser configurado. A tua encomenda será confirmada por e-mail/WhatsApp por agora.', en:'This payment method is being configured. Your order will be confirmed by email/WhatsApp for now.', es:'Este método de pago se está configurando. Tu pedido se confirmará por email/WhatsApp por ahora.', de:'Diese Zahlungsmethode wird gerade eingerichtet. Ihre Bestellung wird vorerst per E-Mail/WhatsApp bestätigt.', fr:'Ce moyen de paiement est en cours de configuration. Votre commande sera confirmée par email/WhatsApp pour le moment.', it:'Questo metodo di pagamento è in configurazione. Il tuo ordine sarà confermato via email/WhatsApp per ora.' },
   secure_checkout_note:{ pt:'Este é um pedido de pagamento. Nada é cobrado até confirmarmos os dados contigo.', en:'This is a payment request. Nothing is charged until we confirm the details with you.', es:'Esta es una solicitud de pago. No se cobra nada hasta confirmar los datos contigo.', de:'Dies ist eine Zahlungsanfrage. Es wird nichts berechnet, bevor wir die Daten bestätigen.', fr:'Ceci est une demande de paiement. Aucun montant ne sera débité avant confirmation.', it:'Questa è una richiesta di pagamento. Non verrà addebitato nulla prima della conferma.' },
   order_submitting:{ pt:'A processar…', en:'Processing…', es:'Procesando…', de:'Verarbeitung…', fr:'Traitement…', it:'Elaborazione…' },
-  order_saved_confirm:{ pt:'Pedido recebido. Confirmaremos o método e os dados de pagamento por email/WhatsApp antes de concluir a encomenda.', en:'Request received. We will confirm the payment method and details by email/WhatsApp before completing the order.', es:'Solicitud recibida. Confirmaremos el método y los datos de pago por email/WhatsApp antes de completar el pedido.', de:'Anfrage erhalten. Wir bestätigen Zahlungsmethode und Daten per E-Mail/WhatsApp.', fr:'Demande reçue. Nous confirmerons le mode et les informations de paiement par email/WhatsApp.', it:'Richiesta ricevuta. Confermeremo metodo e dati di pagamento via email/WhatsApp.' },
+  order_saved_confirm:{ pt:'Pedido recebido. Confirmaremos o método e os dados de pagamento por e-mail/WhatsApp antes de concluir a encomenda.', en:'Request received. We will confirm the payment method and details by email/WhatsApp before completing the order.', es:'Solicitud recibida. Confirmaremos el método y los datos de pago por email/WhatsApp antes de completar el pedido.', de:'Anfrage erhalten. Wir bestätigen Zahlungsmethode und Daten per E-Mail/WhatsApp.', fr:'Demande reçue. Nous confirmerons le mode et les informations de paiement par email/WhatsApp.', it:'Richiesta ricevuta. Confermeremo metodo e dati di pagamento via email/WhatsApp.' },
   option_hair_length: { pt:'Comprimento do Cabelo', en:'Hair Length', es:'Longitud del Cabello', de:'Haarlänge', fr:'Longueur des Cheveux', it:'Lunghezza dei Capelli' },
-  option_lace: { pt:'Tipo de Lace', en:'Lace Type', es:'Tipo de Lace', de:'Lace-Typ', fr:'Type de Lace', it:'Tipo di Lace' },
+  option_lace: { pt:'Tipo de renda', en:'Lace Type', es:'Tipo de Lace', de:'Lace-Typ', fr:'Type de Lace', it:'Tipo di Lace' },
   option_hair_density: { pt:'Densidade do Cabelo', en:'Hair Density', es:'Densidad del Cabello', de:'Haardichte', fr:'Densité des Cheveux', it:'Densità dei Capelli' },
   option_cap_size: { pt:'Tamanho da Touca', en:'Wig Cap Size', es:'Talla de la Peluca', de:'Perückenkappengröße', fr:'Taille de Bonnet', it:'Taglia della Cuffia' },
   option_weight: { pt:'Peso', en:'Weight', es:'Peso', de:'Gewicht', fr:'Poids', it:'Peso' },
-  option_bundle_weight: { pt:'Peso do Bundle', en:'Bundle Weight', es:'Peso del Paquete', de:'Bündelgewicht', fr:'Poids du Lot', it:'Peso del Set' },
+  option_bundle_weight: { pt:'Peso da tissagem', en:'Bundle Weight', es:'Peso del Paquete', de:'Bündelgewicht', fr:'Poids du Lot', it:'Peso del Set' },
   cap_small: { pt:'Pequeno', en:'Small', es:'Pequeña', de:'Klein', fr:'Petite', it:'Piccola' },
   cap_medium: { pt:'Médio', en:'Medium', es:'Mediana', de:'Mittel', fr:'Moyenne', it:'Media' },
   cap_large: { pt:'Grande', en:'Large', es:'Grande', de:'Groß', fr:'Grande', it:'Grande' },
@@ -341,4 +343,225 @@ function buildLangDropdown(){
 document.addEventListener('DOMContentLoaded', function(){
   applyLangUI();
   buildLangDropdown();
+});
+
+/* Portuguese copy for legacy page content and catalogue descriptions.
+ * Exact text matches keep product names and other languages unchanged. */
+var PT_LEGACY_COPY = new Map([
+  // Shared controls and homepage
+  ["Search", "Pesquisar"], ["Cart", "Carrinho"], ["Chat", "Conversa"],
+  ["Chat on WhatsApp", "Conversar no WhatsApp"], ["Menu", "Menu"],
+  ["About Us", "Sobre nós"], ["Customer feedback", "Opinião de cliente"],
+  ["Amazing, love it. Alta qualidade.", "Adorei! Excelente qualidade."],
+  ["Best hair of my life, super soft, smooth and shiny.", "O melhor cabelo que já tive: muito macio, suave e brilhante."],
+  ["Straight", "Liso"], ["Body Wave", "Ondas suaves"], ["Deep Wave", "Ondas profundas"],
+  ["Loose Wave", "Ondas soltas"], ["Water Wave", "Ondas de água"], ["Burmese Curly", "Caracóis birmaneses"],
+  ["wigs", "perucas"], ["bundles", "tissagem"], ["crochet", "crochê"],
+  ["Product images", "Imagens do produto"], ["Shipping", "Envio"],
+  ["Returns", "Devoluções"], ["Hair types", "Tipos de cabelo"], ["Contact", "Contacto"],
+  ["Asheerah Hair Assistant", "Assistente Asheerah Hair"],
+  ["Ask a question…", "Faz uma pergunta…"], ["Send", "Enviar"],
+  ["View", "Ver"], ["image", "imagem"], ["out of 5 stars", "de 5 estrelas"],
+  ["Wigs", "Perucas"], ["Bundles", "Tissagem"], ["Crochet Hair", "Cabelo de crochê"],
+  ["Luxury human hair", "Cabelo humano de luxo"], ["6–10 days", "6 a 10 dias"],
+  ["Email", "E-mail"], ["Email*", "E-mail*"],
+  ["Cart — Asheerah Hair", "Carrinho — Asheerah Hair"],
+  ["Checkout — Asheerah Hair", "Finalizar compra — Asheerah Hair"],
+  ["FAQ — Asheerah Hair", "Perguntas frequentes — Asheerah Hair"],
+  ["Asheerah Hair — Luxury 100% Virgin Human Hair", "Asheerah Hair — Cabelo humano virgem 100% de luxo"],
+  ["Product — Asheerah Hair", "Produto — Asheerah Hair"],
+  ["Shop — Asheerah Hair", "Loja — Asheerah Hair"],
+  ["About Us — Asheerah Hair", "Sobre nós — Asheerah Hair"],
+  ["Contact Us — Asheerah Hair", "Contacta-nos — Asheerah Hair"],
+  ["Privacy Policy — Asheerah Hair", "Política de privacidade — Asheerah Hair"],
+  ["Return & Refund Policy — Asheerah Hair", "Política de devoluções e reembolsos — Asheerah Hair"],
+  ["Shipping Policy — Asheerah Hair", "Política de envio — Asheerah Hair"],
+  ["Terms of Service — Asheerah Hair", "Termos de utilização — Asheerah Hair"],
+  ["300g (3 pcs)", "300 g (3 peças)"],
+
+  // About
+  ["At Asheerah Hair, we believe that beauty begins with confidence. Our mission is to provide premium-quality human hair products that empower women to express themselves with elegance, sophistication, and authenticity.", "Na Asheerah Hair, acreditamos que a beleza começa com a confiança. A nossa missão é oferecer produtos de cabelo humano de qualidade superior que ajudem as mulheres a expressar-se com elegância, sofisticação e autenticidade."],
+  ["We specialize in luxury wigs, virgin hair bundles, and crochet human hair, carefully selected to deliver exceptional softness, durability, and a natural look. Every product is crafted to meet the highest standards of quality, ensuring that our customers enjoy long-lasting beauty and effortless styling.", "Somos especializados em perucas de luxo, tissagem de cabelo virgem e cabelo humano para crochê, cuidadosamente selecionados pela sua suavidade, durabilidade e aparência natural. Cada produto segue elevados padrões de qualidade, para que as nossas clientes desfrutem de beleza duradoura e penteados fáceis de criar."],
+  ["From sleek straight textures to glamorous waves and curls, our collections are designed to complement every personality and occasion. We are committed to offering premium hair solutions that make every woman feel confident, beautiful, and empowered.", "Das texturas lisas às ondas e aos caracóis, as nossas coleções foram pensadas para diferentes personalidades e ocasiões. Queremos oferecer soluções de cabelo de qualidade superior que façam cada mulher sentir-se confiante e bonita."],
+  ["Why Choose Asheerah Hair?", "Porquê escolher a Asheerah Hair?"],
+  ["✓ Premium Quality Human Hair", "✓ Cabelo humano de qualidade superior"],
+  ["✓ Soft, Natural & Long-Lasting", "✓ Macio, natural e duradouro"],
+  ["✓ Luxury Textures & Versatile Styling", "✓ Texturas de luxo e penteados versáteis"],
+  ["✓ Carefully Curated for Beauty & Confidence", "✓ Selecionado para realçar a beleza e a confiança"],
+  ["✓ Exceptional Customer Experience", "✓ Excelente experiência de compra"],
+  ["At Asheerah Hair, we don't just sell hair — we create experiences that inspire confidence and celebrate timeless beauty.", "Na Asheerah Hair, fazemos mais do que vender cabelo: criamos experiências que inspiram confiança e celebram a beleza intemporal."],
+
+  // Contact
+  ["We'd love to hear from you! If you have any questions about our products or need assistance with an order, feel free to contact us.", "Gostaríamos de ouvir de ti! Se tiveres dúvidas sobre os nossos produtos ou precisares de ajuda com uma encomenda, contacta-nos."],
+  ["Customer Support", "Apoio ao cliente"],
+  ["Product inquiries · Order updates & tracking · Shipping information · Returns & replacements", "Dúvidas sobre produtos · Atualizações e acompanhamento de encomendas · Informações de envio · Devoluções e substituições"],
+  ["We aim to respond as quickly as possible.", "Procuramos responder o mais rapidamente possível."],
+  ["Name", "Nome"], ["Phone", "Telefone"], ["Comment", "Mensagem"], ["Send Message", "Enviar mensagem"],
+
+  // FAQ
+  ["1. What type of hair does Asheerah Hair sell?", "1. Que tipos de cabelo vende a Asheerah Hair?"],
+  ["We offer premium-quality human hair products, including wigs, bundles, and crochet human hair in various textures and lengths.", "Oferecemos produtos de cabelo humano de qualidade superior, incluindo perucas, tissagem e cabelo humano para crochê, em várias texturas e comprimentos."],
+  ["2. Is your hair 100% human hair?", "2. O vosso cabelo é 100% humano?"],
+  ["Yes. Our products are made from high-quality human hair, designed to provide a natural look, softness, and long-lasting wear.", "Sim. Os nossos produtos são feitos de cabelo humano de alta qualidade, com aparência natural, suavidade e durabilidade."],
+  ["3. Can the hair be dyed or heat-styled?", "3. O cabelo pode ser pintado ou modelado com calor?"],
+  ["Yes. Most of our human hair products can be coloured, curled, straightened, and styled. We recommend using heat protectants and proper hair care products to maintain quality.", "Sim. A maioria dos nossos produtos de cabelo humano pode ser pintada, encaracolada, alisada e modelada. Recomendamos um protetor térmico e produtos de cuidado adequados para preservar a qualidade."],
+  ["4. How long does shipping take?", "4. Quanto tempo demora a entrega?"],
+  ["Estimated delivery is 6–10 days. You will receive tracking information by email after dispatch.", "A entrega estimada demora 6 a 10 dias. Receberás as informações de acompanhamento por e-mail após o envio."],
+  ["5. Do you ship internationally?", "5. Fazem envios internacionais?"],
+  ["Yes. We ship to selected countries listed in our", "Sim. Enviamos para os países indicados na nossa"],
+  ["shipping policy", "política de envio"],
+  ["6. Can I change or cancel my order?", "6. Posso alterar ou cancelar a minha encomenda?"],
+  ["Orders can only be changed or cancelled before they have been processed or shipped. Once processing begins, cancellations are not possible.", "As encomendas só podem ser alteradas ou canceladas antes do processamento ou envio. Depois de iniciado o processamento, não é possível cancelá-las."],
+  ["7. Do you accept returns or refunds?", "7. Aceitam devoluções ou fazem reembolsos?"],
+  ["Due to the nature of our products and our dropshipping model, all sales are final. We only provide replacements for items that arrive damaged, defective, or incorrect.", "Devido à natureza dos nossos produtos e ao nosso modelo de venda com envio direto, todas as vendas são definitivas. Só substituímos artigos que cheguem danificados, defeituosos ou incorretos."],
+  ["8. What should I do if I receive a damaged or incorrect item?", "8. O que devo fazer se receber um artigo danificado ou incorreto?"],
+  ["Contact us within 48 hours of delivery with your order number and clear photos of the item. Once approved, we'll arrange a replacement.", "Contacta-nos nas 48 horas seguintes à entrega, com o número da encomenda e fotografias nítidas do artigo. Após a aprovação do pedido, trataremos da substituição."],
+  ["9. How do I choose the right hair texture?", "9. Como escolho a textura de cabelo certa?"],
+  ["We offer Straight, Body Wave, Deep Wave, Water Wave, Loose Wave, and Burmese Curly. Use our Shop by Texture section to find the style that suits you.", "Temos texturas lisas, ondas suaves, ondas profundas, ondas de água, ondas soltas e caracóis birmaneses. Consulta a secção Comprar por textura para encontrares o estilo ideal."],
+  ["10. How can I contact Asheerah Hair?", "10. Como posso contactar a Asheerah Hair?"],
+  ["11. What payment methods are available?", "11. Que métodos de pagamento estão disponíveis?"],
+  ["Card via Stripe, PayPal, and MB WAY are being prepared. Your preferred option can be selected at checkout, and payment details are confirmed before the order is completed.", "O pagamento por cartão através da Stripe, PayPal e MB WAY está a ser preparado. Podes escolher a opção preferida ao finalizar a compra; os dados de pagamento serão confirmados antes de concluir a encomenda."],
+  ["12. What lengths and densities are available for wigs?", "12. Que comprimentos e densidades estão disponíveis para as perucas?"],
+  ["Wigs are offered in 16–32 inches, with HD lace in 5x5, 13x4, and 13x6, cap sizes Small, Medium, and Large, and densities of 180%, 200%, and 250%.", "As perucas estão disponíveis de 16 a 32 polegadas, com renda HD nos tamanhos 5x5, 13x4 e 13x6, toucas pequenas, médias e grandes e densidades de 180%, 200% e 250%."],
+
+  // Shipping policy
+  ["Shipping Policy", "Política de envio"],
+  ["The final shipping fee will be shown at checkout before the order is confirmed.", "O custo final do envio será apresentado antes de confirmares a encomenda."],
+  ["Order Cancellations", "Cancelamento de encomendas"],
+  ["Orders may be cancelled only if they have not yet been processed or shipped. Once an order has been dispatched, it can no longer be cancelled.", "As encomendas só podem ser canceladas antes do processamento ou envio. Depois da expedição, já não é possível cancelá-las."],
+  ["Exchanges & Replacements", "Trocas e substituições"],
+  ["We offer replacements only in the following situations:", "Só efetuamos substituições nas seguintes situações:"],
+  ["You received the wrong item.", "Recebeste um artigo incorreto."],
+  ["Your order arrived damaged or defective.", "A encomenda chegou danificada ou defeituosa."],
+  ["To request a replacement, please contact us within 48 hours of receiving your order and provide clear photos of the issue.", "Para pedir uma substituição, contacta-nos nas 48 horas seguintes à receção da encomenda e envia fotografias nítidas do problema."],
+  ["Customs Duties & Import Taxes", "Direitos aduaneiros e impostos de importação"],
+  ["Any customs duties, import taxes, VAT, or additional fees imposed by the destination country are the sole responsibility of the customer. Asheerah Hair has no control over these charges and cannot estimate their cost. Customers are responsible for complying with their country's import regulations and paying any applicable fees upon delivery.", "Quaisquer direitos aduaneiros, impostos de importação, IVA ou taxas adicionais cobrados pelo país de destino são da responsabilidade exclusiva da cliente. A Asheerah Hair não controla estes encargos nem consegue estimar o respetivo valor. A cliente é responsável por cumprir as regras de importação do seu país e pagar os encargos aplicáveis na entrega."],
+  ["Contact Us", "Contacta-nos"],
+  ["For any questions regarding shipping, delivery, or your order, contact us at", "Para questões sobre o envio, a entrega ou a encomenda, contacta-nos em"],
+
+  // Returns and refunds
+  ["Return & Refund Policy", "Política de devoluções e reembolsos"],
+  ["At Asheerah Hair, customer satisfaction is important to us. Due to the nature of our products and our dropshipping business model, all sales are considered final unless an item arrives damaged, defective, or incorrect.", "Na Asheerah Hair, a satisfação das clientes é importante para nós. Devido à natureza dos nossos produtos e ao nosso modelo de venda com envio direto, todas as vendas são consideradas definitivas, exceto quando um artigo chega danificado, defeituoso ou incorreto."],
+  ["Damaged, Defective, or Incorrect Items", "Artigos danificados, defeituosos ou incorretos"],
+  ["If you receive an item that is damaged, defective, or different from what you ordered, please contact us within 7 days of delivery. To process your request, please provide:", "Se receberes um artigo danificado, defeituoso ou diferente do que encomendaste, contacta-nos no prazo de 7 dias após a entrega. Para analisarmos o pedido, envia:"],
+  ["Your order number", "O número da encomenda"], ["Clear photos of the item received", "Fotografias nítidas do artigo recebido"],
+  ["Photos of any damage or defects", "Fotografias dos danos ou defeitos"], ["A brief description of the issue", "Uma breve descrição do problema"],
+  ["Once your claim is reviewed and approved, we will provide a replacement item at no additional cost.", "Após a análise e aprovação do pedido, enviaremos um artigo de substituição sem custos adicionais."],
+  ["Non-Returnable Items", "Artigos não devolvíveis"], ["We do not accept returns, refunds, or exchanges for:", "Não aceitamos devoluções, reembolsos ou trocas nos seguintes casos:"],
+  ["Change of mind", "Mudança de opinião"], ["Incorrect orders placed by the customer", "Encomendas incorretas feitas pela cliente"],
+  ["Opened, used, worn, altered, or washed products", "Produtos abertos, usados, alterados ou lavados"],
+  ["Dissatisfaction with color variations shown on different screens", "Insatisfação com variações de cor apresentadas em diferentes ecrãs"],
+  ["Delays caused by customs, carriers, or circumstances beyond our control", "Atrasos causados pela alfândega, pelas transportadoras ou por circunstâncias fora do nosso controlo"],
+  ["Refunds", "Reembolsos"],
+  ["Refunds are generally not provided. Approved cases involving damaged, defective, or incorrect items will normally be resolved through a replacement.", "Regra geral, não efetuamos reembolsos. Os pedidos aprovados relativos a artigos danificados, defeituosos ou incorretos são normalmente resolvidos através de substituição."],
+  ["Orders may only be cancelled before they have been processed or shipped. Once an order has been processed, it cannot be cancelled.", "As encomendas só podem ser canceladas antes do processamento ou envio. Depois de processadas, já não podem ser canceladas."],
+  ["If you have any questions regarding returns or replacements, please contact us at", "Se tiveres dúvidas sobre devoluções ou substituições, contacta-nos em"],
+
+  // Privacy policy
+  ["Privacy Policy", "Política de privacidade"],
+  ["Asheerah Hair respects your privacy. This policy explains what information we collect when you use our website and how we use it.", "A Asheerah Hair respeita a tua privacidade. Esta política explica que informações recolhemos quando utilizas o site e como as usamos."],
+  ["Information We Collect", "Informações que recolhemos"],
+  ["Contact information you provide (name, email, phone, address) when placing an order or contacting us.", "Dados de contacto que forneces (nome, e-mail, telefone e morada) ao fazer uma encomenda ou contactar-nos."],
+  ["Order details needed to fulfil and deliver your purchase.", "Dados da encomenda necessários para a preparar e entregar."],
+  ["Payment information is processed securely by our payment providers (Stripe, PayPal, MB Way) and is not stored on our servers.", "As informações de pagamento são processadas de forma segura pelos nossos prestadores de serviços de pagamento (Stripe, PayPal e MB Way) e não são guardadas nos nossos servidores."],
+  ["How We Use Your Information", "Como utilizamos os teus dados"],
+  ["To process and deliver your orders.", "Para processar e entregar as tuas encomendas."],
+  ["To respond to your enquiries and provide customer support.", "Para responder às tuas questões e prestar apoio ao cliente."],
+  ["To improve our products and services.", "Para melhorar os nossos produtos e serviços."],
+  ["To send order updates and, with your consent, promotional communications.", "Para enviar atualizações sobre a encomenda e, com o teu consentimento, comunicações promocionais."],
+  ["Data Sharing", "Partilha de dados"],
+  ["We do not sell your personal information. We share data only with service providers necessary to operate our business (payment processors, shipping carriers, and our Google Sheets order backend).", "Não vendemos os teus dados pessoais. Só os partilhamos com prestadores de serviços necessários ao funcionamento do negócio (processadores de pagamento, transportadoras e o sistema de encomendas no Google Sheets)."],
+  ["Data Retention", "Conservação de dados"],
+  ["We retain order and contact data only as long as necessary for business, legal, and tax purposes.", "Conservamos os dados das encomendas e de contacto apenas durante o período necessário para fins comerciais, legais e fiscais."],
+  ["Your Rights", "Os teus direitos"],
+  ["Depending on your jurisdiction (including GDPR in the EU), you may have the right to access, correct, or delete your personal data. Contact us at asheerahhair@gmail.com to exercise these rights.", "Consoante a legislação aplicável (incluindo o RGPD na UE), poderás ter o direito de aceder aos teus dados pessoais, corrigi-los ou apagá-los. Para exercer estes direitos, contacta-nos em asheerahhair@gmail.com."],
+  ["For privacy questions, email", "Para questões sobre privacidade, envia um e-mail para"],
+
+  // Terms
+  ["Terms of Service", "Termos de utilização"], ["Use of Our Website", "Utilização do site"],
+  ["By using asheerahhair.com, you agree to these terms. Our products are intended for lawful personal use. You may not use the site for any unlawful or fraudulent purpose.", "Ao utilizar asheerahhair.com, aceitas estes termos. Os nossos produtos destinam-se a uso pessoal lícito. Não podes utilizar o site para fins ilegais ou fraudulentos."],
+  ["Products & Pricing", "Produtos e preços"],
+  ["We make every effort to display product colours and details accurately, but screen variations may occur. Prices are subject to change without notice. All orders are subject to availability and acceptance.", "Procuramos apresentar as cores e os detalhes dos produtos com precisão, mas podem existir diferenças entre ecrãs. Os preços podem mudar sem aviso prévio. Todas as encomendas estão sujeitas a disponibilidade e aceitação."],
+  ["Orders & Payments", "Encomendas e pagamentos"],
+  ["Payment is required at the time of order. We accept card payments (Stripe), PayPal, and MB Way. Orders are fulfilled on a dropshipping basis, as described in our shipping and return policies.", "O pagamento é exigido no momento da encomenda. Aceitamos pagamentos por cartão (Stripe), PayPal e MB Way. As encomendas são satisfeitas através de envio direto, conforme descrito nas nossas políticas de envio e devoluções."],
+  ["Intellectual Property", "Propriedade intelectual"],
+  ["All content on this site, including text, graphics, logos, and images, is the property of Asheerah Hair and may not be reproduced without permission.", "Todo o conteúdo deste site, incluindo textos, elementos gráficos, logótipos e imagens, pertence à Asheerah Hair e não pode ser reproduzido sem autorização."],
+  ["Limitation of Liability", "Limitação de responsabilidade"],
+  ["Asheerah Hair is not liable for indirect, incidental, or consequential damages arising from use of our products or website, to the extent permitted by law.", "A Asheerah Hair não se responsabiliza por danos indiretos, incidentais ou consequentes decorrentes da utilização dos nossos produtos ou do site, na medida permitida pela lei."],
+  ["Governing Law", "Lei aplicável"],
+  ["These terms are governed by applicable law. By placing an order, you agree to these terms. Questions: asheerahhair@gmail.com.", "Estes termos regem-se pela lei aplicável. Ao fazer uma encomenda, aceitas estes termos. Dúvidas: asheerahhair@gmail.com."],
+]);
+
+var PT_PRODUCT_DESCRIPTIONS = {
+  'pixie-curly-crochet-human-hair': 'Cria um visual elegante, descontraído e naturalmente encaracolado com o nosso Pixie Curly Crochet Human Hair. Feito de cabelo humano 100%, apresenta caracóis curtos, macios e definidos que dão volume e textura sem pesar. É confortável para o dia a dia, com queda mínima e resistência aos nós. Cor preta natural (#1B). Pode ser pintado e modelado com calor e é reutilizável com os cuidados adequados.',
+  'water-wave-crochet-human-hair': 'Obtém caracóis suaves, fluidos e naturalmente volumosos com o nosso Water Wave Crochet Human Hair. Feito de cabelo humano 100%, combina-se facilmente com o cabelo natural e cria um visual cheio e leve. É confortável, com queda mínima e resistência aos nós. Cor preta natural (#1B). Pode ser pintado e modelado com calor e é reutilizável com os cuidados adequados.',
+  'water-curly-crochet-human-hair': 'Consegue caracóis suaves, definidos e naturalmente volumosos com o nosso Water Curly Crochet Human Hair. Feito de cabelo humano 100%, integra-se facilmente no cabelo natural e proporciona um penteado protetor leve, cheio e duradouro. Tem queda mínima e resiste aos nós. Cor preta natural (#1B). Pode ser pintado e modelado com calor e é reutilizável com os cuidados adequados.',
+  'burmese-curly-crochet-human-hair': 'Cria um visual cheio, natural e bem definido com o nosso Burmese Curly Crochet Human Hair. Feito de cabelo humano 100%, tem caracóis macios e flexíveis que se assemelham ao cabelo natural texturizado. Oferece volume, versatilidade e durabilidade, com queda mínima e resistência aos nós. Cor preta natural (#1B). Pode ser pintado e modelado com calor e é reutilizável com os cuidados adequados.',
+  'deep-wave-bundles': 'Consegue um visual glamoroso e volumoso com a nossa Deep Wave Human Hair Bundles. Feita de cabelo humano virgem 100%, esta tissagem tem ondas profundas e definidas, textura macia e brilho natural. É volumosa da raiz às pontas, tem queda mínima e pode ser pintada, descolorada e modelada. Cor preta natural (#1B). Resistente ao calor e à coloração. Comprimentos disponíveis: 12 a 28 polegadas. Conjunto de 300 g.',
+  '4b-4c-bundles': 'Valoriza a tua beleza natural com a nossa 4B/4C Human Hair Bundles. Feita de cabelo humano virgem 100%, esta tissagem tem textura macia e crespa que se assemelha ao cabelo natural 4B/4C. É cheia e volumosa, preservando a suavidade e a durabilidade. Tem queda mínima e resiste aos nós. Cor preta natural (#1B). Resistente ao calor e à coloração. Comprimentos disponíveis: 12 a 28 polegadas. Conjunto de 300 g.',
+  'burmese-curly-bundles': 'Cria um visual marcante e volumoso com a nossa Burmese Curly Human Hair Bundles. Feita de cabelo humano virgem 100%, esta tissagem apresenta caracóis macios e definidos, muito volume e brilho natural. Tem queda mínima, resiste aos nós e pode ser pintada, descolorada e modelada. Cor preta natural (#1B). Comprimentos disponíveis: 12 a 28 polegadas. Conjunto de 300 g.',
+  'body-wave-bundles': 'Cria um visual suave e glamoroso com a nossa Body Wave Human Hair Bundles. Feita de cabelo humano virgem 100%, esta tissagem apresenta ondas fluidas, textura sedosa e brilho natural. É cheia da raiz às pontas, tem queda mínima e pode ser pintada, descolorada, encaracolada ou alisada. Cor preta natural (#1B). Comprimentos disponíveis: 12 a 28 polegadas. Conjunto de 300 g.',
+  'straight-bundles': 'Descobre a elegância intemporal da nossa Straight Human Hair Bundles. Feita de cabelo humano virgem 100%, esta tissagem é macia, sedosa e cheia da raiz às pontas. Pode ser pintada, descolorada, encaracolada ou alisada, mantendo a textura suave e o brilho natural. Tem queda mínima e resiste aos nós. Cor preta natural (#1B). Comprimentos disponíveis: 12 a 28 polegadas. Conjunto de 300 g.',
+  'deep-wave': 'Descobre a beleza natural da nossa Deep Wave Wig, feita de cabelo humano virgem 100% com ondas definidas. Escolhe um comprimento entre 16 e 32 polegadas, renda HD nos tamanhos 5x5, 13x4 ou 13x6 e uma touca pequena, média ou grande.',
+  'burmese-curly-wig': 'A nossa Burmese Curly Wig apresenta caracóis macios e volumosos. Escolhe um comprimento entre 16 e 32 polegadas, renda HD nos tamanhos 5x5, 13x4 ou 13x6 e uma touca pequena, média ou grande.',
+  'water-wave-wig': 'A nossa Water Wave Wig apresenta ondas definidas e uma textura cheia. Escolhe um comprimento entre 16 e 32 polegadas, renda HD nos tamanhos 5x5, 13x4 ou 13x6 e uma touca pequena, média ou grande.',
+  'loose-wave-wig': 'A nossa Loose Wave Wig apresenta ondas suaves e fluidas. Escolhe um comprimento entre 16 e 32 polegadas, renda HD nos tamanhos 5x5, 13x4 ou 13x6 e uma touca pequena, média ou grande.',
+  'body-wave-wig': 'A nossa Body Wave Wig apresenta ondas suaves e fluidas. Escolhe um comprimento entre 16 e 32 polegadas, renda HD nos tamanhos 5x5, 13x4 ou 13x6 e uma touca pequena, média ou grande.',
+  'straight-wig': 'A nossa Straight Wig tem um acabamento liso e é fácil de pentear. Escolhe um comprimento entre 16 e 32 polegadas, renda HD nos tamanhos 5x5, 13x4 ou 13x6 e uma touca pequena, média ou grande.',
+  'pixie-curly-bundles': 'Pixie Curly bundles, vendida num conjunto de 300 g com três peças. Escolhe o comprimento pretendido.',
+  'p6-27-deep-wave-crochet': 'Cabelo de crochê com ondas profundas na cor P6/27. Disponível em conjuntos de 100 g, 200 g ou 300 g e nos comprimentos de 16, 18, 20 e 22 polegadas.'
+};
+
+var PT_SOURCE_NODES = new WeakMap();
+var PT_SOURCE_ATTRS = new WeakMap();
+function applyPortugueseLegacy(root){
+  if (!root) return;
+  var list=[];
+  if (root.nodeType===3) list.push(root);
+  else {
+    var walker=document.createTreeWalker(root, NodeFilter.SHOW_TEXT);
+    while (walker.nextNode()) list.push(walker.currentNode);
+  }
+  list.forEach(function(node){
+    var parent=node.parentElement;
+    if (!parent || parent.closest('script,style,noscript,[data-i18n],.product-card h3,.pd .buy h1')) return;
+    var source=PT_SOURCE_NODES.get(node);
+    if (source===undefined){source=node.nodeValue;PT_SOURCE_NODES.set(node,source);}
+    var key=source.trim();
+    var translated=PT_LEGACY_COPY.get(key);
+    if (parent.matches('.desc p') && window._product) translated=PT_PRODUCT_DESCRIPTIONS[window._product.handle] || translated;
+    var target=LANG==='pt' && translated ? source.replace(key,translated) : source;
+    if (node.nodeValue!==target) node.nodeValue=target;
+  });
+  var elements=root.nodeType===1?[root].concat(Array.from(root.querySelectorAll('*'))):[];
+  elements.forEach(function(el){
+    ['aria-label','title','placeholder','alt'].forEach(function(attr){
+      if (!el.hasAttribute(attr) || (attr==='placeholder' && el.hasAttribute('data-i18n-ph'))) return;
+      var originals=PT_SOURCE_ATTRS.get(el);
+      if (!originals){originals={};PT_SOURCE_ATTRS.set(el,originals);}
+      if (!(attr in originals)) originals[attr]=el.getAttribute(attr);
+      var source=originals[attr];
+      var translated=PT_LEGACY_COPY.get(source);
+      if (attr==='aria-label' && !translated){
+        translated=source.replace(/(\d+) out of 5 stars/,'$1 de 5 estrelas')
+          .replace(/^View (.+) image (\d+)$/,'Ver imagem $2 de $1');
+        if (translated===source) translated=null;
+      }
+      var target=LANG==='pt' && translated ? translated : source;
+      if (el.getAttribute(attr)!==target) el.setAttribute(attr,target);
+    });
+  });
+}
+
+var baseSetLang=setLang;
+setLang=function(l){baseSetLang(l);applyPortugueseLegacy(document.head);applyPortugueseLegacy(document.body);};
+document.addEventListener('DOMContentLoaded',function(){
+  applyPortugueseLegacy(document.head);
+  applyPortugueseLegacy(document.body);
+  var scheduled=false;
+  new MutationObserver(function(){
+    if (scheduled) return;
+    scheduled=true;
+    queueMicrotask(function(){scheduled=false;applyPortugueseLegacy(document.body);});
+  }).observe(document.body,{childList:true,characterData:true,subtree:true});
 });
