@@ -14548,7 +14548,6 @@
       "description": "Pixie Curly bundles, sold as a 300g set of 3 pieces. Select your preferred length.",
       "images": [
         "assets/img/pixie-curly-bundles-1.webp",
-        "assets/img/pixie-curly-bundles-2.webp",
         "assets/img/pixie-curly-bundles-3.webp"
       ],
       "type": "Pixie Curly Bundles",
@@ -14655,7 +14654,8 @@
       "category": "crochet",
       "description": "Deep wave crochet hair in colour P6/27. Available in 100g, 200g or 300g and lengths 16, 18, 20 and 22 inches.",
       "images": [
-        "assets/img/col-crochet.jpg"
+        "assets/img/col-crochet.jpg",
+        "assets/img/pixie-curly-bundles-2.webp"
       ],
       "type": "P6/27 Deep Wave Crochet",
       "options": [
