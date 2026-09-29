@@ -141,6 +141,10 @@ function buildOrderRow_(body) {
   var itemText = (body.items||[]).map(function(it){
     return it.title + ' x' + it.qty + ' (' + Object.values(it.opts||{}).filter(Boolean).join(',') + ')';
   }).join(' | ');
+  var couponCode = String(body.coupon||'').trim().toUpperCase();
+  if (['ONIKA10','LILIAN10','TUCHA10','CASSIE10'].indexOf(couponCode) !== -1) {
+    itemText = 'Ambassador coupon: ' + couponCode + (itemText ? ' | ' + itemText : '');
+  }
   return [new Date(), orderNum, cust.name||'', cust.email||'', cust.phone||'', body.method||'',
           itemText, r2(subtotal), r2(shipping), r2(totalEur), r2(cogs), r2(fee), r2(profit)];
 }

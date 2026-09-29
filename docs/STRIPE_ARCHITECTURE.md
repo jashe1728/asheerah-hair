@@ -40,7 +40,7 @@ Google Sheet: pending orders and verified payment state (pending → paid / fail
 - Keep `doPost` order-request handling separate from payment creation and webhook handling.
 - Allowlist request actions and validate required fields, lengths, email, product identifiers, option values, integer quantities and maximum quantity.
 - Re-read the canonical published catalog from a fixed, trusted URL (the Asheerah GitHub Pages `catalog.json` URL), match product handle + exact variant options, and compute line prices server-side. Reject unknown/unavailable variants and do not trust browser-supplied prices or totals.
-- Coupons are not implemented on the Stripe path; the browser rejects checkout when a coupon is applied rather than honoring an untrusted client-side discount.
+- The Worker accepts only the four named ambassador codes (`ONIKA10`, `LILIAN10`, `TUCHA10`, `CASSIE10`), applies a fixed €7 reduction server-side (capped at merchandise subtotal), and records the code for attribution. The codes are shareable; no per-customer redemption cap or expiry has been specified.
 - Derive shipping from the destination entered on the site: free for the currently listed EU countries, €20 for the currently listed African countries, and €15 for the United States. Other previously listed destinations (Brazil, Canada, United Kingdom and Switzerland) have no confirmed rate and are rejected by Stripe checkout until priced. Stripe's shipping address collection is restricted to countries in the same rate group as the quote.
 - Compute EUR item subtotal and shipping in integer cents from the canonical catalog and shipping rules. The scaffold does not calculate VAT/tax; confirm the legal tax treatment and add the appropriate Stripe tax configuration before accepting live payments.
 - Create a Stripe Checkout Session using Stripe's HTTPS API with server-side `STRIPE_SECRET_KEY` held as a Cloudflare Worker secret. Send only necessary customer/shipping details and line items; use EUR and fixed success/cancel URLs derived from configured site URLs.
@@ -59,7 +59,7 @@ Google Sheet: pending orders and verified payment state (pending → paid / fail
 
 ### Create session
 
-`POST` to the Cloudflare Worker `/create-checkout-session` endpoint. The browser sends product handles/options/quantities and contact details only. The Worker gets the canonical catalog, computes all prices and returns `{checkoutUrl,orderId}`. No browser price, amount, coupon, or secret is accepted.
+`POST` to the Cloudflare Worker `/create-checkout-session` endpoint. The browser sends product handles/options/quantities, contact details, and an optional ambassador `couponCode`. The Worker gets the canonical catalog, validates any code against its server-side allowlist, computes the €7 discount and all prices, then returns `{checkoutUrl,orderId}`. No browser price, amount, discount, or secret is accepted.
 
 ```json
 {

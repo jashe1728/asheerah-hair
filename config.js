@@ -6,7 +6,7 @@ window.CONFIG = {
 
   // Approximate display rates for the currency switcher. UPDATE as needed.
   // All charges settle in EUR; this is display-only.
-  rates: { EUR: 1, USD: 1.08, GBP: 0.85 },
+  rates: { EUR: 1, USD: 1.08, GBP: 0.85, XOF: 660 },
 
   // Shipping is destination-based; the Worker provides the quote at checkout.
   shipping: null,
@@ -15,8 +15,8 @@ window.CONFIG = {
   // Taxes rate (0 = none currently). Set to e.g. 0.23 (23% IVA) when applicable.
   taxRate: 0,
 
-  // Coupon codes are client-side in this static storefront; personal-use eligibility
-  // cannot be enforced until the backend validates customer identity server-side.
+  // Separate public code per ambassador, each with a €7 display discount.
+  // The checkout Worker validates the code and enforces its €7 value server-side.
   coupons: {
     ONIKA10: { type: 'fixed', value: 7, minSubtotalEur: 0 },
     LILIAN10: { type: 'fixed', value: 7, minSubtotalEur: 0 },
@@ -46,6 +46,9 @@ window.CONFIG = {
   // Stripe: Dashboard → Developers → API keys → Publishable key (pk_live_...)
   stripeCheckoutURL: '', // Deployed Worker endpoint only; never put a secret here.
   stripePublishable: '',
+  // Public Worker endpoint/site key only; server-side secrets stay in Worker config.
+  reviewAPIURL: '',
+  reviewTurnstileSiteKey: '',
   // PayPal: Developer → Apps & Credentials → Client ID
   paypalClientId: '',
   // MB Way: handled via Stripe (if enabled) or a MONEI key. Leave '' to use WhatsApp fallback.

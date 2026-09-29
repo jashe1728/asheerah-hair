@@ -8,17 +8,32 @@
 let checkoutSubmitting = false; // guards against double order submission
 
 const CONFIG = window.CONFIG || {
-  currency:'EUR', rates:{EUR:1,USD:1.08,GBP:0.85}, shipping:null, shippingEta:'6–10 days', taxRate:0,
+  currency:'EUR', rates:{EUR:1,USD:1.08,GBP:0.85,XOF:660}, shipping:null, shippingEta:'6–10 days', taxRate:0,
   coupons:{}, payment:{ pending:{configured:false} },
   whatsapp:'351914522508', email:'asheerahhair@gmail.com',
   backendURL:'', stripeCheckoutURL:'', stripePublishable:'', paypalClientId:'', mbwayKey:'',
+  reviewAPIURL:'', reviewTurnstileSiteKey:'',
 };
 
 const CURRENCIES = {
   EUR: { symbol: '€', label: 'EUR' },
   USD: { symbol: '$', label: 'USD' },
   GBP: { symbol: '£', label: 'GBP' },
+  XOF: { symbol: 'FCFA ', label: 'FCFA' },
 };
+
+if (typeof I18N === 'object') Object.assign(I18N, {
+  review_media_label:{pt:'Adicionar fotos ou vídeo',en:'Add photos or video',es:'Añadir fotos o vídeo',de:'Fotos oder Video hinzufügen',fr:'Ajouter des photos ou une vidéo',it:'Aggiungi foto o video'},
+  review_upload_setup:{pt:'O carregamento de imagens e vídeos está a ser configurado.',en:'Photo and video uploads are being set up.',es:'La carga de fotos y vídeos se está configurando.',de:'Der Foto- und Video-Upload wird eingerichtet.',fr:'Le téléversement des photos et vidéos est en cours de configuration.',it:'Il caricamento di foto e video è in configurazione.'},
+  review_moderation_note:{pt:'As fotos e os vídeos serão revistos antes de aparecerem publicamente.',en:'Photos and videos are reviewed before appearing publicly.',es:'Las fotos y los vídeos se revisan antes de mostrarse públicamente.',de:'Fotos und Videos werden vor der öffentlichen Anzeige geprüft.',fr:'Les photos et vidéos sont vérifiées avant leur publication.',it:'Foto e video vengono controllati prima della pubblicazione.'},
+  review_media_alt:{pt:'Imagem ou vídeo da avaliação',en:'Review photo or video',es:'Foto o vídeo de la opinión',de:'Bewertungsfoto oder -video',fr:'Photo ou vidéo de l’avis',it:'Foto o video della recensione'},
+  review_submit_error:{pt:'Não foi possível enviar a avaliação. Tenta novamente mais tarde.',en:'Could not submit the review. Please try again later.',es:'No se pudo enviar la opinión. Inténtalo de nuevo más tarde.',de:'Die Bewertung konnte nicht gesendet werden. Bitte später erneut versuchen.',fr:'Impossible d’envoyer l’avis. Réessayez plus tard.',it:'Impossibile inviare la recensione. Riprova più tardi.'},
+  review_pending:{pt:'Avaliação enviada. Será publicada após aprovação.',en:'Review submitted. It will appear after approval.',es:'Opinión enviada. Se publicará tras su aprobación.',de:'Bewertung gesendet. Sie erscheint nach der Freigabe.',fr:'Avis envoyé. Il sera publié après approbation.',it:'Recensione inviata. Sarà pubblicata dopo l’approvazione.'},
+  review_media_limit:{pt:'Escolhe até 3 ficheiros, com máximo de 8 MB cada.',en:'Choose up to 3 files, up to 8 MB each.',es:'Elige hasta 3 archivos, de un máximo de 8 MB cada uno.',de:'Wähle bis zu 3 Dateien mit jeweils maximal 8 MB.',fr:'Choisissez jusqu’à 3 fichiers de 8 Mo maximum chacun.',it:'Scegli fino a 3 file, massimo 8 MB ciascuno.'},
+});
+
+const REMOTE_PRODUCT_REVIEWS = Object.create(null);
+const REMOTE_PRODUCT_REVIEWS_LOADED = new Set();
 
 // ---------- Catalog ----------
 let CATALOG = null;
@@ -43,6 +58,7 @@ function curCode(){ return localStorage.getItem('ash_cur') || CONFIG.currency ||
 function money(priceEur, cur){
   const rate = CONFIG.rates[cur] || 1;
   const sym = (CURRENCIES[cur] || CURRENCIES.EUR).symbol;
+  if (cur === 'XOF') return sym + new Intl.NumberFormat('en-US',{maximumFractionDigits:0}).format(Math.round(priceEur * rate));
   return sym + (priceEur * rate).toFixed(2).replace(/\.00$/,'');
 }
 /* Price in cents (minimum monetary unit) to avoid float rounding issues. */
@@ -606,21 +622,51 @@ function defaultOpts(p){
   return o;
 }
 
+function reviewAPIEndpoint(path){
+  try{const url=new URL(CONFIG.reviewAPIURL);if(url.protocol!=='https:')return null;url.pathname=path;url.search='';return url;}
+  catch{return null;}
+}
 function productReviews(p){
   let saved=[];
   try{ saved=JSON.parse(localStorage.getItem('ash_product_reviews')||'[]'); }catch(e){ saved=[]; }
   return SEEDED_PRODUCT_REVIEWS.filter(r=>r.productHandle===p.handle)
-    .concat(saved.filter(r=>r.productHandle===p.handle));
+    .concat(saved.filter(r=>r.productHandle===p.handle),REMOTE_PRODUCT_REVIEWS[p.handle]||[]);
 }
 function starsHTML(rating){
   const n=Math.max(1,Math.min(5,Number(rating)||5));
   return '★★★★★'.slice(0,n)+'<span class="stars-muted">'+'★★★★★'.slice(0,5-n)+'</span>';
 }
+function productReviewMediaHTML(media){
+  const html=(media||[]).map(item=>{
+    const type=String(item.contentType||''),src=String(item.url||'');
+    if(!src.startsWith('https://'))return '';
+    const url=escapeHTML(src),alt=escapeHTML(uiTxt('review_media_alt'));
+    if(['image/jpeg','image/png','image/webp'].includes(type))return `<img src="${url}" alt="${alt}" loading="lazy">`;
+    if(['video/mp4','video/webm'].includes(type))return `<video controls preload="metadata" aria-label="${alt}"><source src="${url}" type="${escapeHTML(type)}"></video>`;
+    return '';
+  }).join('');
+  return html?`<div class="product-review-media">${html}</div>`:'';
+}
+function productReviewListHTML(reviews){
+  return reviews.length
+    ? reviews.map(r=>`<article class="product-review"><div class="review-stars" aria-label="${Number(r.rating)||5} out of 5 stars">${starsHTML(r.rating)}</div><p>${escapeHTML(r.text)}</p>${productReviewMediaHTML(r.media)}<strong>${escapeHTML(r.name)}</strong><span class="review-source">${uiTxt('customer_review')}</span></article>`).join('')
+    : `<p class="reviews-empty">${uiTxt('reviews_empty')}</p>`;
+}
+async function loadRemoteProductReviews(handle){
+  const endpoint=reviewAPIEndpoint('/reviews');
+  if(!endpoint||REMOTE_PRODUCT_REVIEWS_LOADED.has(handle))return;
+  REMOTE_PRODUCT_REVIEWS_LOADED.add(handle);endpoint.searchParams.set('product',handle);
+  try{
+    const response=await fetch(endpoint.href,{headers:{Accept:'application/json'},credentials:'omit'});
+    if(!response.ok)throw new Error('Review fetch failed');
+    const body=await response.json();REMOTE_PRODUCT_REVIEWS[handle]=Array.isArray(body.reviews)?body.reviews:[];
+    if(window._product&&window._product.handle===handle){const list=document.querySelector('.product-review-list');if(list)list.innerHTML=productReviewListHTML(productReviews(window._product));}
+  }catch{REMOTE_PRODUCT_REVIEWS_LOADED.delete(handle);}
+}
 function productReviewsHTML(p){
   const reviews=productReviews(p);
-  const list=reviews.length
-    ? reviews.map(r=>`<article class="product-review"><div class="review-stars" aria-label="${r.rating} out of 5 stars">${starsHTML(r.rating)}</div><p>${escapeHTML(r.text)}</p><strong>${escapeHTML(r.name)}</strong><span class="review-source">${uiTxt('customer_review')}</span></article>`).join('')
-    : `<p class="reviews-empty">${uiTxt('reviews_empty')}</p>`;
+  const list=productReviewListHTML(reviews);
+  const mediaEnabled=Boolean(CONFIG.reviewAPIURL&&CONFIG.reviewTurnstileSiteKey);
   return `<section class="product-reviews" aria-labelledby="productReviewsTitle">
     <div class="section-head"><span class="eyebrow">${uiTxt('reviews_label')}</span><h2 id="productReviewsTitle">${uiTxt('product_reviews')}</h2></div>
     <div class="product-review-list">${list}</div>
@@ -628,8 +674,12 @@ function productReviewsHTML(p){
       <h3>${uiTxt('leave_review')}</h3>
       <div class="review-form-grid"><input name="reviewName" maxlength="80" placeholder="${uiTxt('review_name_ph')}" required><select name="reviewRating" aria-label="${uiTxt('review_rating')}" required><option value="5">★★★★★</option><option value="4">★★★★☆</option><option value="3">★★★☆☆</option><option value="2">★★☆☆☆</option><option value="1">★☆☆☆☆</option></select></div>
       <textarea name="reviewText" maxlength="500" rows="4" placeholder="${uiTxt('review_text_ph')}" required></textarea>
+      <label class="review-media-label" for="reviewMedia">${uiTxt('review_media_label')}</label>
+      <input id="reviewMedia" class="review-media-input" name="reviewMedia" type="file" accept="image/jpeg,image/png,image/webp,video/mp4,video/webm" multiple ${mediaEnabled?'':'disabled'}>
+      ${mediaEnabled?'<input type="hidden" name="turnstileToken" value=""><div class="review-turnstile" id="reviewTurnstile"></div>':`<p class="review-upload-note">${uiTxt('review_upload_setup')}</p>`}
       <button class="btn-primary review-submit" type="submit">${uiTxt('submit_review')}</button>
-      <p class="review-note">${uiTxt('review_note')}</p>
+      <p class="review-note">${uiTxt(mediaEnabled?'review_moderation_note':'review_note')}</p>
+      <p class="review-status" role="status" aria-live="polite"></p>
     </form>
   </section>`;
 }
@@ -644,12 +694,60 @@ function recommendationsHTML(p){
   if(!list.length)return '';
   return `<section class="product-recommendations" aria-labelledby="recommendedTitle"><div class="section-head"><span class="eyebrow">${uiTxt('you_may_also_like')}</span><h2 id="recommendedTitle">${uiTxt('recommended_hair')}</h2></div><div class="recommended-grid">${list.map(x=>{const pricing=variantPricing(x,defaultOpts(x));const price=priceHTML(pricing.priceEur,pricing.hasPromo?pricing.compareEur:null,curCode());return `<a class="product-card shop-card recommended-card" href="product.html?h=${encodeURIComponent(x.handle)}"><div class="img"><img src="${x.images[0]}" alt="${escapeHTML(x.title)}" loading="lazy"></div><div class="info"><h3>${escapeHTML(x.title)}</h3><div class="price">${price}</div><span class="buy-btn">${uiTxt('btn_shop')}</span></div></a>`;}).join('')}</div></section>`;
 }
-window.submitProductReview = event => {
+function reviewAPIEndpoint(path){
+  try{const url=new URL(CONFIG.reviewAPIURL);if(url.protocol!=='https:')return null;url.pathname=path;url.search='';return url;}
+  catch{return null;}
+}
+async function loadRemoteProductReviews(handle){
+  const endpoint=reviewAPIEndpoint('/reviews');
+  if(!endpoint||REMOTE_PRODUCT_REVIEWS_LOADED.has(handle))return;
+  REMOTE_PRODUCT_REVIEWS_LOADED.add(handle);endpoint.searchParams.set('product',handle);
+  try{
+    const response=await fetch(endpoint.href,{headers:{Accept:'application/json'},credentials:'omit'});
+    if(!response.ok)throw new Error('Review fetch failed');
+    const body=await response.json();REMOTE_PRODUCT_REVIEWS[handle]=Array.isArray(body.reviews)?body.reviews:[];
+    if(window._product&&window._product.handle===handle){const list=document.querySelector('.product-review-list');if(list)list.innerHTML=productReviewListHTML(productReviews(window._product));}
+  }catch{REMOTE_PRODUCT_REVIEWS_LOADED.delete(handle);}
+}
+let REVIEW_TURNSTILE_WIDGET=null;
+function mountReviewTurnstile(){
+  if(!CONFIG.reviewAPIURL||!CONFIG.reviewTurnstileSiteKey)return;
+  const target=document.getElementById('reviewTurnstile');if(!target||target.dataset.mounted==='true')return;
+  if(window.turnstile){
+    target.dataset.mounted='true';
+    REVIEW_TURNSTILE_WIDGET=window.turnstile.render(target,{sitekey:CONFIG.reviewTurnstileSiteKey,callback:token=>{const field=document.querySelector('[name="turnstileToken"]');if(field)field.value=token;},'expired-callback':()=>{const field=document.querySelector('[name="turnstileToken"]');if(field)field.value='';}});
+    return;
+  }
+  if(document.getElementById('reviewTurnstileScript'))return;
+  const script=document.createElement('script');script.id='reviewTurnstileScript';script.src='https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit&onload=mountReviewTurnstile';script.async=true;script.defer=true;document.head.appendChild(script);
+}
+window.mountReviewTurnstile=mountReviewTurnstile;
+window.submitProductReview = async event => {
   event.preventDefault();
-  const form=event.currentTarget, data=new FormData(form), name=String(data.get('reviewName')||'').trim(), text=String(data.get('reviewText')||'').trim();
+  const form=event.currentTarget,data=new FormData(form),name=String(data.get('reviewName')||'').trim(),text=String(data.get('reviewText')||'').trim(),status=form.querySelector('.review-status');
   if(!name||!text||!window._product)return;
+  const rating=Math.max(1,Math.min(5,Number(data.get('reviewRating'))||5));
+  const media=Array.from(data.getAll('reviewMedia')).filter(file=>file&&Number(file.size)>0);
+  if(media.length>3||media.some(file=>file.size>8*1024*1024)||media.reduce((sum,file)=>sum+file.size,0)>20*1024*1024){if(status)status.textContent=uiTxt('review_media_limit');return;}
+  if(media.length&&!(CONFIG.reviewAPIURL&&CONFIG.reviewTurnstileSiteKey)){if(status)status.textContent=uiTxt('review_upload_setup');return;}
+  if(CONFIG.reviewAPIURL&&CONFIG.reviewTurnstileSiteKey){
+    const token=String(data.get('turnstileToken')||''),endpoint=reviewAPIEndpoint('/reviews');
+    if(!token||!endpoint){if(status)status.textContent=uiTxt('review_submit_error');return;}
+    const button=form.querySelector('.review-submit');if(button)button.disabled=true;
+    try{
+      const payload=new FormData();payload.append('productHandle',window._product.handle);payload.append('name',name);payload.append('rating',String(rating));payload.append('text',text);payload.append('turnstileToken',token);
+      media.forEach(file=>payload.append('media',file,file.name));
+      const response=await fetch(endpoint.href,{method:'POST',body:payload,credentials:'omit'});
+      if(!response.ok)throw new Error('Review submission failed');
+      form.reset();if(window.turnstile&&REVIEW_TURNSTILE_WIDGET!==null)window.turnstile.reset(REVIEW_TURNSTILE_WIDGET);
+      if(status)status.textContent=uiTxt('review_pending');
+      REMOTE_PRODUCT_REVIEWS_LOADED.delete(window._product.handle);loadRemoteProductReviews(window._product.handle);
+    }catch{if(status)status.textContent=uiTxt('review_submit_error');}
+    finally{if(button)button.disabled=false;}
+    return;
+  }
   let saved=[];try{saved=JSON.parse(localStorage.getItem('ash_product_reviews')||'[]');}catch(e){saved=[];}
-  saved.push({productHandle:window._product.handle,name,rating:Number(data.get('reviewRating'))||5,text,createdAt:new Date().toISOString()});
+  saved.push({productHandle:window._product.handle,name,rating,text,createdAt:new Date().toISOString()});
   localStorage.setItem('ash_product_reviews',JSON.stringify(saved.slice(-50)));
   renderProduct();
 };
@@ -698,6 +796,8 @@ function renderProduct(){
       </div>
       ${recommendationsHTML(p)}
       ${productReviewsHTML(p)}`;
+    loadRemoteProductReviews(p.handle);
+    mountReviewTurnstile();
     root.querySelectorAll('.thumbs button').forEach(thumb => {
       thumb.addEventListener('click', () => window.setMain(thumb.dataset.src, thumb));
     });
@@ -1103,7 +1203,6 @@ function focusFirstError(form){
 
 async function startStripeCheckout(customer, cart, note, btn){
   if (!CONFIG.stripeCheckoutURL) throw new Error('Stripe checkout is not configured');
-  if (getAppliedCoupon()) throw new Error('Coupon codes are not available on card checkout yet. Remove the code or contact us.');
   const requestBody = {
     customer: {
       name:customer.name, email:customer.email, phone:customer.phone,
@@ -1111,6 +1210,7 @@ async function startStripeCheckout(customer, cart, note, btn){
       city:customer.city, postalCode:customer.zip,
     },
     items:cart.map(i=>({handle:i.handle, options:i.opts, quantity:i.qty})),
+    couponCode:getAppliedCoupon()?.code || '',
   };
   const response = await fetch(CONFIG.stripeCheckoutURL, {
     method:'POST', headers:{'Content-Type':'text/plain;charset=utf-8'}, body:JSON.stringify(requestBody),
@@ -1154,7 +1254,7 @@ function placeOrder(btn){
 
   const shippingText = t.shippingKnown ? money(t.shipping,'EUR') : uiTxt('shipping_calc_checkout');
   const totalText = t.shippingKnown ? money(t.totalFinal,'EUR') : uiTxt('shipping_calc_checkout');
-  const text = `NOVO PEDIDO DE PAGAMENTO (Asheerah Hair)\n${lines}\n\nSubtotal original: ${money(t.subtotalOriginal,'EUR')}\nDesconto: −${money(t.totalDiscount,'EUR')}\nEnvio: ${shippingText}\nTOTAL ESTIMADO: ${totalText}\nMétodo preferido: ${method}${mbwayPhone?'\nTelemóvel MB Way: '+mbwayPhone:''}\n\nCliente: ${data.name}\nEmail: ${data.email}\nTelefone: ${data.phone}\nMorada: ${addressLine}${data.notes?'\nNotas: '+data.notes:''}`;
+  const text = `NOVO PEDIDO DE PAGAMENTO (Asheerah Hair)\n${lines}${coupon?`\nCupom de embaixador: ${coupon.code}`:''}\n\nSubtotal original: ${money(t.subtotalOriginal,'EUR')}\nDesconto: −${money(t.totalDiscount,'EUR')}\nEnvio: ${shippingText}\nTOTAL ESTIMADO: ${totalText}\nMétodo preferido: ${method}${mbwayPhone?'\nTelemóvel MB Way: '+mbwayPhone:''}\n\nCliente: ${data.name}\nEmail: ${data.email}\nTelefone: ${data.phone}\nMorada: ${addressLine}${data.notes?'\nNotas: '+data.notes:''}`;
 
   const payload = {
     type:'order',
