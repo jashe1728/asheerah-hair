@@ -426,6 +426,7 @@ var PT_LEGACY_COPY = new Map([
 
   // Shipping policy
   ["Shipping Policy", "Política de envio"],
+  ["Listed European Union destinations below: free shipping. Listed African destinations below: €20. United States: €15. For the other listed destinations, contact us to confirm availability and cost before ordering.", "Destinos indicados abaixo na União Europeia: envio gratuito. Destinos indicados abaixo em África: 20 €. Estados Unidos: 15 €. Para os restantes destinos indicados, contacta-nos antes de encomendar para confirmar a disponibilidade e o custo do envio."],
   ["The final shipping fee will be shown at checkout before the order is confirmed.", "O custo final do envio será apresentado antes de confirmares a encomenda."],
   ["Order Cancellations", "Cancelamento de encomendas"],
   ["Orders may be cancelled only if they have not yet been processed or shipped. Once an order has been dispatched, it can no longer be cancelled.", "As encomendas só podem ser canceladas antes do processamento ou envio. Depois da expedição, já não é possível cancelá-las."],
