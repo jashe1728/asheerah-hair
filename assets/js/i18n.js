@@ -27,7 +27,7 @@ var I18N = {
 
   nav_home:   { pt:'Início', en:'Home', es:'Inicio', de:'Start', fr:'Accueil', it:'Home' },
   nav_wigs:   { pt:'Perucas', en:'Wigs', es:'Pelucas', de:'Perücken', fr:'Perruques', it:'Parrucche' },
-  nav_bundles:{ pt:'Pacotes', en:'Bundles', es:'Paquetes', de:'Bündel', fr:'Paquets', it:'Pacchetti' },
+  nav_bundles:{ pt:'Tissagem', en:'Bundles', es:'Paquetes', de:'Bündel', fr:'Paquets', it:'Pacchetti' },
   nav_crochet:{ pt:'Cabelo de Crochê', en:'Crochet Hair', es:'Cabello de Crochet', de:'Gehäkeltes Haar', fr:'Cheveux au Crochet', it:'Capelli All\u2019uncinetto' },
   nav_faq:    { pt:'FAQ', en:'FAQ', es:'Preguntas', de:'FAQ', fr:'FAQ', it:'FAQ' },
   nav_contact:{ pt:'Contacte-nos', en:'Contact', es:'Contáctenos', de:'Kontakt', fr:'Contact', it:'Contattaci' },
@@ -83,12 +83,12 @@ var I18N = {
 
   view_product:{ pt:'Ver produto', en:'View product', es:'Ver producto', de:'Produkt ansehen', fr:'Voir le produit', it:'Vedi prodotto' },
   luxury_wigs:{ pt:'Perucas de Luxo', en:'Luxury Wigs', es:'Pelucas de Lujo', de:'Luxus-Perücken', fr:'Perruques de Luxe', it:'Parrucche di Lusso' },
-  luxury_bundles:{ pt:'Pacotes de Luxo', en:'Luxury Bundles', es:'Paquetes de Lujo', de:'Luxus-Bündel', fr:'Paquets de Luxe', it:'Pacchetti di Lusso' },
+  luxury_bundles:{ pt:'Tissagem de Luxo', en:'Luxury Bundles', es:'Paquetes de Lujo', de:'Luxus-Bündel', fr:'Paquets de Luxe', it:'Pacchetti di Lusso' },
   crochet_hair:{ pt:'Cabelo de Crochê', en:'Crochet Hair', es:'Cabello de Crochet', de:'Gehäkeltes Haar', fr:'Cheveux au Crochet', it:'Capelli all\u2019uncinetto' },
   promo_wigs: { pt:'PERUCAS', en:'WIGS', es:'PELUCAS', de:'PERÜCKEN', fr:'PERRUQUES', it:'PARRUCCHE' },
   promo_wigs_sub: { pt:'Perucas de lace para um look impecável', en:'Lace wigs for a flawless look', es:'Pelucas de lace para un look impecable', de:'Lace-Perücken für einen makellosen Look', fr:'Perruques lace pour un look impeccable', it:'Parrucche lace per un look impeccabile' },
-  promo_bundles: { pt:'PACOTES', en:'BUNDLES', es:'PAQUETES', de:'BÜNDEL', fr:'PAQUETS', it:'PACCHETTI' },
-  promo_bundles_sub: { pt:'Pacotes premium para todos os estilos', en:'Premium bundles for every style', es:'Paquetes premium para cada estilo', de:'Premium-Bündel für jeden Stil', fr:'Paquets premium pour chaque style', it:'Pacchetti premium per ogni stile' },
+  promo_bundles: { pt:'TISSAGEM', en:'BUNDLES', es:'PAQUETES', de:'BÜNDEL', fr:'PAQUETS', it:'PACCHETTI' },
+  promo_bundles_sub: { pt:'Tissagem premium para todos os estilos', en:'Premium bundles for every style', es:'Paquetes premium para cada estilo', de:'Premium-Bündel für jeden Stil', fr:'Paquets premium pour chaque style', it:'Pacchetti premium per ogni stile' },
   promo_crochet: { pt:'CABELO DE CROCHÊ', en:'CROCHET HAIR', es:'CABELLO DE CROCHET', de:'GEHÄKELTES HAAR', fr:'CHEVEUX AU CROCHET', it:'CAPELLI ALL\u2019UNCINETTO' },
   promo_crochet_sub: { pt:'Natural. Versátil. Sem esforço.', en:'Natural. Versatile. Effortless.', es:'Natural. Versátil. Sin esfuerzo.', de:'Natürlich. Vielseitig. Mühelos.', fr:'Naturel. Polyvalent. Sans effort.', it:'Naturale. Versatile. Senza sforzo.' },
   promo_shop_btn: { pt:'COMPRAR AGORA', en:'SHOP NOW', es:'COMPRAR AHORA', de:'JETZT KAUFEN', fr:'ACHETER MAINTENANT', it:'ACQUISTA ORA' },
@@ -173,7 +173,7 @@ var I18N = {
 
   // Cart / categories
   cat_wigs:{ pt:'Perucas', en:'Wigs', es:'Pelucas', de:'Perücken', fr:'Perruques', it:'Parrucche' },
-  cat_bundles:{ pt:'Pacotes', en:'Bundles', es:'Paquetes', de:'Bündel', fr:'Paquets', it:'Pacchetti' },
+  cat_bundles:{ pt:'Tissagem', en:'Bundles', es:'Paquetes', de:'Bündel', fr:'Paquets', it:'Pacchetti' },
   cat_crochet:{ pt:'Cabelo de Crochê', en:'Crochet Hair', es:'Cabello de Crochet', de:'Gehäkeltes Haar', fr:'Cheveux au Crochet', it:'Capelli all\u2019uncinetto' },
   original_price:{ pt:'Preço original', en:'Original price', es:'Precio original', de:'Originalpreis', fr:'Prix d\u2019origine', it:'Prezzo originale' },
   sale_price:{ pt:'Preço promocional', en:'Sale price', es:'Precio de oferta', de:'Angebotspreis', fr:'Prix promo', it:'Prezzo scontato' },
@@ -182,7 +182,6 @@ var I18N = {
   quantity:{ pt:'Quantidade', en:'Quantity', es:'Cantidad', de:'Menge', fr:'Quantité', it:'Quantità' },
   continue_shopping:{ pt:'Continuar a comprar', en:'Continue shopping', es:'Seguir comprando', de:'Weiter einkaufen', fr:'Continuer les achats', it:'Continua lo shopping' },
   shipping_calc_checkout:{ pt:'Calculado no checkout', en:'Calculated at checkout', es:'Calculado al pagar', de:'Wird an der Kasse berechnet', fr:'Calculé au paiement', it:'Calcolato al checkout' },
-  shipping_unavailable:{ pt:'Envio indisponível para este destino. Contacte-nos para confirmar.', en:'Shipping is not available to this destination at the listed rates. Contact us to confirm availability.', es:'El envío no está disponible a este destino con estas tarifas. Contáctanos para confirmar.', de:'Für dieses Ziel ist kein Versandtarif hinterlegt. Bitte kontaktieren Sie uns.', fr:'Aucun tarif n’est configuré pour cette destination. Contactez-nous pour confirmer.', it:'Nessuna tariffa di spedizione configurata per questa destinazione. Contattaci per confermare.' },
   shipping_eta:{ pt:'Prazo estimado', en:'Estimated delivery', es:'Entrega estimada', de:'Voraussichtliche Lieferung', fr:'Livraison estimée', it:'Consegna stimata' },
 
   // Checkout: contact & delivery
@@ -244,7 +243,6 @@ var I18N = {
   cap_medium: { pt:'Médio', en:'Medium', es:'Mediana', de:'Mittel', fr:'Moyenne', it:'Media' },
   cap_large: { pt:'Grande', en:'Large', es:'Grande', de:'Groß', fr:'Grande', it:'Grande' },
   shipping_times_title: { pt:'Prazos e Métodos de Envio', en:'Shipping Times & Methods', es:'Plazos y Métodos de Envío', de:'Versandzeiten und Versandarten', fr:'Délais et modes de livraison', it:'Tempi e metodi di spedizione' },
-  shipping_fee_policy: { pt:'Destinos da União Europeia listados abaixo: envio gratuito. Destinos africanos listados abaixo: 20 €. Estados Unidos: 15 €. Para os outros destinos listados, contacte-nos para confirmar disponibilidade e custo antes de encomendar.', en:'Listed European Union destinations below: free shipping. Listed African destinations below: €20. United States: €15. For the other listed destinations, contact us to confirm availability and cost before ordering.', es:'Destinos de la Unión Europea indicados abajo: envío gratuito. Destinos africanos indicados abajo: 20 €. Estados Unidos: 15 €. Para los demás destinos indicados, contáctanos para confirmar disponibilidad y coste antes de pedir.', de:'Die unten aufgeführten EU-Ziele: kostenloser Versand. Die unten aufgeführten afrikanischen Ziele: 20 €. Vereinigte Staaten: 15 €. Für andere aufgeführte Ziele bitte Verfügbarkeit und Kosten vor der Bestellung erfragen.', fr:'Destinations de l’Union européenne listées ci-dessous : livraison gratuite. Destinations africaines listées ci-dessous : 20 €. États-Unis : 15 €. Pour les autres destinations listées, contactez-nous avant de commander pour confirmer disponibilité et coût.', it:'Destinazioni UE elencate di seguito: spedizione gratuita. Destinazioni africane elencate di seguito: 20 €. Stati Uniti: 15 €. Per le altre destinazioni elencate, contattaci prima dell’ordine per confermare disponibilità e costo.' },
   shipping_country_intro: { pt:'Enviamos para os seguintes destinos:', en:'We ship to the following destinations:', es:'Enviamos a los siguientes destinos:', de:'Wir versenden in folgende Länder:', fr:'Nous livrons vers les destinations suivantes :', it:'Spediamo verso le seguenti destinazioni:' },
   shipping_europe: { pt:'Europa: 6–10 dias úteis por envio padrão. Este prazo não inclui o tempo de preparação do cabelo.', en:'Europe: 6–10 business days by standard shipping. This estimate excludes hair processing time.', es:'Europa: 6–10 días laborables por envío estándar. El plazo no incluye el tiempo de preparación del cabello.', de:'Europa: 6–10 Werktage mit Standardversand. Die Haarverarbeitungszeit ist nicht inbegriffen.', fr:'Europe : 6–10 jours ouvrés en livraison standard. Ce délai exclut le temps de préparation des cheveux.', it:'Europa: 6–10 giorni lavorativi con spedizione standard. Il tempo di preparazione dei capelli non è incluso.' },
   shipping_africa: { pt:'África: 7–15 dias via FedEx ou DHL.', en:'Africa: 7–15 days via FedEx or DHL.', es:'África: 7–15 días por FedEx o DHL.', de:'Afrika: 7–15 Tage mit FedEx oder DHL.', fr:'Afrique : 7–15 jours via FedEx ou DHL.', it:'Africa: 7–15 giorni tramite FedEx o DHL.' },
