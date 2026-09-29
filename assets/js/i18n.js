@@ -529,6 +529,8 @@ function applyPortugueseLegacy(root){
     if (source===undefined){source=node.nodeValue;PT_SOURCE_NODES.set(node,source);}
     var key=source.trim();
     var translated=PT_LEGACY_COPY.get(key);
+    if (!translated && /\b\d+\s*[–-]\s*\d+\s+days\b/i.test(key))
+      translated=key.replace(/\b(\d+)\s*[–-]\s*(\d+)\s+days\b/gi,'$1 a $2 dias');
     if (parent.matches('.desc p') && window._product) translated=PT_PRODUCT_DESCRIPTIONS[window._product.handle] || translated;
     var target=LANG==='pt' && translated ? source.replace(key,translated) : source;
     if (node.nodeValue!==target) node.nodeValue=target;
