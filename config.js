@@ -44,7 +44,7 @@ window.CONFIG = {
 
   // ---- Payment keys (PUBLISHABLE only — never put secret keys here) ----
   // Stripe: Dashboard → Developers → API keys → Publishable key (pk_live_...)
-  stripeCheckoutURL: '', // Deployed Worker endpoint only; never put a secret here.
+  stripeCheckoutURL: 'https://asheerah-stripe-checkout.asheerahhair.workers.dev/create-checkout-session', // Test-mode Worker endpoint; never put a secret here.
   stripePublishable: '',
   // Public Worker endpoint/site key only; server-side secrets stay in Worker config.
   reviewAPIURL: '',
