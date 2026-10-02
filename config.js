@@ -28,9 +28,9 @@ window.CONFIG = {
   // `configured:true` means a REAL processor integration is wired up and the
   // frontend can present it as functional. Leave false until actually integrated.
   // `accepted` lists the card brands actually accepted by the Stripe account.
-  // Frontend payment methods. Processor connections are intentionally disabled until Stripe is linked.
+  // Frontend payment methods.
   payment: {
-    stripe: { configured: false, accepted: ['visa', 'mastercard'] },
+    stripe: { configured: true, accepted: ['visa', 'mastercard'] },
     paypal: { configured: false },
     mbway: { configured: false },
   },
@@ -44,7 +44,7 @@ window.CONFIG = {
 
   // ---- Payment keys (PUBLISHABLE only — never put secret keys here) ----
   // Stripe: Dashboard → Developers → API keys → Publishable key (pk_live_...)
-  stripeCheckoutURL: 'https://asheerah-stripe-checkout.asheerahhair.workers.dev/create-checkout-session', // Test-mode Worker endpoint; never put a secret here.
+  stripeCheckoutURL: 'https://asheerah-stripe-checkout-live.asheerahhair.workers.dev/create-checkout-session', // Live Worker endpoint; never put a secret here.
   stripePublishable: '',
   // Public Worker endpoint/site key only; server-side secrets stay in Worker config.
   reviewAPIURL: '',
