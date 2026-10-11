@@ -1,0 +1,15 @@
+name = "asheerah-stripe-checkout-test"
+main = "worker.mjs"
+account_id = "2d816509775474bb3c5c6bf7affd7368"
+compatibility_date = "2025-06-01"
+compatibility_flags = ["nodejs_compat"]
+
+[vars]
+ENVIRONMENT = "test"
+# Fail closed until a test storefront, catalog, and Apps Script deployment exist.
+# Do not copy production origins or endpoints into this file.
+SITE_ORIGIN = ""
+SITE_ORIGINS = ""
+SITE_BASE_URL = ""
+CATALOG_URL = ""
+GAS_WEBHOOK_URL = ""
