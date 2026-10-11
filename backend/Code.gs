@@ -15,7 +15,7 @@ var SHEET_NAME = 'Orders';
 var COSTS_NAME = 'Costs';
 var REPORT_NAME = 'Monthly Report';
 var SS_ID_PROP = 'ASH_SS_ID';
-var ORDERS_HEADER = ['Timestamp','Order','Customer','Email','Phone','Method','Items','Subtotal €','Shipping €','Total €','COGS €','Fee €','Profit €'];
+var ORDERS_HEADER = ['Timestamp','Order','Customer','Email','Phone','Method','Items','Subtotal €','Shipping €','Total €','COGS €','Fee €','Profit €','Stripe Order ID'];
 var MSG_HEADER = ['Timestamp','Name','Email','Phone','Comment'];
 var CHAT_HEADER = ['Timestamp','Session','Page','Question','Route','Tier','Reason','Matched Q&A','Transcript','Status','Owner answer','Add to KB','Reviewed'];
 
@@ -50,31 +50,35 @@ function doPost(e) {
     // signature, then HMAC-signs this exact payload for the Apps Script backend.
     if (body && typeof body.payload === 'string' && typeof body.signature === 'string') {
       var stripeEvent = verifyWorkerPayload_(body);
-      if (!stripeEvent) return json_({ ok:false, error:'Unauthorized payment event' });
-      return json_(processStripeWorkerPayload_(stripeEvent));
+      if (!stripeEvent) {
+        return json_({ ok:false, error:'Unauthorized payment event' });
+      }
+      var stripeResult = processStripeWorkerPayload_(stripeEvent);
+      if (!stripeResult.ok) console.error('Worker action rejected: ' + stripeResult.error);
+      return json_(stripeResult);
     }
 
     if (body.type === 'order') {
-      var row = buildOrderRow_(body);
-      getSheet_(SHEET_NAME, ORDERS_HEADER).appendRow(row);
-      try {
-        MailApp.sendEmail({
-          to: OWNER_EMAIL,
-          subject: 'New Asheerah Hair Order ' + Utilities.formatDate(new Date(), Session.getScriptTimeZone(), 'yyyy-MM-dd HH:mm'),
-          body: body.text || 'Order received.'
-        });
-      } catch (mailErr) { /* mail optional */ }
-      return json_({ ok: true, saved: true, emailed: true, cogs: row[10], fee: row[11], profit: row[12] });
+      // Browser prices and unsigned requests must never populate the authoritative
+      // Orders ledger. Verified Stripe payments use recordPaidStripeOrder_ instead.
+      return json_({ ok:false, error:'Unsigned orders are not accepted' });
     }
 
     if (body.type === 'contact') {
+      var contactName = safeCell_(body.name, 120);
+      var contactEmail = safeCell_(body.email, 254);
+      var contactPhone = safeCell_(body.phone, 40);
+      var contactComment = safeCell_(body.comment, 2000);
+      if (!contactName || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(contactEmail)) {
+        return json_({ ok:false, error:'Invalid contact details' });
+      }
       getSheet_('Messages', MSG_HEADER)
-        .appendRow([new Date(), body.name||'', body.email||'', body.phone||'', body.comment||'']);
+        .appendRow([new Date(), contactName, contactEmail, contactPhone, contactComment]);
       return json_({ ok: true, saved: true });
     }
 
     if (body.type === 'subscribe') {
-      var email = String(body.email||'').trim();
+      var email = safeCell_(body.email, 254);
       if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) return json_({ ok:false, error:'Invalid email' });
       var nl = getSheet_('Subscribers', ['Timestamp','Email']);
       // dedupe by email
@@ -124,7 +128,9 @@ function doPost(e) {
 
     return json_({ ok: false, error: 'Unknown type' });
   } catch (err) {
-    return json_({ ok: false, error: String(err) });
+    // Keep provider details and submitted data out of public responses.
+    try { console.error('Apps Script request failed'); } catch (logErr) {}
+    return json_({ ok: false, error: 'Request could not be processed' });
   }
 }
 
@@ -324,10 +330,16 @@ function colLetter(c){ var s=''; while(c>0){ var m=(c-1)%26; s=String.fromCharCo
 function getSpreadsheet_() {
   var props = PropertiesService.getScriptProperties();
   var id = props.getProperty(SS_ID_PROP);
-  if (id) { var ex = SpreadsheetApp.openById(id); if (ex) return ex; }
-  var ss = SpreadsheetApp.getActiveSpreadsheet();
-  if (!ss) ss = SpreadsheetApp.create('Asheerah Hair Orders');
-  props.setProperty(SS_ID_PROP, ss.getId());
+  var expectedName = props.getProperty('ASH_SS_EXPECTED_NAME');
+  if (!id || !String(id).trim() || !expectedName || !String(expectedName).trim()) {
+    throw new Error('Ledger destination is not configured');
+  }
+  var ss;
+  try { ss = SpreadsheetApp.openById(String(id).trim()); }
+  catch (_) { throw new Error('Configured ledger is inaccessible'); }
+  if (!ss || ss.getId() !== String(id).trim() || ss.getName() !== String(expectedName)) {
+    throw new Error('Configured ledger does not match the approved destination');
+  }
   return ss;
 }
 
@@ -346,18 +358,37 @@ function getSheet_(name, header) {
   return sheet;
 }
 
+function stripeAuthReject_(reason) {
+  console.error(reason);
+  return null;
+}
+
 function verifyWorkerPayload_(wrapper) {
   try {
-    var secret = PropertiesService.getScriptProperties().getProperty('WORKER_GAS_SECRET');
-    if (!secret || !wrapper || typeof wrapper.payload !== 'string' || !/^[a-f0-9]{64}$/i.test(wrapper.signature)) return null;
-    var bytes = Utilities.computeHmacSha256Signature(wrapper.payload, secret);
-    var expected = bytes.map(function(b){ return ('0' + ((b + 256) % 256).toString(16)).slice(-2); }).join('');
-    if (expected.length !== wrapper.signature.length) return null;
-    var diff = 0;
-    for (var i=0; i<expected.length; i++) diff |= expected.charCodeAt(i) ^ wrapper.signature.toLowerCase().charCodeAt(i);
-    if (diff !== 0) return null;
+    if (!wrapper || typeof wrapper.payload !== 'string' || !/^[a-f0-9]{64}$/i.test(wrapper.signature)) return stripeAuthReject_('Worker signature format invalid');
+    var properties = PropertiesService.getScriptProperties();
+    var secrets = [properties.getProperty('WORKER_GAS_SECRET')];
+    var supplied = wrapper.signature.toLowerCase(), configured = false, matched = false;
+    for (var s=0; s<secrets.length; s++) {
+      if (!secrets[s]) continue;
+      configured = true;
+      // Match the current Worker's canonicalization exactly; do not accept
+      // legacy alternate properties or alternate encodings of the key.
+      var canonicalSecret = String(secrets[s]).normalize('NFKC').trim().replace(/^(['"])([\s\S]*)\1$/, '$2').replace(/\s+/g,'').toLowerCase();
+      if (!canonicalSecret) continue;
+      var candidates = [canonicalSecret];
+      for (var c=0; c<candidates.length; c++) {
+        var bytes = Utilities.computeHmacSha256Signature(wrapper.payload, candidates[c], Utilities.Charset.UTF_8);
+        var expected = bytes.map(function(b){ return ('0' + ((b + 256) % 256).toString(16)).slice(-2); }).join('');
+        var diff = expected.length ^ supplied.length;
+        for (var i=0; i<expected.length && i<supplied.length; i++) diff |= expected.charCodeAt(i) ^ supplied.charCodeAt(i);
+        matched = matched || diff === 0;
+      }
+    }
+    if (!configured) return stripeAuthReject_('Apps Script worker secret missing');
+    if (!matched) return stripeAuthReject_('Worker HMAC does not match');
     return JSON.parse(wrapper.payload);
-  } catch (err) { return null; }
+  } catch (err) { return stripeAuthReject_('Worker verification raised an exception'); }
 }
 
 function processStripeWorkerPayload_(payload) {
@@ -370,7 +401,9 @@ function processStripeWorkerPayload_(payload) {
 }
 
 function stripePaymentsSheet_() {
-  return getSheet_('Stripe Payments', ['Event ID','Order ID','Status','Stripe Session ID','Payment Intent ID','Customer Email','Customer Phone','Ship To','Shipping Address','Items','Amount €','Currency','Updated At']);
+  var sheet = getSheet_('Stripe Payments', ['Event ID','Order ID','Status','Stripe Session ID','Payment Intent ID','Customer Email','Customer Phone','Ship To','Shipping Address','Items','Amount €','Currency','Updated At','Order Details JSON']);
+  if (sheet.getRange(1,14).getValue() !== 'Order Details JSON') sheet.getRange(1,14).setValue('Order Details JSON');
+  return sheet;
 }
 function stripeOrderRow_(rows, orderId) {
   for (var i=1; i<rows.length; i++) if (String(rows[i][1]) === String(orderId)) return i+1;
@@ -380,13 +413,27 @@ function recordStripePending_(payload) {
   var c=payload.customer||{};
   var orderId=String(payload.orderId||'');
   var expected=Number(payload.expectedTotalCents), subtotal=Number(payload.subtotalCents), shipping=Number(payload.shippingCents);
-  if (!/^[a-f0-9-]{36}$/i.test(orderId) || payload.currency!=='EUR' || !Number.isSafeInteger(expected) || expected<=0 || expected!==subtotal+shipping || !c.email || !c.name) return {ok:false,error:'Invalid pending order'};
+  var couponMatch=String(payload.itemsSummary||'').match(/^Ambassador coupon: (ONIKA10|LILIAN10|TUCHA10|CASSIE10) \| /);
+  var discount=couponMatch?700:0;
+  var couponCode=String(payload.couponCode||'').trim().toUpperCase();
+  var rawItems=Array.isArray(payload.orderItems)?payload.orderItems:[];
+  if (rawItems.length>20 || couponCode!==(couponMatch?couponMatch[1]:'')) return {ok:false,error:'Invalid order details'};
+  var orderItems=[];
+  for (var i=0;i<rawItems.length;i++) {
+    var item=rawItems[i], opts=item&&item.opts;
+    if (!item || typeof item.title!=='string' || !item.title.trim() || item.title.length>120 || !Number.isInteger(Number(item.qty)) || Number(item.qty)<1 || Number(item.qty)>10 || !opts || typeof opts!=='object' || Array.isArray(opts)) return {ok:false,error:'Invalid order details'};
+    var cleanOpts={};
+    ['opt1','opt2','opt3','opt4'].forEach(function(key){ cleanOpts[key]=safeCell_(opts[key]||'',80); });
+    orderItems.push({title:safeCell_(item.title,120),qty:Number(item.qty),opts:cleanOpts});
+  }
+  if (!/^[a-f0-9-]{36}$/i.test(orderId) || payload.currency!=='EUR' || !Number.isSafeInteger(expected) || expected<=0 || !Number.isSafeInteger(subtotal) || subtotal<=0 || !Number.isSafeInteger(shipping) || shipping<0 || expected!==subtotal-discount+shipping || !c.email || !c.name) return {ok:false,error:'Invalid pending order'};
+  var orderDetails={subtotalCents:subtotal,shippingCents:shipping,couponCode:couponCode,items:orderItems};
   var lock=LockService.getScriptLock(); lock.waitLock(10000);
   try {
     var sheet=stripePaymentsSheet_(), rows=sheet.getDataRange().getValues(), found=stripeOrderRow_(rows,orderId);
     if (found) return Math.round(Number(rows[found-1][10])*100)===expected ? {ok:true,duplicate:true} : {ok:false,error:'Order already exists with different amount'};
     var address=[c.address,c.city,c.postalCode,c.country].filter(Boolean).join(', ');
-    sheet.appendRow(['pending:'+orderId,orderId,'pending','','',safeCell_(c.email,254),safeCell_(c.phone,40),safeCell_(c.name,120),safeCell_(address,500),safeCell_(payload.itemsSummary,450),expected/100,'EUR',new Date()]);
+    sheet.appendRow(['pending:'+orderId,orderId,'pending','','',safeCell_(c.email,254),safeCell_(c.phone,40),safeCell_(c.name,120),safeCell_(address,500),safeCell_(payload.itemsSummary,450),expected/100,'EUR',new Date(),JSON.stringify(orderDetails)]);
     return {ok:true,saved:true};
   } finally { lock.releaseLock(); }
 }
@@ -431,7 +478,16 @@ function recordStripeEvent_(event) {
     var sheet=stripePaymentsSheet_(), rows=sheet.getDataRange().getValues(), row=stripeOrderRow_(rows,orderId);
     if (!row) return {ok:false,error:'Pending order not found'};
     var current=rows[row-1], seen=String(current[0]||'').split(',');
-    if (seen.indexOf(event.eventId)!==-1) return {ok:true,duplicate:true,status:current[2]};
+    if (seen.indexOf(event.eventId)!==-1) {
+      if (current[2]==='paid' && current[13]) {
+        var priorDetails; try { priorDetails=JSON.parse(current[13]); } catch (_) { priorDetails=null; }
+        if (priorDetails && priorDetails.items && priorDetails.items.length) {
+          var retrySync=recordPaidStripeOrder_(orderId,expected,priorDetails,current,session);
+          if (!retrySync.ok) return retrySync;
+        }
+      }
+      return {ok:true,duplicate:true,status:current[2]};
+    }
     if (Math.round(Number(current[10])*100)!==expected || (current[3] && String(current[3])!==String(session.id))) return {ok:false,error:'Pending order/session mismatch'};
     if (current[2]==='paid') status='paid';
     var ship=session.shipping_details||{}, shipAddr=ship.address||{};
@@ -442,12 +498,42 @@ function recordStripeEvent_(event) {
       (session.customer_details&&session.customer_details.phone)||current[6],ship.name||current[7],shipAddressText||current[8],
       (session.metadata&&session.metadata.items_summary)||current[9],expected/100,'EUR',new Date()];
     values=values.map(function(v,i){return i===12?v:safeCell_(v, i===8?500: i===9?450: i===5?254:120);});
+    if (status==='paid' && current[13]) {
+      var orderDetails; try { orderDetails=JSON.parse(current[13]); } catch (_) { orderDetails=null; }
+      if (orderDetails && orderDetails.items && orderDetails.items.length) {
+        var syncResult=recordPaidStripeOrder_(orderId,expected,orderDetails,current,session);
+        if (!syncResult.ok) return syncResult;
+      }
+    }
     for (var col=1;col<=values.length;col++) sheet.getRange(row,col).setValue(values[col-1]);
     if (status==='paid' && current[2]!=='paid') {
       try { MailApp.sendEmail({to:OWNER_EMAIL,subject:'Stripe payment received — '+orderId,body:'A Stripe Checkout payment was confirmed by webhook.\nOrder: '+orderId+'\nAmount: €'+r2(expected/100)+'\nItems: '+safeCell_(session.metadata&&session.metadata.items_summary,450)}); } catch (mailErr) {}
     }
     return {ok:true,recorded:true,status:status};
   } finally { lock.releaseLock(); }
+}
+
+/** Mirror verified paid Stripe orders into the legacy Orders ledger exactly once. */
+function recordPaidStripeOrder_(orderId,expectedCents,details,current,session) {
+  var orders=getSheet_(SHEET_NAME,ORDERS_HEADER);
+  var stripeIdHeader=orders.getRange(1,14).getValue();
+  if (stripeIdHeader && stripeIdHeader!=='Stripe Order ID') return {ok:false,error:'Orders sheet is missing the Stripe Order ID column'};
+  if (!stripeIdHeader) orders.getRange(1,14).setValue('Stripe Order ID');
+  var lastRow=orders.getLastRow();
+  if (lastRow>1) {
+    var ids=orders.getRange(2,14,lastRow-1,1).getValues();
+    for (var i=0;i<ids.length;i++) if (String(ids[i][0])===String(orderId)) return {ok:true,duplicate:true};
+  }
+  var subtotalCents=Number(details.subtotalCents),shippingCents=Number(details.shippingCents),coupon=String(details.couponCode||'');
+  var discount=['ONIKA10','LILIAN10','TUCHA10','CASSIE10'].indexOf(coupon)!==-1?700:0;
+  if (!Number.isSafeInteger(subtotalCents) || subtotalCents<=0 || !Number.isSafeInteger(shippingCents) || shippingCents<0 || expectedCents!==subtotalCents-discount+shippingCents || !Array.isArray(details.items) || !details.items.length) return {ok:false,error:'Stripe order details failed validation'};
+  var ship=session.shipping_details||{}, customerDetails=session.customer_details||{};
+  var customer={name:ship.name||current[7]||'',email:customerDetails.email||session.customer_email||current[5]||'',phone:customerDetails.phone||current[6]||''};
+  var orderRow=buildOrderRow_({method:'stripe',customer:customer,items:details.items,coupon:coupon,subtotalEur:subtotalCents/100,shippingEur:shippingCents/100,totalEur:expectedCents/100});
+  orderRow[1]='STRIPE-'+String(orderId).toUpperCase();
+  orderRow.push(String(orderId));
+  orders.appendRow(orderRow);
+  return {ok:true,saved:true};
 }
 
 function json_(obj) {

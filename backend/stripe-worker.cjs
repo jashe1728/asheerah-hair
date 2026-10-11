@@ -59,6 +59,7 @@ function normalizeCheckoutRequest(input, catalog, env) {
   const shipping = shippingForCountry(cleanCustomer.country);
   const shippingCents = shipping.shippingCents;
   let subtotalCents = 0;
+  const orderItems = [];
   const lineItems = items.map(item => {
     if (!item || Object.keys(item).some(k => !['handle','options','quantity'].includes(k))) throw new Error('Unexpected cart item fields');
     const handle = safeText(item.handle, 120, 'product');
@@ -72,13 +73,14 @@ function normalizeCheckoutRequest(input, catalog, env) {
     if (!variant) throw new Error('Unknown product variant');
     const unitCents = cents(variant.price_eur);
     subtotalCents += unitCents * quantity;
+    orderItems.push({ title: product.title, qty: quantity, opts: options });
     return { price_data: { currency: 'eur', unit_amount: unitCents, product_data: { name: `${product.title} — ${variant.title}`.slice(0, 250) } }, quantity };
   });
   const discountCents = couponCode ? Math.min(AMBASSADOR_COUPONS[couponCode],subtotalCents) : 0;
   const totalCents = subtotalCents - discountCents + shippingCents;
   if (subtotalCents > 10_000_000 || totalCents > 10_000_000) throw new Error('Order exceeds maximum allowed amount');
   if (shippingCents > 0) lineItems.push({ price_data: { currency: 'eur', unit_amount: shippingCents, product_data: { name: 'Shipping' } }, quantity: 1 });
-  return { customer: cleanCustomer, currency: 'eur', shippingRegion:shipping.region, allowedCountries:shipping.allowedCountries, subtotalCents, discountCents, couponCode, shippingCents, totalCents, lineItems };
+  return { customer: cleanCustomer, currency: 'eur', shippingRegion:shipping.region, allowedCountries:shipping.allowedCountries, subtotalCents, discountCents, couponCode, shippingCents, totalCents, orderItems, lineItems };
 }
 function discountCheckoutLineItems(checkout){
   let remaining=checkout.discountCents||0;
@@ -116,11 +118,17 @@ function verifyStripeSignature(body, signature, secret, now = Math.floor(Date.no
 }
 async function forwardToGas(env, payload) {
   const rawPayload = JSON.stringify(payload);
-  const signature = crypto.createHmac('sha256',env.WORKER_GAS_SECRET).update(rawPayload).digest('hex');
+  const secret = String(env.WORKER_GAS_SECRET || '').normalize('NFKC').trim().replace(/^(['"])([\s\S]*)\1$/, '$2').replace(/\s+/g,'').toLowerCase();
+  const signature = crypto.createHmac('sha256',secret).update(rawPayload).digest('hex');
   const response = await fetch(env.GAS_WEBHOOK_URL,{method:'POST',headers:{'content-type':'text/plain;charset=utf-8'},body:JSON.stringify({payload:rawPayload,signature})});
   let ack;
   try { ack = await response.json(); } catch { ack = null; }
-  if (!response.ok || !ack || ack.ok !== true) throw new Error('Apps Script payment record failed');
+  if (!response.ok || !ack || ack.ok !== true) {
+    const err = new Error('Apps Script payment record failed');
+    const reasons = {'Unauthorized payment event':'gas_auth_rejected','Invalid order details':'gas_invalid_order_details','Invalid pending order':'gas_invalid_pending_order','Unsupported worker action':'gas_unsupported_action'};
+    err.diagnostic = !response.ok ? 'gas_http_error' : !ack ? 'gas_non_json_response' : reasons[ack.error] || 'gas_record_error';
+    throw err;
+  }
   return ack;
 }
 
@@ -281,20 +289,21 @@ async function handleRequest(request, env) {
   let input;
   try { input = JSON.parse(raw); } catch { return json({error:'Invalid request'},400,allowedOrigin); }
   let orderId = '';
+  let stage = 'catalog';
   try {
     const catalogResponse = await fetch(env.CATALOG_URL,{headers:{accept:'application/json'}});
     if (!catalogResponse.ok) throw new Error('Catalog unavailable');
+    stage = 'validate_cart';
     const checkout = normalizeCheckoutRequest(input,await catalogResponse.json(),env);
     orderId = crypto.randomUUID();
     const itemsSummary=(checkout.couponCode ? `Ambassador coupon: ${checkout.couponCode} | ` : '') + checkout.lineItems.filter(x=>x.price_data.product_data.name!=='Shipping').map(x=>`${x.quantity}x ${x.price_data.product_data.name}`).join(' | ');
-    await forwardToGas(env,{action:'stripe_pending',orderId,customer:checkout.customer,itemsSummary:itemsSummary.slice(0,450),expectedTotalCents:checkout.totalCents,subtotalCents:checkout.subtotalCents,shippingCents:checkout.shippingCents,currency:'EUR'});
+    stage = 'record_pending';
+    await forwardToGas(env,{action:'stripe_pending',orderId,customer:checkout.customer,itemsSummary:itemsSummary.slice(0,450),orderItems:checkout.orderItems,expectedTotalCents:checkout.totalCents,subtotalCents:checkout.subtotalCents,shippingCents:checkout.shippingCents,couponCode:checkout.couponCode,currency:'EUR'});
     const params = new URLSearchParams();
     params.set('mode','payment'); params.set('success_url',`${env.SITE_BASE_URL}/checkout.html?payment=success&order_id=${orderId}&session_id={CHECKOUT_SESSION_ID}`);
     params.set('cancel_url',`${env.SITE_BASE_URL}/checkout.html?payment=cancelled&order_id=${orderId}`);
     params.set('customer_email',checkout.customer.email); params.set('client_reference_id',orderId);
-    params.set('phone_number_collection[enabled]','true');
-    params.set('billing_address_collection','required');
-    checkout.allowedCountries.forEach(country=>params.append('shipping_address_collection[allowed_countries][]',country));
+    params.set('billing_address_collection','auto');
     if (checkout.couponCode){
       params.set('metadata[ambassador_code]',checkout.couponCode);
       params.set('metadata[coupon_discount_cents]',String(checkout.discountCents));
@@ -307,13 +316,15 @@ async function handleRequest(request, env) {
     params.set('payment_intent_data[metadata][order_id]',orderId);
     params.set('payment_intent_data[metadata][expected_total_cents]',String(checkout.totalCents));
     discountCheckoutLineItems(checkout).forEach((item,i)=>{ params.set(`line_items[${i}][price_data][currency]`,item.price_data.currency); params.set(`line_items[${i}][price_data][unit_amount]`,String(item.price_data.unit_amount)); params.set(`line_items[${i}][price_data][product_data][name]`,item.price_data.product_data.name); params.set(`line_items[${i}][quantity]`,String(item.quantity)); });
+    stage = 'create_stripe_session';
     const session = await stripePost('checkout/sessions',params,env.STRIPE_SECRET_KEY,`asheerah-${orderId}`);
+    stage = 'record_session';
     await forwardToGas(env,{action:'stripe_session_created',orderId,sessionId:session.id});
     return json({checkoutUrl:session.url,orderId},200,allowedOrigin);
   } catch (err) {
     if (orderId) { try { await forwardToGas(env,{action:'stripe_checkout_failed',orderId}); } catch {} }
     if (err.message === 'Shipping rate is not configured for this destination') return json({error:'Shipping is not available to that destination at the listed rates.'},422,allowedOrigin);
-    return json({error:'Unable to start secure checkout'},502,allowedOrigin);
+    return json({error:'Unable to start secure checkout',...(env.CHECKOUT_DIAGNOSTIC === '1' ? {stage,reason:err.diagnostic || 'unclassified'} : {})},502,allowedOrigin);
   }
 }
 module.exports = { normalizeCheckoutRequest, verifyStripeSignature, handleRequest, fetch: handleRequest };

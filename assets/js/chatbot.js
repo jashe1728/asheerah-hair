@@ -4,6 +4,14 @@
 const CHAT_STOP_WORDS=new Set(['a','an','and','are','can','do','does','for','have','how','i','in','is','it','me','my','of','on','or','the','this','to','what','when','where','with','you','your']);
 const CHAT_SESSION='AH-'+Date.now().toString(36).toUpperCase().slice(-6)+'-'+Math.random().toString(36).slice(2,5).toUpperCase();
 const CHAT_STATE={entries:[],locales:{},transcript:[],ready:false};
+const CHAT_PAYMENT_ANSWERS={
+  en:'Online checkout currently offers card payment through Stripe Checkout. Other payment methods are not currently offered online. Your order is recorded as paid only after Stripe confirms successful payment; returning to this website alone does not confirm payment. Never send card details, PINs, passwords, or security codes in chat.',
+  pt:'O checkout online disponibiliza atualmente pagamento com cartão através do Stripe Checkout. Neste momento, os outros métodos não são disponibilizados online. A encomenda só é registada como paga depois de a Stripe confirmar o pagamento; regressar a este site, por si só, não confirma o pagamento. Nunca envies dados do cartão, PINs, palavras-passe ou códigos de segurança no chat.',
+  es:'El pago en línea ofrece actualmente tarjeta mediante Stripe Checkout. Por ahora no se ofrecen otros métodos en línea. El pedido solo se registra como pagado cuando Stripe confirma el pago; volver a este sitio no lo confirma. Nunca envíes datos de tarjeta, PIN, contraseñas ni códigos de seguridad por el chat.',
+  de:'Beim Online-Checkout ist derzeit Kartenzahlung über Stripe Checkout verfügbar. Andere Zahlungsmethoden werden online derzeit nicht angeboten. Die Bestellung wird erst als bezahlt erfasst, wenn Stripe die Zahlung bestätigt; die Rückkehr zu dieser Website bestätigt sie nicht. Teile niemals Kartendaten, PINs, Passwörter oder Sicherheitscodes im Chat.',
+  fr:'Le paiement en ligne propose actuellement la carte via Stripe Checkout. Les autres moyens ne sont pas proposés en ligne pour le moment. La commande est enregistrée comme payée uniquement après confirmation par Stripe ; revenir sur ce site ne confirme pas le paiement. Ne partagez jamais vos données de carte, PIN, mots de passe ou codes de sécurité dans le chat.',
+  it:'Il checkout online offre attualmente il pagamento con carta tramite Stripe Checkout. Per ora non sono offerti altri metodi online. L’ordine viene registrato come pagato solo dopo la conferma di Stripe; tornare su questo sito non conferma il pagamento. Non inviare mai dati della carta, PIN, password o codici di sicurezza in chat.'
+};
 const CHAT_QUICK_QUESTIONS={
   en:{hair:'What type of hair do you sell?',shipping:'How long does shipping take?',returns:'Do you accept returns?',contact:'How do I contact you?'},
   pt:{hair:'Que tipos de cabelo vendem?',shipping:'Quanto tempo demora a entrega?',returns:'Qual é a política de devolução?',contact:'Como posso contactar-vos?'},
@@ -18,7 +26,7 @@ function chatLocale(){return CHAT_STATE.locales[chatLang()]||CHAT_STATE.locales.
 function chatText(key){return chatLocale().ui[key]||((CHAT_STATE.locales.en||{}).ui||{})[key]||key;}
 function chatEntryLocale(entry){return (chatLocale().entries||{})[entry.id]||{};}
 function chatEntryTriggers(entry){return chatLang()==='en'?(entry.triggers||[]):(chatEntryLocale(entry).triggers||[]);}
-function chatEntryAnswer(entry){return chatLang()==='en'?entry.answer:(chatEntryLocale(entry).answer||'');}
+function chatEntryAnswer(entry){if(entry.id==='PAY07')return CHAT_PAYMENT_ANSWERS[chatLang()]||CHAT_PAYMENT_ANSWERS.en;return chatLang()==='en'?entry.answer:(chatEntryLocale(entry).answer||'');}
 function chatNormalize(value){return String(value||'').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/×/g,'x').replace(/[^a-z0-9€x\s]/g,' ').replace(/\s+/g,' ').trim();}
 function chatTokens(value){return chatNormalize(value).split(' ').filter(word=>word.length>1&&!CHAT_STOP_WORDS.has(word));}
 function chatPhraseMatch(message,list){const text=' '+chatNormalize(message)+' ';return (list||[]).some(phrase=>text.includes(' '+chatNormalize(phrase)+' '));}

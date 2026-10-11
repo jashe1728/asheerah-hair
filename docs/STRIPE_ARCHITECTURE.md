@@ -30,7 +30,7 @@ Google Sheet: pending orders and verified payment state (pending → paid / fail
 
 ### Browser
 
-- Collect customer name, email and phone. Stripe Checkout collects the final shipping address; the form's locally entered address is included only in the signed pending order record for preliminary fulfillment details.
+- Collect customer name, email, phone and delivery address once. The Worker sends them to Apps Script in a signed pending order record; the paid webhook retains that delivery address in `Stripe Payments`.
 - Never decide the authoritative price, discount, shipping amount, tax, or paid status.
 - Never receive or store the Stripe secret key.
 - Redirect only to the Checkout URL returned by the Worker. Do not treat a success-page visit as proof of payment.
@@ -41,7 +41,7 @@ Google Sheet: pending orders and verified payment state (pending → paid / fail
 - Allowlist request actions and validate required fields, lengths, email, product identifiers, option values, integer quantities and maximum quantity.
 - Re-read the canonical published catalog from a fixed, trusted URL (the Asheerah GitHub Pages `catalog.json` URL), match product handle + exact variant options, and compute line prices server-side. Reject unknown/unavailable variants and do not trust browser-supplied prices or totals.
 - The Worker accepts only the four named ambassador codes (`ONIKA10`, `LILIAN10`, `TUCHA10`, `CASSIE10`), applies a fixed €7 reduction server-side (capped at merchandise subtotal), and records the code for attribution. The codes are shareable; no per-customer redemption cap or expiry has been specified.
-- Derive shipping from the destination entered on the site: free for the currently listed EU countries, €20 for the currently listed African countries, and €15 for the United States. Other previously listed destinations (Brazil, Canada, United Kingdom and Switzerland) have no confirmed rate and are rejected by Stripe checkout until priced. Stripe's shipping address collection is restricted to countries in the same rate group as the quote.
+- Derive shipping from the destination entered on the site: free for the currently listed EU countries, €20 for the currently listed African countries, and €15 for the United States. Other previously listed destinations (Brazil, Canada, United Kingdom and Switzerland) have no confirmed rate and are rejected by Stripe checkout until priced. The site address determines the delivery destination and the server-calculated shipping charge.
 - Compute EUR item subtotal and shipping in integer cents from the canonical catalog and shipping rules. The scaffold does not calculate VAT/tax; confirm the legal tax treatment and add the appropriate Stripe tax configuration before accepting live payments.
 - Create a Stripe Checkout Session using Stripe's HTTPS API with server-side `STRIPE_SECRET_KEY` held as a Cloudflare Worker secret. Send only necessary customer/shipping details and line items; use EUR and fixed success/cancel URLs derived from configured site URLs.
 - Set `client_reference_id` and metadata to an opaque order ID plus server-computed expected total/currency. Do not put private customer data into Stripe metadata.
@@ -86,7 +86,7 @@ The browser must omit `price`, `subtotal`, `shipping`, `discount`, `total`, `pai
 
 ### Shipping quote
 
-`POST` to Worker `/shipping-quote` with `{ "country": "Portugal" }`. The Worker normalizes the destination against its supported country/rate groups and returns `{ "currency": "EUR", "region": "EU", "shippingCents": 0 }` (Africa returns `2000`; United States returns `1500`). Unpriced/unsupported destinations receive HTTP 422 and must not proceed to Checkout. The quote endpoint is display-only; the session-creation request independently recalculates the rate. The address countries allowed inside Stripe Checkout are restricted to that same price group.
+`POST` to Worker `/shipping-quote` with `{ "country": "Portugal" }`. The Worker normalizes the destination against its supported country/rate groups and returns `{ "currency": "EUR", "region": "EU", "shippingCents": 0 }` (Africa returns `2000`; United States returns `1500`). Unpriced/unsupported destinations receive HTTP 422 and must not proceed to Checkout. The quote endpoint is display-only; the session-creation request independently recalculates the rate from the submitted site address.
 
 ### Webhook
 
@@ -94,7 +94,7 @@ Stripe sends signed events to the Worker `/webhook` URL. The Worker verifies `St
 
 ## Order sheet additions
 
-The Worker creates a separate `Stripe Payments` sheet record before session creation (pending), then attaches the Checkout Session ID. Signed webhook events update that same row and set `paid` only when Stripe reports `payment_status=paid` and the amount, currency, order and session match. Event IDs are deduplicated. Stored fields include customer email/phone, shipping name/address, item summary, expected amount and status. No card numbers or security codes are stored. The browser return page intentionally does not yet poll or display backend payment status.
+The Worker creates a `Stripe Payments` sheet record before session creation (pending), then attaches the Checkout Session ID. Signed webhook events update that row and set `paid` only when Stripe reports `payment_status=paid` and the amount, currency, order and session match. Event IDs are deduplicated. Once verified, the paid order is also mirrored to the legacy `Orders` sheet exactly once; the mirror includes the order ID, structured product options, merchandise subtotal, shipping, paid total, estimated COGS, and Stripe fee estimate. `Stripe Payments` remains the detailed payment and webhook ledger. No card numbers or security codes are stored. The browser return page intentionally does not yet poll or display backend payment status.
 
 ## Customer-facing flow
 
@@ -102,8 +102,8 @@ The Worker creates a separate `Stripe Payments` sheet record before session crea
 2. Checkout form validates required contact and delivery fields.
 3. Browser requests a shipping quote from Worker `/shipping-quote`; the Worker derives the amount from its own destination rules. The displayed total remains pending until a supported destination is quoted.
 4. Browser sends product handles/options/quantities and customer details to Worker.
-5. Worker revalidates catalog prices and destination shipping, creates a Stripe Checkout Session with allowed countries limited to the quoted rate group, and returns the hosted Checkout URL.
-6. Browser redirects to Stripe-hosted checkout, which collects shipping and billing details.
+5. Worker revalidates catalog prices and destination shipping, records the delivery address with the pending order, creates a Stripe Checkout Session, and returns the hosted Checkout URL.
+6. Browser redirects to Stripe-hosted checkout, which collects payment details and billing information when required.
 7. Stripe returns to a neutral “Payment submitted / verifying” page. The page does not claim success from the return URL and does not yet query the payment status API.
 8. Verified webhook validates amount and currency, records the event in the separate sheet, and emails the owner if paid. The owner verifies fulfillment from Stripe and the sheet; no customer-paid success receipt is sent yet.
 9. Cancel/back returns to the checkout form with the cart intact. Coupon codes are rejected on the Stripe path until server-side coupon support is implemented.
@@ -122,9 +122,9 @@ The Worker creates a separate `Stripe Payments` sheet record before session crea
 
 1. Confirm the existing Apps Script deployment belongs to the Asheerah account and you can edit/redeploy it.
 2. In Stripe, complete account/business verification yourself and confirm the account can accept EUR payments.
-3. The supplied rates are implemented: free for the currently listed EU countries, €20 for the currently listed African countries, and €15 for the United States. Confirm whether to add rates/countries beyond that list; Brazil, Canada, United Kingdom and Switzerland remain unavailable through Stripe checkout until rates are set. Confirm tax treatment, coupon rules and refund/cancellation wording.
+3. The supplied rates are implemented: free for the currently listed EU countries, €20 for the currently listed African countries, and €15 for the United States. The owner confirmed that Brazil, Canada, United Kingdom and Switzerland remain unavailable until rates are set. The owner also confirmed that displayed prices include IVA, so checkout must not add tax to those prices. Confirm the required invoice/tax presentation and refund/cancellation wording before live payments.
 4. Use Stripe test mode and store its secret key only as a Cloudflare Worker secret.
-5. Confirm shipping-address collection, coverage of unpriced destinations and VAT/tax policy; Stripe currently collects address a second time and no tax/coupon integration is enabled.
+5. Confirm the site's delivery-address collection, coverage of unpriced destinations and VAT/tax policy. Stripe Checkout uses automatic billing-address collection and does not ask for a second delivery address.
 6. Deploy Apps Script updates and Worker, set the matching Worker HMAC secret in both services, configure Stripe webhook signing secret, then test valid/declined/cancelled payments, invalid prices, webhook retry/duplicate, shipping and the Sheet record. Do not switch to live mode until all checks pass.
 7. Only after separate explicit approval, publish website changes to `main`/GitHub Pages and verify the exact customer-facing domain. The custom domain previously returned HTTP 403, so verify it independently from GitHub Pages.
 
@@ -139,8 +139,7 @@ The Worker creates a separate `Stripe Payments` sheet record before session crea
 
 ## Current verified status
 
-- GitHub Pages is the current site host; there is no server runtime on GitHub Pages.
-- The local repository now contains an unpublished Worker checkout scaffold, an Apps Script webhook-event recorder, and a frontend Stripe redirect branch. These pieces have not been deployed or tested against Stripe or the live Apps Script account.
-- `config.js` leaves `stripeCheckoutURL` empty and Stripe marked not configured, so the checkout is not active.
-- The Apps Script backend records signed Stripe webhook events, but there are no pending-order/session rows or customer status endpoint yet.
-- No Stripe credentials have been added. No live payment can be taken from the current deployed site.
+- GitHub Pages serves the customer site at `https://asheerahhair.com`; `config.js` points to the deployed test-mode Worker. The site can redirect to Stripe Checkout, while `payment.stripe.configured` remains false.
+- The Worker and Apps Script deployment accept signed pending orders and Stripe webhook events. The latest Worker forwards structured order details; Apps Script mirrors verified paid orders into `Orders` with the Stripe order ID for deduplication. Apps Script deployment version 13 also accepts a separately configured `WORKER_GAS_SECRET_LIVE` so the live Worker can have its own signing secret without changing the test Worker secret.
+- Local tests cover cart pricing, regional shipping, ambassador discounts, signature verification and one-time `Orders` mirroring. A completed payment on the latest deployed test integration was checked in both `Stripe Payments` and `Orders`: the payment status was `paid`, the Stripe order ID matched, and both sheets recorded the same EUR total.
+- Live payments remain disabled. Live API credentials and a live webhook endpoint have not been configured.

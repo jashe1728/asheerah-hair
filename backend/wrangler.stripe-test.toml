@@ -1,0 +1,12 @@
+name = "asheerah-stripe-checkout"
+main = "worker.mjs"
+account_id = "2d816509775474bb3c5c6bf7affd7368"
+compatibility_date = "2025-06-01"
+compatibility_flags = ["nodejs_compat"]
+
+[vars]
+SITE_ORIGIN = "https://asheerahhair.com"
+SITE_ORIGINS = "https://jashe1728.github.io,https://asheerahhair.com,https://www.asheerahhair.com"
+SITE_BASE_URL = "https://asheerahhair.com"
+CATALOG_URL = "https://jashe1728.github.io/asheerah-hair/catalog.json"
+GAS_WEBHOOK_URL = "https://script.google.com/macros/s/AKfycbwFhUUndMwUeXE58D2x9UtPJv00ZfM0QUsdrwgcxU0YQxzBazYKiVbEvkm_OnWCxND7/exec"

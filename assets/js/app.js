@@ -932,6 +932,7 @@ function renderCartPage(){
       <div class="row"><span>${uiTxt('shipping')}</span><span>${t.shippingKnown?money(t.shipping,cur):uiTxt('shipping_calc_checkout')}</span></div>
       <div class="shipping-eta">${uiTxt('shipping_eta')}: ${escapeHTML(CONFIG.shippingEta || '6–10 days')}</div>
       <div class="row total"><span>${uiTxt('total')}</span><span>${t.shippingKnown?money(t.totalFinal,cur):uiTxt('shipping_calc_checkout')}</span></div>
+      <p class="checkout-disclosure">${uiTxt('checkout_disclosure')}</p>
       <a href="checkout.html" class="btn-primary" style="width:100%;text-align:center;margin-top:1rem">${uiTxt('checkout')}</a>
     </div>
     <div class="cart-actions"><a href="shop.html" class="btn-ghost">${uiTxt('continue_shopping')}</a></div>
@@ -1015,7 +1016,7 @@ function renderCheckoutPage(){
         <legend>${uiTxt('payment_method')}</legend>
         <p class="payment-intro">${uiTxt('payment_choose')}</p>
         <div class="methods" id="payMethods">
-          ${['stripe','paypal','mbway'].map((m,idx)=> paymentMethodHTML(m,idx)).join('')}
+          ${['stripe','paypal','mbway'].filter(m=>CONFIG.payment && CONFIG.payment[m] && CONFIG.payment[m].configured).map((m,idx)=> paymentMethodHTML(m,idx)).join('')}
         </div>
         <div id="payArea" class="pay-area" aria-live="polite"></div>
       </fieldset>
@@ -1046,6 +1047,7 @@ function renderCheckoutPage(){
       <div class="shipping-eta">${uiTxt('shipping_eta')}: ${escapeHTML(CONFIG.shippingEta || '6–10 days')}</div>
           ${t.taxes>0?`<div class="row"><span>${uiTxt('taxes')}</span><span>${money(t.taxes,cur)}</span></div>`:''}
           <div class="row total"><span>${uiTxt('final_total')}</span><span id="coGrandTotal">${t.shippingKnown?money(t.totalFinal,cur):uiTxt('shipping_calc_checkout')}</span></div>
+          <p class="checkout-disclosure">${uiTxt('checkout_disclosure')}</p>
         </div>
       </div>
     </div>
@@ -1285,24 +1287,14 @@ function placeOrder(btn){
   }
   const fallback = () => {
     window.open(`https://wa.me/${CONFIG.whatsapp}?text=${encodeURIComponent(text)}`,'_blank');
-    if (note){ note.textContent = uiTxt('order_saved_confirm'); note.className='order-note ok'; }
+    if (note){ note.textContent = 'Your request has not been saved or paid. Send the request in WhatsApp to arrange manual payment. Your cart is unchanged.'; note.className='order-note'; }
     if (btn){ btn.textContent = uiTxt('place_order'); btn.disabled = false; }
     checkoutSubmitting = false;
   };
 
-  if (CONFIG.backendURL){
-    fetch(CONFIG.backendURL, { method:'POST', headers:{'Content-Type':'text/plain;charset=utf-8'}, body: JSON.stringify(payload) })
-      .then(r=>r.json())
-      .then(d=>{
-        if (note){ note.textContent = d && d.ok ? uiTxt('order_saved_confirm') : uiTxt('order_saved_confirm'); note.className='order-note ok'; }
-        // Order recorded server-side — clear the cart and show confirmation.
-        clearCart();
-        showOrderConfirmation(payload, text);
-      })
-      .catch(fallback);
-  } else {
-    fallback();
-  }
+  // Manual enquiries are not authoritative ledger orders. Only the signed
+  // Stripe webhook may mirror a paid order into Orders.
+  fallback();
 }
 function showOrderConfirmation(payload, text){
   // Replace the checkout body with a confirmation summary (order NOT marked paid).

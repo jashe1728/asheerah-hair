@@ -111,7 +111,7 @@
         "stripe",
         "card"
       ],
-      "answer": "There is currently one payment method, but its name and instructions are still being finalised. The payment details or link will be confirmed before the order is completed. Please never send card details, PINs, passwords, or security codes in chat."
+      "answer": "Online checkout currently offers card payment through Stripe Checkout. Other payment methods are not currently offered online. Your order is recorded as paid only after Stripe confirms successful payment; returning to this website alone does not confirm payment. Never send card details, PINs, passwords, or security codes in chat."
     },
     {
       "id": "PAY08",
@@ -188,7 +188,7 @@
         "tariff",
         "vat"
       ],
-      "answer": "Customs, VAT, import taxes, or destination fees are set by the destination country and are the customer’s responsibility under the current shipping policy. The shop cannot promise or calculate the exact charge, so send your country to the owner if you need route-specific guidance."
+      "answer": "The destination country may impose customs duties or import charges that are not calculated by this website and may be collected separately. Check with the relevant destination authority for applicable rules and charges."
     },
     {
       "id": "R13",
@@ -321,7 +321,7 @@
         "whatsapp order",
         "buy this"
       ],
-      "answer": "You can place your order through WhatsApp. Send the product or screenshot, texture, length, lace or density if relevant, quantity, and delivery country. The owner will confirm availability and the full EUR total before sending payment details."
+      "answer": "To ask about ordering through WhatsApp, send the product or screenshot, texture, length, lace or density if relevant, quantity, and delivery country. The owner can confirm availability and the full EUR total and explain the next steps."
     },
     {
       "id": "O21",

@@ -1,16 +1,19 @@
 name = "asheerah-stripe-checkout"
 main = "worker.mjs"
+account_id = "2d816509775474bb3c5c6bf7affd7368"
 compatibility_date = "2025-06-01"
 compatibility_flags = ["nodejs_compat"]
 
 [vars]
 # SITE_ORIGIN is kept for compatibility. SITE_ORIGINS allows both storefronts.
-SITE_ORIGIN = "https://jashe1728.github.io"
+SITE_ORIGIN = "https://asheerahhair.com"
 SITE_ORIGINS = "https://jashe1728.github.io,https://asheerahhair.com,https://www.asheerahhair.com"
-SITE_BASE_URL = "https://jashe1728.github.io/asheerah-hair"
+SITE_BASE_URL = "https://asheerahhair.com"
 CATALOG_URL = "https://jashe1728.github.io/asheerah-hair/catalog.json"
+# Stripe customer return URLs use the custom storefront domain; the canonical catalog remains the published GitHub Pages catalog.
+GAS_WEBHOOK_URL = "https://script.google.com/macros/s/AKfycbwFhUUndMwUeXE58D2x9UtPJv00ZfM0QUsdrwgcxU0YQxzBazYKiVbEvkm_OnWCxND7/exec"
 # Shipping amounts are derived from the entered destination in stripe-worker.cjs.
-# GAS_WEBHOOK_URL and secret settings must be configured directly in Cloudflare.
+# Secret values are configured directly in Cloudflare and Apps Script.
 
 [[r2_buckets]]
 binding = "REVIEW_MEDIA"
