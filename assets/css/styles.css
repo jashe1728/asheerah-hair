@@ -786,7 +786,8 @@ footer{padding-bottom:4rem}
   .mobile-purchase-bar{display:flex;align-items:center;gap:.8rem;position:fixed;bottom:0;left:0;right:0;z-index:90;background:var(--card);border-top:1px solid var(--border);padding:.7rem 1rem calc(.7rem + env(safe-area-inset-bottom));box-shadow:0 -4px 20px #3625110d}
   .mobile-purchase-price{font-weight:700;font-size:1.1rem;flex:0 1 auto}
   .mobile-purchase-bar .btn-primary{flex:1;font-size:.85rem;padding:.8rem .6rem;min-height:44px}
-  body[data-page="product"] .chat-btn{bottom:calc(84px + env(safe-area-inset-bottom))}
+  body[data-page="product"] .mobile-purchase-bar{padding-right:72px;min-height:74px}
+  body[data-page="product"] .chat-btn{bottom:calc(.7rem + env(safe-area-inset-bottom))}
   body[data-page="product"] .chat-window{bottom:calc(140px + env(safe-area-inset-bottom));max-height:calc(100dvh - 160px)}
   .pd .desc{padding-right:50px}
 }
