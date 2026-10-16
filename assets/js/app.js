@@ -284,7 +284,7 @@ function initNav(){
       if (page==='home' && (href==='index.html' || href==='../index.html')) a.classList.add('active');
       else if (href.includes('faq') && page==='faq') a.classList.add('active');
       else if (href.includes('contact') && page==='contact') a.classList.add('active');
-      else if (href.includes('shop') && ['shop','product','cart','checkout'].includes(page)) a.classList.add('active');
+      else if (page==='shop' && new URL(href,location.href).searchParams.get('cat') === new URLSearchParams(location.search).get('cat') && href.includes('shop')) a.classList.add('active');
     });
   }
 }
@@ -762,6 +762,12 @@ function renderProduct(){
   const opts = p.options || [];
   let sel = {}; opts.forEach(o => sel[o.name] = o.values[0]);
   window._sel = sel; window._product = p;
+  document.querySelectorAll('.header-nav a').forEach(a => {
+    const active = new URL(a.href).searchParams.get('cat') === p.category;
+    a.classList.toggle('active', active);
+    if (active) a.setAttribute('aria-current','page');
+    else a.removeAttribute('aria-current');
+  });
 
   const render = () => {
     const pricing = variantPricing(p, cartOpts(sel, opts));
@@ -781,18 +787,24 @@ function renderProduct(){
           <div class="thumbs" role="group" aria-label="Product images">${p.images.slice(0,6).map((im,i)=>`<button type="button" class="thumb ${i===0?'active':''}" data-src="${escapeHTML(im)}" data-alt="${escapeHTML(p.title)} image ${i+1}" aria-label="View ${escapeHTML(p.title)} image ${i+1}" aria-pressed="${i===0?'true':'false'}"><img src="${escapeHTML(im)}" alt="" loading="lazy"></button>`).join('')}</div>
         </div>
         <div class="buy">
+          <div class="product-heading">
           <h1>${escapeHTML(p.title)}</h1>
           ${priceRow}
+          </div>
           ${productOptionGroupsHTML(opts, sel, cur)}
           <div class="qty">
             <span class="sr-only">${uiTxt('quantity')}</span>
             <button type="button" onclick="qtyChange(-1)" aria-label="${uiTxt('quantity')} −">−</button>
-            <span id="qtyVal" aria-live="polite">1</span>
+            <span id="qtyVal" aria-live="polite">${window.qtyVal||1}</span>
             <button type="button" onclick="qtyChange(1)" aria-label="${uiTxt('quantity')} +">+</button>
           </div>
           ${addBtn}
           <div class="desc"><h3>${uiTxt('description')}</h3><p>${p.description}</p></div>
         </div>
+      </div>
+      <div class="mobile-purchase-bar">
+        <span class="mobile-purchase-price">${pricing.found ? money(price,cur) : uiTxt('combo_unavailable')}</span>
+        <button class="btn-primary" type="button" onclick="addCurrentToCart()" ${pricing.found?'':'disabled'}>${uiTxt('add_to_cart')}</button>
       </div>
       ${recommendationsHTML(p)}
       ${productReviewsHTML(p)}`;
@@ -886,7 +898,7 @@ function optionGroupHTML(o, sel, idx, cur){
   return `<div class="option-group option-group--${kind}">
     <label>${label}</label>
     <div class="pills">
-      ${o.values.map(vl=>`<button type="button" class="pill ${sel[o.name]===vl?'active':''}" onclick="selectOpt(${idx},'${escapeAttr(vl)}')" aria-pressed="${sel[o.name]===vl}">${escapeHTML(optionDisplayLabel(vl))}</button>`).join('')}
+      ${o.values.map(vl=>`<button type="button" class="pill ${sel[o.name]===vl?'active':''}" onclick="selectOpt(${idx},'${escapeAttr(vl)}')" aria-pressed="${sel[o.name]===vl}">${escapeHTML(optionDisplayLabel(vl))}${kind==='length' && /^\d+$/.test(vl) ? '″' : ''}</button>`).join('')}
     </div>
   </div>`;
 }
