@@ -704,6 +704,94 @@ html.js .reveal.in{opacity:1;transform:none}
   .cart-item img{width:68px;height:68px}
 }
 
+/* ---- October storefront refinement: editorial desktop, readable mobile ---- */
+.site-header{position:relative;border-bottom:1px solid var(--border);box-shadow:none}
+.header-row{gap:1rem;padding:.45rem 0}
+.header-row .logo{height:60px}
+.header-nav a{padding:.45rem .65rem;border-radius:0}
+.header-nav a.active{background:transparent;color:var(--ink);box-shadow:inset 0 -2px var(--gold)}
+.header-icons .hicon,.header-burger{min-width:44px;min-height:44px}
+.header-icons{gap:.15rem}
+.hero{padding:2rem 0 3rem;min-height:0;display:block}
+.hero .container{display:grid;grid-template-columns:1fr 1.1fr;gap:3rem;align-items:center;text-align:left}
+.hero-copy{padding:1rem 0}
+.hero h1{font-size:clamp(2.6rem,4.7vw,4.2rem);max-width:none;text-shadow:none}
+.hero .sub,.hero .lead{max-width:none;text-shadow:none}
+.hero .ctas{justify-content:flex-start}
+.hero-img{position:relative;inset:auto;width:100%;height:auto;margin:0;max-width:none;aspect-ratio:4/5;box-shadow:none}
+.hero-img img{width:100%;height:100%;object-fit:cover;object-position:68% center}
+.hero::after{display:none}
+.featured-section{background:var(--card);border-block:1px solid var(--border)}
+.product-card .img,.featured-card .img{aspect-ratio:4/5}
+.product-card .img img{object-position:center 25%}
+.product-card{box-shadow:none}
+.pd h1{font-size:clamp(2rem,3.3vw,3rem);margin:0;text-align:left}
+.pd .price-row{flex-wrap:wrap;margin:.65rem 0 1rem;gap:.6rem}
+.pd .gallery{top:20px}
+.pd-option-groups{gap:.75rem}
+.mobile-purchase-bar{display:none}
+/* One support launcher; WhatsApp remains available in the footer/contact page. */
+.wa-btn{display:none}
+.chat-btn{width:46px;height:46px;right:12px;bottom:12px}
+body{padding-bottom:64px}
+footer{padding-bottom:4rem}
+@media(min-width:901px){
+  .header-nav{margin-right:auto;margin-left:0;order:1}
+  #langDropdown{order:2}
+  .header-right{order:3;margin-left:0}
+}
+@media(max-width:900px){
+  .hero .container{gap:1.5rem}
+  .header-nav{max-height:75vh;overflow:auto}
+}
+@media(max-width:640px){
+  .announcement{font-family:'DM Sans',sans-serif;font-size:.7rem;padding:.4rem .6rem}
+  .announcement span:not([data-i18n="announce2"]){display:none}
+  .header-row{min-height:70px;width:calc(100% - 1.5rem);flex-wrap:nowrap}
+  .header-row .logo{height:52px}
+  .header-right{gap:0}
+  .header-icons{gap:0}
+  .hero{padding:0 0 1.5rem;min-height:0;overflow:visible}
+  .hero .container{display:flex;flex-direction:column;gap:0;width:100%;padding:0;align-items:stretch}
+  .hero-img{order:-1;position:relative;inset:auto;aspect-ratio:5/4;width:100%;height:auto;border-radius:0;margin:0}
+  .hero-img img{object-position:68% 35%}
+  .hero-copy{padding:1.5rem 1.25rem;background:var(--ivory)}
+  .hero h1{font-size:2.35rem;max-width:none;text-shadow:none}
+  .hero .sub,.hero .lead{max-width:none;text-shadow:none}
+  .hero .ctas{max-width:none;flex-direction:row;gap:.6rem;margin-top:1rem}
+  .hero .ctas a{flex:1;padding:.8rem .6rem;font-size:.85rem;text-align:center}
+  section{padding:2.5rem 0}
+  .section-head{margin-bottom:1.4rem}
+  .collections{grid-template-columns:1fr}
+  .collections .promo-card:last-child:nth-child(odd){max-width:none;width:100%;margin:0}
+  .promo-card{flex-direction:row;min-height:180px}
+  .promo-card .promo-media{width:44%;flex:0 0 44%;aspect-ratio:4/5}
+  .promo-card .promo-body{padding:1rem;justify-content:center}
+  .promo-card .promo-body h3{font-size:1.3rem}
+  .promo-card .promo-body p{font-size:.85rem}
+  .promo-card .promo-body .promo-btn{font-size:.7rem;min-height:44px;display:flex;align-items:center}
+  .featured-card .img{aspect-ratio:4/5}
+  .pd{gap:1rem;display:flex;flex-direction:column}
+  .pd .gallery{position:static;width:100%}
+  .pd .buy{display:contents}
+  .pd .product-heading{order:-1;width:100%}
+  .pd .product-heading h1{font-size:2rem}
+  .pd .price-row .now{font-size:1.5rem}
+  .pd .price-row{margin:.5rem 0 0}
+  .pd .main-img{aspect-ratio:1/1;max-height:380px}
+  .pd .thumbs{margin-top:.5rem}
+  .pd .pd-option-groups,.pd .desc,.pd .add-btn{width:100%}
+  body[data-page="product"] .page{padding-top:1.25rem}
+  body[data-page="product"]{padding-bottom:148px}
+  .mobile-purchase-bar{display:flex;align-items:center;gap:.8rem;position:fixed;bottom:0;left:0;right:0;z-index:90;background:var(--card);border-top:1px solid var(--border);padding:.7rem 1rem calc(.7rem + env(safe-area-inset-bottom));box-shadow:0 -4px 20px #3625110d}
+  .mobile-purchase-price{font-weight:700;font-size:1.1rem;flex:0 1 auto}
+  .mobile-purchase-bar .btn-primary{flex:1;font-size:.85rem;padding:.8rem .6rem;min-height:44px}
+  body[data-page="product"] .chat-btn{bottom:calc(84px + env(safe-area-inset-bottom))}
+  body[data-page="product"] .chat-window{bottom:calc(140px + env(safe-area-inset-bottom));max-height:calc(100dvh - 160px)}
+  .pd .desc{padding-right:50px}
+}
+@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}.reveal{opacity:1;transform:none;transition:none}}
+
 /* ---- Overflow fixes (no horizontal scroll on small phones) ---- */
 .feature{min-width:0}
 @media(max-width:400px){
