@@ -838,5 +838,20 @@ footer{padding-bottom:4rem}
   .nl-form button{width:100%;text-align:center;flex:none}
 }
 
+/* Final hero layout: full-bleed desktop artwork and portrait mobile campaign. */
+.hero{width:100%;padding:0;min-height:0;overflow:hidden}
+.hero .container{display:block;width:100%;max-width:none;margin:0;padding:0}
+.hero-img{position:relative;inset:auto;width:100%;height:auto;max-width:none;margin:0;aspect-ratio:8/3;border-radius:0;box-shadow:none;overflow:hidden}
+.hero-img picture{display:block;width:100%;height:100%}
+.hero-img img{display:block;width:100%;height:100%;object-fit:cover;object-position:center}
+
+@media(max-width:640px){
+  .hero{padding:0;overflow:hidden}
+  .hero .container{display:block;width:100%;max-width:none;margin:0;padding:0}
+  .hero-img{position:relative;inset:auto;order:initial;width:100%;height:auto;max-width:none;margin:0;aspect-ratio:3/4;border-radius:0}
+  .hero-img picture,.hero-img img{display:block;width:100%;height:100%}
+  .hero-img img{object-fit:cover;object-position:center top}
+}
+
 
 
