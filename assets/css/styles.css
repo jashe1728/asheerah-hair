@@ -135,6 +135,10 @@ html{scroll-behavior:smooth}
 .hero .ctas{margin-top:1.6rem;display:flex;gap:.9rem;justify-content:center;flex-wrap:wrap}
 .hero-img{margin:2rem auto 0;max-width:1000px;border-radius:var(--r-lg);overflow:hidden;box-shadow:var(--shadow-hover)}
 .mobile-hero-hotspots{display:none}
+.hero .hero-copy{display:none}
+.hero{padding:0}
+.hero-img{margin:0 auto;max-width:1600px;border-radius:0;box-shadow:none}
+.hero-img picture,.hero-img img{display:block;width:100%;height:auto}
 
 /* Mobile uses a dedicated full-bleed 3:4 campaign banner. The artwork already
    contains the hero copy and CTA styling; transparent links preserve real,
@@ -149,8 +153,8 @@ html{scroll-behavior:smooth}
   .hero::after{display:none}
   .mobile-hero-hotspots{display:block;position:absolute;inset:0;z-index:3;pointer-events:none}
   .mobile-hero-hotspots a{position:absolute;display:block;pointer-events:auto;border-radius:999px}
-  .mobile-hero-shop{left:5.4%;top:45.8%;width:42.8%;height:8%}
-  .mobile-hero-wigs{left:5.4%;top:56.25%;width:46.5%;height:8%}
+  .mobile-hero-shop{left:5.4%;top:42.35%;width:42.8%;height:8%}
+  .mobile-hero-wigs{left:5.4%;top:52.78%;width:46.5%;height:8%}
   .mobile-hero-hotspots a:focus-visible{outline:3px solid #fff;outline-offset:3px}
 }
 
