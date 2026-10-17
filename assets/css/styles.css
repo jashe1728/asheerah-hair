@@ -134,6 +134,25 @@ html{scroll-behavior:smooth}
 .btn-ghost{background:transparent;border:1.5px solid var(--ink);color:var(--ink)}
 .hero .ctas{margin-top:1.6rem;display:flex;gap:.9rem;justify-content:center;flex-wrap:wrap}
 .hero-img{margin:2rem auto 0;max-width:1000px;border-radius:var(--r-lg);overflow:hidden;box-shadow:var(--shadow-hover)}
+.mobile-hero-hotspots{display:none}
+
+/* Mobile uses a dedicated full-bleed 3:4 campaign banner. The artwork already
+   contains the hero copy and CTA styling; transparent links preserve real,
+   accessible navigation over the two visual buttons. */
+@media(max-width:640px){
+  .hero{padding:0;min-height:0;display:block;overflow:hidden;background:#f7dfc2}
+  .hero .container{width:100%;padding:0;display:block;text-align:left}
+  .hero-copy{display:none}
+  .hero-img{position:relative;inset:auto;width:100%;height:auto;max-width:none;margin:0;border-radius:0;box-shadow:none;z-index:0}
+  .hero-img picture{display:block}
+  .hero-img img{display:block;width:100%;height:auto;aspect-ratio:3/4;object-fit:cover;object-position:center top}
+  .hero::after{display:none}
+  .mobile-hero-hotspots{display:block;position:absolute;inset:0;z-index:3;pointer-events:none}
+  .mobile-hero-hotspots a{position:absolute;display:block;pointer-events:auto;border-radius:999px}
+  .mobile-hero-shop{left:5.4%;top:45.8%;width:42.8%;height:8%}
+  .mobile-hero-wigs{left:5.4%;top:56.25%;width:46.5%;height:8%}
+  .mobile-hero-hotspots a:focus-visible{outline:3px solid #fff;outline-offset:3px}
+}
 
 /* ---- Section headers ---- */
 section{padding:4rem 0}
@@ -806,5 +825,6 @@ footer{padding-bottom:4rem}
   .nl-form input{flex:1;min-width:0;width:100%}
   .nl-form button{width:100%;text-align:center;flex:none}
 }
+
 
 
