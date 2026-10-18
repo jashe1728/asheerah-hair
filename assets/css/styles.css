@@ -636,6 +636,17 @@ html.js .reveal.in{opacity:1;transform:none}
 .fld input.invalid{border-color:#C0392B}
 .ferr{color:#B03A2E;font-size:.8rem;margin-top:.3rem;min-height:1em}
 .fld-row{display:grid;grid-template-columns:1fr 1fr;gap:1rem}
+.country-combobox{position:relative;display:flex;align-items:center}
+.country-combobox input[type="text"]{width:100%;padding-right:2.6rem;cursor:pointer}
+.country-combobox-toggle{position:absolute;right:.45rem;top:50%;transform:translateY(-50%);width:2rem;height:2rem;border:none;background:transparent;color:var(--ink-soft);font-size:1.1rem;line-height:1;display:grid;place-items:center;cursor:pointer;border-radius:8px;transition:color .15s,transform .15s}
+.country-combobox.open .country-combobox-toggle{transform:translateY(-50%) rotate(180deg);color:var(--gold-d)}
+.country-combobox-list{position:absolute;top:calc(100% + 4px);left:0;right:0;z-index:80;max-height:260px;overflow-y:auto;margin:0;padding:.35rem;list-style:none;background:var(--card);border:1.5px solid var(--border);border-radius:14px;box-shadow:0 16px 36px rgba(54,37,17,.16)}
+.country-combobox-list[hidden]{display:none!important}
+.country-combobox-opt{display:flex;align-items:center;justify-content:space-between;gap:.6rem;padding:.55rem .75rem;border-radius:10px;cursor:pointer;font-size:.92rem;color:var(--ink);transition:background .12s}
+.country-combobox-opt:hover,.country-combobox-opt.active{background:var(--soft)}
+.country-combobox-opt.selected{background:var(--gold-soft);font-weight:600}
+.country-combobox-opt .country-opt-code{font-size:.76rem;font-weight:700;color:var(--muted);letter-spacing:.05em}
+.country-combobox-empty{padding:.75rem;text-align:center;color:var(--muted);font-size:.88rem}
 .co-summary .summary{position:sticky;top:100px}
 .co-summary .summary h2{font-size:1.3rem;margin-bottom:1rem;font-family:'Cormorant Garamond',serif;color:var(--ink)}
 .co-item{display:flex;gap:.8rem;padding:.7rem 0;border-bottom:1px solid var(--border);align-items:flex-start}

@@ -13,22 +13,18 @@ const AMBASSADOR_COUPONS = Object.freeze({
   CASSIE10: 700,
 });
 
-const EU_COUNTRIES = ['BE','DE','ES','FR','IT','LU','NL','PT'];
-const AFRICA_COUNTRIES = ['AO','CV','GW','MZ','SN','ST','ZA','CI'];
-const COUNTRY_ENTRIES = [
-  ['AT','Austria','Áustria'],['BE','Belgium','Bélgica','Belgique','Belgien','Belgio'],['BG','Bulgaria','Bulgária'],['HR','Croatia','Croácia'],['CY','Cyprus','Chipre'],['CZ','Czechia','Czech Republic','Chéquia'],['DK','Denmark','Dinamarca'],['EE','Estonia','Estónia'],['FI','Finland','Finlândia'],['FR','France','França','Frankreich','Francia'],['DE','Germany','Alemanha','Deutschland','Alemania','Allemagne','Germania'],['GR','Greece','Grécia'],['HU','Hungary','Hungria'],['IE','Ireland','Irlanda'],['IT','Italy','Itália','Italia','Italien','Italie'],['LV','Latvia','Letónia'],['LT','Lithuania','Lituânia'],['LU','Luxembourg','Luxemburgo','Luxemburg'],['MT','Malta'],['NL','Netherlands','The Netherlands','Holland','Países Baixos','Holanda','Países Bajos','Pays-Bas','Niederlande','Paesi Bassi'],['PL','Poland','Polónia'],['PT','Portugal'],['RO','Romania','Roménia'],['SK','Slovakia','Eslováquia'],['SI','Slovenia','Eslovénia'],['ES','Spain','Espanha','España','Espagne','Spanien','Spagna'],['SE','Sweden','Suécia'],
-  ['AO','Angola'],['CV','Cape Verde','Cabo Verde','Kap Verde','Cap-Vert','Capo Verde'],['GW','Guinea-Bissau','Guiné-Bissau'],['MZ','Mozambique','Moçambique'],['SN','Senegal','Sénégal'],['ST','Sao Tome and Principe','São Tomé and Príncipe','São Tomé e Príncipe'],['ZA','South Africa','África do Sul','Afrique du Sud','Sudáfrica','Südafrika','Sudafrica'],['CI','Ivory Coast','Cote d Ivoire','Côte d’Ivoire','Costa do Marfim','Costa de Marfil','Elfenbeinküste','Costa d’Avorio'],['US','United States','United States of America','USA','Estados Unidos','États-Unis','Vereinigte Staaten','Stati Uniti']
-];
+const EU_COUNTRIES = Object.freeze(['AT','BE','BG','HR','CY','CZ','DK','EE','FI','FR','DE','GR','HU','IE','IT','LV','LT','LU','MT','NL','PL','PT','RO','SK','SI','ES','SE']);
+const EU_SHIPPING_CENTS = 599;
+const INTL_SHIPPING_CENTS = 2000;
+const COUNTRY_ENTRIES = [["AD","Andorra","Andorre"],["AE","United Arab Emirates","Emirados Árabes Unidos","Emiratos Árabes Unidos","Vereinigte Arabische Emirate","Émirats arabes unis","Emirati Arabi Uniti"],["AF","Afghanistan","Afeganistão","Afganistán"],["AG","Antigua & Barbuda","Antigua and Barbuda","Antígua e Barbuda","Antigua y Barbuda","Antigua und Barbuda","Antigua-et-Barbuda","Antigua e Barbuda"],["AI","Anguilla","Anguila"],["AL","Albania","Albânia","Albanien","Albanie"],["AM","Armenia","Armênia","Armenien","Arménie"],["AO","Angola"],["AQ","Antarctica","Antártida","Antarktis","Antarctique","Antartide"],["AR","Argentina","Argentinien","Argentine"],["AT","Austria","Áustria","Österreich","Autriche"],["AU","Australia","Austrália","Australien","Australie"],["AW","Aruba"],["AX","Åland Islands","Ilhas Aland","Islas Aland","Ålandinseln","Îles Åland","Isole Åland"],["AZ","Azerbaijan","Azerbaijão","Azerbaiyán","Aserbaidschan","Azerbaïdjan","Azerbaigian"],["BA","Bosnia & Herzegovina","Bosnia and Herzegovina","Bósnia e Herzegovina","Bosnia y Herzegovina","Bosnien und Herzegowina","Bosnie-Herzégovine","Bosnia ed Erzegovina"],["BB","Barbados","Barbade"],["BD","Bangladesh","Bangladés","Bangladesch"],["BE","Belgium","Bélgica","Belgien","Belgique","Belgio"],["BF","Burkina Faso","Burquina Faso"],["BG","Bulgaria","Bulgária","Bulgarien","Bulgarie"],["BH","Bahrain","Barein","Baréin","Bahreïn","Bahrein"],["BI","Burundi"],["BJ","Benin","Benín","Bénin"],["BL","St. Barthélemy","São Bartolomeu","San Bartolomé","Saint-Barthélemy"],["BM","Bermuda","Bermudas","Bermudes"],["BN","Brunei","Brunéi","Brunei Darussalam"],["BO","Bolivia","Bolívia","Bolivien","Bolivie"],["BQ","Caribbean Netherlands","Países Baixos Caribenhos","Caribe neerlandés","Karibische Niederlande","Pays-Bas caribéens","Caraibi Olandesi"],["BR","Brazil","Brasil","Brasilien","Brésil","Brasile"],["BS","Bahamas"],["BT","Bhutan","Butão","Bután","Bhoutan"],["BV","Bouvet Island","Ilha Bouvet","Isla Bouvet","Bouvetinsel","Île Bouvet","Isola Bouvet"],["BW","Botswana","Botsuana"],["BY","Belarus","Bielorrússia","Bielorrusia","Biélorussie","Bielorussia"],["BZ","Belize","Belice"],["CA","Canada","Canadá","Kanada"],["CD","Congo - Kinshasa","República Democrática del Congo","Kongo-Kinshasa","Congo-Kinshasa"],["CF","Central African Republic","República Centro-Africana","República Centroafricana","Zentralafrikanische Republik","République centrafricaine","Repubblica Centrafricana"],["CG","Congo - Brazzaville","República do Congo","Congo","Kongo-Brazzaville","Congo-Brazzaville"],["CH","Switzerland","Suíça","Suiza","Schweiz","Suisse","Svizzera"],["CI","Côte d’Ivoire","Costa do Marfim","Costa d’Avorio","Ivory Coast","Cote d Ivoire","Costa de Marfil","Elfenbeinküste"],["CK","Cook Islands","Ilhas Cook","Islas Cook","Cookinseln","Îles Cook","Isole Cook"],["CL","Chile","Chili","Cile"],["CM","Cameroon","Camarões","Camerún","Kamerun","Cameroun","Camerun"],["CN","China","Chine","Cina"],["CO","Colombia","Colômbia","Kolumbien","Colombie"],["CR","Costa Rica"],["CV","Cape Verde","Cabo Verde","Cap-Vert","Capo Verde","Kap Verde"],["CW","Curaçao","Curazao"],["CY","Cyprus","Chipre","Zypern","Chypre","Cipro"],["CZ","Czechia","Tchéquia","Chequia","Tschechien","Tchéquie","Cechia","Czech Republic","Chéquia","República Checa","Repubblica Ceca"],["DE","Germany","Alemanha","Alemania","Deutschland","Allemagne","Germania"],["DJ","Djibouti","Djibuti","Yibuti","Dschibuti","Gibuti"],["DK","Denmark","Dinamarca","Dänemark","Danemark","Danimarca"],["DM","Dominica","Dominique"],["DO","Dominican Republic","República Dominicana","Dominikanische Republik","République dominicaine","Repubblica Dominicana"],["DZ","Algeria","Argélia","Argelia","Algerien","Algérie"],["EC","Ecuador","Equador","Équateur"],["EE","Estonia","Estônia","Estland","Estonie"],["EG","Egypt","Egito","Egipto","Ägypten","Égypte","Egitto"],["EH","Western Sahara","Saara Ocidental","Sáhara Occidental","Westsahara","Sahara occidental","Sahara Occidentale"],["ER","Eritrea","Eritreia","Érythrée"],["ES","Spain","Espanha","España","Spanien","Espagne","Spagna"],["ET","Ethiopia","Etiópia","Etiopía","Äthiopien","Éthiopie","Etiopia"],["FI","Finland","Finlândia","Finlandia","Finnland","Finlande"],["FJ","Fiji","Fiyi","Fidschi","Fidji","Figi"],["FK","Falkland Islands","Ilhas Malvinas","Islas Malvinas","Falklandinseln","Îles Malouines","Isole Falkland"],["FO","Faroe Islands","Ilhas Faroé","Islas Feroe","Färöer","Îles Féroé","Isole Fær Øer"],["FR","France","França","Francia","Frankreich"],["GA","Gabon","Gabão","Gabón","Gabun"],["GB","United Kingdom","Reino Unido","Vereinigtes Königreich","Royaume-Uni","Regno Unito","UK","Great Britain","Britain","England","Scotland","Wales","Northern Ireland","Grande-Bretagne","Grossbritannien","Großbritannien"],["GD","Grenada","Granada","Grenade"],["GE","Georgia","Geórgia","Georgien","Géorgie"],["GF","French Guiana","Guiana Francesa","Guayana Francesa","Französisch-Guayana","Guyane française","Guyana Francese"],["GG","Guernsey","Guernesey"],["GH","Ghana","Gana"],["GI","Gibraltar","Gibilterra"],["GL","Greenland","Groenlândia","Groenlandia","Grönland","Groenland"],["GM","Gambia","Gâmbia","Gambie"],["GN","Guinea","Guiné","Guinée"],["GP","Guadeloupe","Guadalupe","Guadalupa"],["GQ","Equatorial Guinea","Guiné Equatorial","Guinea Ecuatorial","Äquatorialguinea","Guinée équatoriale","Guinea Equatoriale"],["GR","Greece","Grécia","Grecia","Griechenland","Grèce"],["GS","South Georgia & South Sandwich Islands","South Georgia and South Sandwich Islands","Ilhas Geórgia do Sul e Sandwich do Sul","Islas Georgia del Sur y Sandwich del Sur","Südgeorgien und die Südlichen Sandwichinseln","Géorgie du Sud-et-les Îles Sandwich du Sud","Georgia del Sud e Sandwich Australi"],["GT","Guatemala"],["GU","Guam"],["GW","Guinea-Bissau","Guiné-Bissau","Guinea-Bisáu","Guinée-Bissau"],["GY","Guyana","Guiana"],["HK","Hong Kong SAR China","Hong Kong, RAE da China","RAE de Hong Kong (China)","Sonderverwaltungsregion Hongkong","R.A.S. chinoise de Hong Kong","RAS di Hong Kong"],["HN","Honduras"],["HR","Croatia","Croácia","Croacia","Kroatien","Croatie","Croazia"],["HT","Haiti","Haití","Haïti"],["HU","Hungary","Hungria","Hungría","Ungarn","Hongrie","Ungheria"],["ID","Indonesia","Indonésia","Indonesien","Indonésie"],["IE","Ireland","Irlanda","Irland","Irlande"],["IL","Israel","Israël","Israele"],["IM","Isle of Man","Ilha de Man","Isla de Man","Île de Man","Isola di Man"],["IN","India","Índia","Indien","Inde"],["IQ","Iraq","Iraque","Irak"],["IS","Iceland","Islândia","Islandia","Island","Islande","Islanda"],["IT","Italy","Itália","Italia","Italien","Italie"],["JE","Jersey"],["JM","Jamaica","Jamaika","Jamaïque","Giamaica"],["JO","Jordan","Jordânia","Jordania","Jordanien","Jordanie","Giordania"],["JP","Japan","Japão","Japón","Japon","Giappone"],["KE","Kenya","Quênia","Kenia"],["KG","Kyrgyzstan","Quirguistão","Kirguistán","Kirgisistan","Kirghizstan","Kirghizistan"],["KH","Cambodia","Camboja","Camboya","Kambodscha","Cambodge","Cambogia"],["KI","Kiribati","Quiribati"],["KM","Comoros","Comores","Comoras","Komoren","Comore"],["KN","St. Kitts & Nevis","St. Kitts and Nevis","São Cristóvão e Névis","San Cristóbal y Nieves","St. Kitts und Nevis","Saint-Christophe-et-Niévès","Saint Kitts e Nevis"],["KR","South Korea","Coreia do Sul","Corea del Sur","Südkorea","Corée du Sud","Corea del Sud"],["KW","Kuwait","Koweït"],["KY","Cayman Islands","Ilhas Cayman","Islas Caimán","Kaimaninseln","Îles Caïmans","Isole Cayman"],["KZ","Kazakhstan","Cazaquistão","Kazajistán","Kasachstan","Kazakistan"],["LA","Laos"],["LB","Lebanon","Líbano","Libanon","Liban","Libano"],["LC","St. Lucia","Santa Lúcia","Santa Lucía","Sainte-Lucie","Saint Lucia"],["LI","Liechtenstein"],["LK","Sri Lanka"],["LR","Liberia","Libéria"],["LS","Lesotho","Lesoto"],["LT","Lithuania","Lituânia","Lituania","Litauen","Lituanie"],["LU","Luxembourg","Luxemburgo","Luxemburg","Lussemburgo"],["LV","Latvia","Letônia","Letonia","Lettland","Lettonie","Lettonia"],["LY","Libya","Líbia","Libia","Libyen","Libye"],["MA","Morocco","Marrocos","Marruecos","Marokko","Maroc","Marocco"],["MC","Monaco","Mônaco","Mónaco"],["MD","Moldova","Moldávia","Moldavia","Republik Moldau","Moldavie"],["ME","Montenegro","Monténégro"],["MF","St. Martin","São Martinho","San Martín","Saint-Martin","Saint Martin"],["MG","Madagascar","Madagaskar"],["MK","North Macedonia","Macedônia do Norte","Macedonia del Norte","Nordmazedonien","Macédoine du Nord","Macedonia del Nord"],["ML","Mali"],["MM","Myanmar (Burma)","Mianmar (Birmânia)","Myanmar (Birmania)","Myanmar","Myanmar (Birmanie)"],["MN","Mongolia","Mongólia","Mongolei","Mongolie"],["MO","Macao SAR China","Macau, RAE da China","RAE de Macao (China)","Sonderverwaltungsregion Macau","R.A.S. chinoise de Macao","RAS di Macao"],["MQ","Martinique","Martinica"],["MR","Mauritania","Mauritânia","Mauretanien","Mauritanie"],["MS","Montserrat"],["MT","Malta","Malte"],["MU","Mauritius","Maurício","Mauricio","Maurice"],["MV","Maldives","Maldivas","Malediven","Maldive"],["MW","Malawi","Malaui"],["MX","Mexico","México","Mexiko","Mexique","Messico"],["MY","Malaysia","Malásia","Malasia","Malaisie"],["MZ","Mozambique","Moçambique","Mosambik","Mozambico"],["NA","Namibia","Namíbia","Namibie"],["NC","New Caledonia","Nova Caledônia","Nueva Caledonia","Neukaledonien","Nouvelle-Calédonie","Nuova Caledonia"],["NE","Niger","Níger"],["NG","Nigeria","Nigéria"],["NI","Nicaragua","Nicarágua"],["NL","Netherlands","Países Baixos","Países Bajos","Niederlande","Pays-Bas","Paesi Bassi","The Netherlands","Holland","Holanda"],["NO","Norway","Noruega","Norwegen","Norvège","Norvegia"],["NP","Nepal","Népal"],["NR","Nauru"],["NU","Niue"],["NZ","New Zealand","Nova Zelândia","Nueva Zelanda","Neuseeland","Nouvelle-Zélande","Nuova Zelanda"],["OM","Oman","Omã","Omán"],["PA","Panama","Panamá"],["PE","Peru","Perú","Pérou","Perù"],["PF","French Polynesia","Polinésia Francesa","Polinesia Francesa","Französisch-Polynesien","Polynésie française","Polinesia Francese"],["PG","Papua New Guinea","Papua-Nova Guiné","Papúa Nueva Guinea","Papua-Neuguinea","Papouasie-Nouvelle-Guinée","Papua Nuova Guinea"],["PH","Philippines","Filipinas","Philippinen","Filippine"],["PK","Pakistan","Paquistão","Pakistán"],["PL","Poland","Polônia","Polonia","Polen","Pologne"],["PM","St. Pierre & Miquelon","St. Pierre and Miquelon","São Pedro e Miquelão","San Pedro y Miquelón","St. Pierre und Miquelon","Saint-Pierre-et-Miquelon","Saint-Pierre e Miquelon"],["PN","Pitcairn Islands","Ilhas Pitcairn","Islas Pitcairn","Pitcairninseln","Îles Pitcairn","Isole Pitcairn"],["PR","Puerto Rico","Porto Rico","Portorico"],["PS","Palestinian Territories","Territórios palestinos","Territorios Palestinos","Palästinensische Autonomiegebiete","Territoires palestiniens","Territori Palestinesi"],["PT","Portugal","Portogallo"],["PY","Paraguay","Paraguai"],["QA","Qatar","Catar","Katar"],["RE","Réunion","Reunião","Reunión","La Réunion","Riunione"],["RO","Romania","Romênia","Rumanía","Rumänien","Roumanie"],["RS","Serbia","Sérvia","Serbien","Serbie"],["RU","Russia","Rússia","Rusia","Russland","Russie"],["RW","Rwanda","Ruanda"],["SA","Saudi Arabia","Arábia Saudita","Arabia Saudí","Saudi-Arabien","Arabie saoudite","Arabia Saudita"],["SB","Solomon Islands","Ilhas Salomão","Islas Salomón","Salomonen","Îles Salomon","Isole Salomone"],["SC","Seychelles","Seicheles","Seychellen"],["SE","Sweden","Suécia","Suecia","Schweden","Suède","Svezia"],["SG","Singapore","Singapura","Singapur","Singapour"],["SH","St. Helena","Santa Helena","Santa Elena","Sainte-Hélène","Sant’Elena"],["SI","Slovenia","Eslovênia","Eslovenia","Slowenien","Slovénie"],["SJ","Svalbard & Jan Mayen","Svalbard and Jan Mayen","Svalbard e Jan Mayen","Svalbard y Jan Mayen","Spitzbergen und Jan Mayen","Svalbard et Jan Mayen"],["SK","Slovakia","Eslováquia","Eslovaquia","Slowakei","Slovaquie","Slovacchia"],["SL","Sierra Leone","Serra Leoa","Sierra Leona"],["SM","San Marino","Saint-Marin"],["SN","Senegal","Sénégal"],["SO","Somalia","Somália","Somalie"],["SR","Suriname","Surinam"],["SS","South Sudan","Sudão do Sul","Sudán del Sur","Südsudan","Soudan du Sud","Sud Sudan"],["ST","São Tomé & Príncipe","São Tomé and Príncipe","São Tomé e Príncipe","Santo Tomé y Príncipe","São Tomé und Príncipe","Sao Tomé-et-Principe","Sao Tome and Principe"],["SV","El Salvador","Salvador"],["SX","Sint Maarten","Saint-Martin (partie néerlandaise)"],["SZ","Eswatini","Essuatíni","Esuatini"],["TA","Tristan da Cunha","Tristão da Cunha","Tristán de Acuña"],["TC","Turks & Caicos Islands","Turks and Caicos Islands","Ilhas Turcas e Caicos","Islas Turcas y Caicos","Turks- und Caicosinseln","Îles Turques-et-Caïques","Isole Turks e Caicos"],["TD","Chad","Chade","Tschad","Tchad","Ciad"],["TF","French Southern Territories","Territórios Franceses do Sul","Territorios Australes Franceses","Französische Süd- und Antarktisgebiete","Terres australes françaises","Terre Australi Francesi"],["TG","Togo"],["TH","Thailand","Tailândia","Tailandia","Thaïlande","Thailandia"],["TJ","Tajikistan","Tadjiquistão","Tayikistán","Tadschikistan","Tadjikistan","Tagikistan"],["TK","Tokelau"],["TL","Timor-Leste","Timor oriental","Timor Est"],["TM","Turkmenistan","Turcomenistão","Turkmenistán","Turkménistan"],["TN","Tunisia","Tunísia","Túnez","Tunesien","Tunisie"],["TO","Tonga"],["TR","Türkiye","Turquia","Turquía","Türkei","Turquie","Turchia"],["TT","Trinidad & Tobago","Trinidad and Tobago","Trinidad e Tobago","Trinidad y Tobago","Trinidad und Tobago","Trinité-et-Tobago"],["TV","Tuvalu"],["TW","Taiwan","Taiwán","Taïwan"],["TZ","Tanzania","Tanzânia","Tansania","Tanzanie"],["UA","Ukraine","Ucrânia","Ucrania","Ucraina"],["UG","Uganda","Ouganda"],["US","United States","Estados Unidos","Vereinigte Staaten","États-Unis","Stati Uniti","USA","United States of America","U.S.","U.S.A."],["UY","Uruguay","Uruguai"],["UZ","Uzbekistan","Uzbequistão","Uzbekistán","Usbekistan","Ouzbékistan"],["VA","Vatican City","Cidade do Vaticano","Ciudad del Vaticano","Vatikanstadt","État de la Cité du Vatican","Città del Vaticano"],["VC","St. Vincent & Grenadines","St. Vincent and Grenadines","São Vicente e Granadinas","San Vicente y las Granadinas","St. Vincent und die Grenadinen","Saint-Vincent-et-les Grenadines","Saint Vincent e Grenadine"],["VE","Venezuela"],["VG","British Virgin Islands","Ilhas Virgens Britânicas","Islas Vírgenes Británicas","Britische Jungferninseln","Îles Vierges britanniques","Isole Vergini Britanniche"],["VN","Vietnam","Vietnã","Viêt Nam"],["VU","Vanuatu"],["WF","Wallis & Futuna","Wallis and Futuna","Wallis e Futuna","Wallis y Futuna","Wallis und Futuna","Wallis-et-Futuna"],["WS","Samoa"],["XK","Kosovo"],["YE","Yemen","Iêmen","Jemen","Yémen"],["YT","Mayotte"],["ZA","South Africa","África do Sul","Sudáfrica","Südafrika","Afrique du Sud","Sudafrica"],["ZM","Zambia","Zâmbia","Sambia","Zambie"],["ZW","Zimbabwe","Zimbábue","Zimbabue","Simbabwe"]];
 function normalizeCountry(value){return String(value||'').normalize('NFD').replace(/\p{M}/gu,'').toLowerCase().replace(/[^a-z0-9]/g,'');}
 const COUNTRY_LOOKUP = Object.fromEntries(COUNTRY_ENTRIES.flatMap(([code,...names])=>[[normalizeCountry(code),code],...names.map(name=>[normalizeCountry(name),code])]));
 function shippingForCountry(value){
   const code=COUNTRY_LOOKUP[normalizeCountry(value)];
-  if (EU_COUNTRIES.includes(code)) return {countryCode:code,region:'EU',shippingCents:0,allowedCountries:EU_COUNTRIES};
-  if (AFRICA_COUNTRIES.includes(code)) return {countryCode:code,region:'Africa',shippingCents:2000,allowedCountries:AFRICA_COUNTRIES};
-  if (code==='US') return {countryCode:code,region:'US',shippingCents:1500,allowedCountries:['US']};
-  throw new Error('Shipping rate is not configured for this destination');
+  if (!code) throw new Error('Shipping rate is not configured for this destination');
+  if (EU_COUNTRIES.includes(code)) return {countryCode:code,region:'EU',shippingCents:EU_SHIPPING_CENTS,allowedCountries:[code]};
+  return {countryCode:code,region:'INTL',shippingCents:INTL_SHIPPING_CENTS,allowedCountries:[code]};
 }
-
 
 function cents(eur) {
   const n = Number(eur);
@@ -39,6 +35,16 @@ function safeText(v, max, field) {
   if (typeof v !== 'string' || !v.trim() || v.trim().length > max) throw new Error(`Invalid ${field}`);
   return v.trim();
 }
+function bodyExceedsLimit(request, body, maxBytes) {
+  const declared = Number(request.headers.get('content-length'));
+  return (Number.isFinite(declared) && declared > maxBytes) || new TextEncoder().encode(body).byteLength > maxBytes;
+}
+function stripeMode(env) {
+  return env.STRIPE_MODE === 'live' || env.STRIPE_MODE === 'test' ? env.STRIPE_MODE : '';
+}
+function stripeSecretMatchesMode(secret, mode) {
+  return Boolean(mode && typeof secret === 'string' && new RegExp(`^(?:sk|rk)_${mode}_`).test(secret));
+}
 function normalizeCheckoutRequest(input, catalog, env) {
   if (!input || typeof input !== 'object' || Array.isArray(input)) throw new Error('Invalid request');
   const customer = input.customer;
@@ -48,17 +54,19 @@ function normalizeCheckoutRequest(input, catalog, env) {
   const couponCode = input.couponCode == null ? '' : String(input.couponCode).trim().toUpperCase();
   if (couponCode && !Object.prototype.hasOwnProperty.call(AMBASSADOR_COUPONS,couponCode)) throw new Error('Invalid ambassador coupon');
   if (Object.keys(customer).some(k => !['name','email','phone','country','address','city','postalCode'].includes(k))) throw new Error('Unexpected customer fields');
+  const rawCountry = safeText(customer.country, 80, 'country');
+  const shipping = shippingForCountry(rawCountry);
   const cleanCustomer = {
     name: safeText(customer.name, 120, 'name'), email: safeText(customer.email, 254, 'email'),
-    phone: safeText(customer.phone, 40, 'phone'), country: safeText(customer.country, 80, 'country'),
+    phone: safeText(customer.phone, 40, 'phone'), country: shipping.countryCode,
     address: safeText(customer.address, 200, 'address'), city: safeText(customer.city, 100, 'city'),
     postalCode: safeText(customer.postalCode, 24, 'postal code'),
   };
   if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(cleanCustomer.email)) throw new Error('Invalid email');
   if (!catalog || catalog.currency !== 'EUR' || !Array.isArray(catalog.products)) throw new Error('Catalog unavailable');
-  const shipping = shippingForCountry(cleanCustomer.country);
   const shippingCents = shipping.shippingCents;
   let subtotalCents = 0;
+  const orderItems = [];
   const lineItems = items.map(item => {
     if (!item || Object.keys(item).some(k => !['handle','options','quantity'].includes(k))) throw new Error('Unexpected cart item fields');
     const handle = safeText(item.handle, 120, 'product');
@@ -72,13 +80,14 @@ function normalizeCheckoutRequest(input, catalog, env) {
     if (!variant) throw new Error('Unknown product variant');
     const unitCents = cents(variant.price_eur);
     subtotalCents += unitCents * quantity;
+    orderItems.push({ title: product.title, qty: quantity, opts: options });
     return { price_data: { currency: 'eur', unit_amount: unitCents, product_data: { name: `${product.title} — ${variant.title}`.slice(0, 250) } }, quantity };
   });
   const discountCents = couponCode ? Math.min(AMBASSADOR_COUPONS[couponCode],subtotalCents) : 0;
   const totalCents = subtotalCents - discountCents + shippingCents;
   if (subtotalCents > 10_000_000 || totalCents > 10_000_000) throw new Error('Order exceeds maximum allowed amount');
   if (shippingCents > 0) lineItems.push({ price_data: { currency: 'eur', unit_amount: shippingCents, product_data: { name: 'Shipping' } }, quantity: 1 });
-  return { customer: cleanCustomer, currency: 'eur', shippingRegion:shipping.region, allowedCountries:shipping.allowedCountries, subtotalCents, discountCents, couponCode, shippingCents, totalCents, lineItems };
+  return { customer: cleanCustomer, currency: 'eur', countryCode: shipping.countryCode, shippingRegion:shipping.region, allowedCountries:shipping.allowedCountries, subtotalCents, discountCents, couponCode, shippingCents, totalCents, orderItems, lineItems };
 }
 function discountCheckoutLineItems(checkout){
   let remaining=checkout.discountCents||0;
@@ -116,16 +125,22 @@ function verifyStripeSignature(body, signature, secret, now = Math.floor(Date.no
 }
 async function forwardToGas(env, payload) {
   const rawPayload = JSON.stringify(payload);
-  const signature = crypto.createHmac('sha256',env.WORKER_GAS_SECRET).update(rawPayload).digest('hex');
+  const secret = String(env.WORKER_GAS_SECRET || '').normalize('NFKC').trim().replace(/^(['"])([\s\S]*)\1$/, '$2').replace(/\s+/g, '').toLowerCase();
+  const signature = crypto.createHmac('sha256',secret).update(rawPayload).digest('hex');
   const response = await fetch(env.GAS_WEBHOOK_URL,{method:'POST',headers:{'content-type':'text/plain;charset=utf-8'},body:JSON.stringify({payload:rawPayload,signature})});
   let ack;
   try { ack = await response.json(); } catch { ack = null; }
-  if (!response.ok || !ack || ack.ok !== true) throw new Error('Apps Script payment record failed');
+  if (!response.ok || !ack || ack.ok !== true) {
+    const err = new Error('Apps Script payment record failed');
+    const reasons = { 'Unauthorized payment event': 'gas_auth_rejected', 'Invalid order details': 'gas_invalid_order_details', 'Invalid pending order': 'gas_invalid_pending_order', 'Unsupported worker action': 'gas_unsupported_action' };
+    err.diagnostic = !response.ok ? 'gas_http_error' : !ack ? 'gas_non_json_response' : reasons[ack.error] || 'gas_record_error';
+    throw err;
+  }
   return ack;
 }
 
 function json(data, status=200, origin='*') {
-  return new Response(JSON.stringify(data), { status, headers: { 'content-type':'application/json', 'access-control-allow-origin':origin, 'access-control-allow-methods':'POST,GET,OPTIONS', 'access-control-allow-headers':'content-type,authorization', 'vary':'Origin' } });
+  return new Response(JSON.stringify(data), { status, headers: { 'content-type':'application/json; charset=utf-8', 'cache-control':'no-store', 'x-content-type-options':'nosniff', 'referrer-policy':'no-referrer', 'access-control-allow-origin':origin, 'access-control-allow-methods':'POST,GET,OPTIONS', 'access-control-allow-headers':'content-type,authorization', 'vary':'Origin' } });
 }
 function allowedSiteOrigin(env, origin){
   const configured=String(env.SITE_ORIGINS||env.SITE_ORIGIN||'').split(',').map(x=>x.trim()).filter(Boolean);
@@ -201,7 +216,7 @@ async function handleReviewRequest(request,url,env,origin){
   }
   if(url.pathname==='/reviews/moderate'&&request.method==='POST'){
     if(!authMatches(request,env.REVIEW_ADMIN_TOKEN))return json({error:'Unauthorized'},env.REVIEW_ADMIN_TOKEN?401:503,origin);
-    const raw=await request.text();if(raw.length>4_000)return json({error:'Request too large'},413,origin);
+    const raw=await request.text();if(bodyExceedsLimit(request,raw,4_000))return json({error:'Request too large'},413,origin);
     let input;try{input=JSON.parse(raw);}catch{return json({error:'Invalid request'},400,origin);}
     if(!input||Object.keys(input).some(k=>!['reviewId','decision'].includes(k))||!/^([a-f0-9-]{36})$/i.test(String(input.reviewId||''))||!['approve','reject'].includes(input.decision))return json({error:'Invalid moderation request'},400,origin);
     const key=`reviews/${input.reviewId}.json`,review=await reviewJson(bucket,key);if(!review||review.status!=='pending')return json({error:'Review not found or already moderated'},404,origin);
@@ -248,72 +263,121 @@ async function stripePost(path, params, secret, idempotencyKey) {
 async function handleRequest(request, env) {
   const url = new URL(request.url);
   if (url.pathname === '/webhook' && request.method === 'POST') {
+    const mode = stripeMode(env);
+    if (env.STRIPE_MODE !== undefined && !mode) return json({ error:'Webhook mode is not configured' }, 503, '*');
     const raw = await request.text();
-    if (raw.length > MAX_BODY_BYTES || !verifyStripeSignature(raw,request.headers.get('Stripe-Signature'),env.STRIPE_WEBHOOK_SECRET)) return json({error:'Invalid webhook signature'},400,'*');
+    if (bodyExceedsLimit(request, raw, MAX_BODY_BYTES) || !verifyStripeSignature(raw, request.headers.get('Stripe-Signature'), env.STRIPE_WEBHOOK_SECRET)) return json({ error:'Invalid webhook signature' }, 400, '*');
     let event;
-    try { event = JSON.parse(raw); } catch { return json({error:'Invalid event'},400,'*'); }
-    if (!['checkout.session.completed','checkout.session.expired','checkout.session.async_payment_succeeded','checkout.session.async_payment_failed'].includes(event.type)) return json({received:true},200,'*');
-    if (!env.GAS_WEBHOOK_URL || !env.WORKER_GAS_SECRET) return json({error:'Webhook forwarder is not configured'},503,'*');
-    try { await forwardToGas(env,{action:'stripe_event',eventId:event.id,eventType:event.type,session:event.data?.object}); }
-    catch { return json({error:'Payment event could not be recorded'},502,'*'); }
-    return json({received:true},200,'*');
+    try { event = JSON.parse(raw); } catch { return json({ error:'Invalid event' }, 400, '*'); }
+    if (!['checkout.session.completed','checkout.session.expired','checkout.session.async_payment_succeeded','checkout.session.async_payment_failed'].includes(event.type)) return json({ received:true }, 200, '*');
+    if (mode && (event.livemode !== (mode === 'live') || event.data?.object?.mode !== 'payment')) return json({ error:'Payment event mode is invalid' }, 400, '*');
+    if (!env.GAS_WEBHOOK_URL || !env.WORKER_GAS_SECRET) return json({ error:'Webhook forwarder is not configured' }, 503, '*');
+    try { await forwardToGas(env, { action:'stripe_event', eventId:event.id, eventType:event.type, session:event.data?.object }); }
+    catch { return json({ error:'Payment event could not be recorded' }, 502, '*'); }
+    return json({ received:true }, 200, '*');
   }
   const origin = request.headers.get('Origin') || '';
-  if (!origin && url.pathname.startsWith('/review-media/') && request.method === 'GET') return handleReviewRequest(request,url,env,'*');
-  const allowedOrigin = allowedSiteOrigin(env,origin);
-  if (!allowedOrigin) return json({error:'Origin not allowed'},403,'null');
-  if (request.method === 'OPTIONS') return new Response(null,{status:204,headers:{'access-control-allow-origin':allowedOrigin,'access-control-allow-methods':'POST,GET,OPTIONS','access-control-allow-headers':'content-type,authorization','vary':'Origin'}});
-  if (url.pathname==='/reviews'||url.pathname.startsWith('/reviews/')||url.pathname.startsWith('/review-media/')) return handleReviewRequest(request,url,env,allowedOrigin);
-  if (url.pathname === '/shipping-quote') {
-    if (request.method !== 'POST') return json({error:'Method not allowed'},405,allowedOrigin);
+  if (!origin && url.pathname.startsWith('/review-media/') && request.method === 'GET') return handleReviewRequest(request, url, env, '*');
+  const allowedOrigin = allowedSiteOrigin(env, origin);
+  if (!allowedOrigin) return json({ error:'Origin not allowed' }, 403, 'null');
+  if (request.method === 'OPTIONS') return new Response(null, { status:204, headers:{ 'access-control-allow-origin':allowedOrigin, 'access-control-allow-methods':'POST,GET,OPTIONS', 'access-control-allow-headers':'content-type,authorization', 'vary':'Origin' } });
+  if (url.pathname.startsWith('/public/')) {
+    if (request.method !== 'POST') return json({ error:'Method not allowed' }, 405, allowedOrigin);
+    if (!env.GAS_WEBHOOK_URL || !env.WORKER_GAS_SECRET) return json({ error:'Public form service is not configured' }, 503, allowedOrigin);
     const raw = await request.text();
-    if (raw.length > 2_000) return json({error:'Request too large'},413,allowedOrigin);
+    if (bodyExceedsLimit(request, raw, 4_000)) return json({ error:'Request too large' }, 413, allowedOrigin);
     let input;
-    try { input = JSON.parse(raw); } catch { return json({error:'Invalid request'},400,allowedOrigin); }
-    if (!input || typeof input !== 'object' || Array.isArray(input) || Object.keys(input).length !== 1 || typeof input.country !== 'string') return json({error:'Invalid request'},400,allowedOrigin);
-    try { const rate=shippingForCountry(input.country); return json({currency:'EUR',region:rate.region,shippingCents:rate.shippingCents},200,allowedOrigin); }
-    catch { return json({error:'Shipping is not available to that destination at the listed rates.'},422,allowedOrigin); }
-  }
-  if (url.pathname !== '/create-checkout-session' || request.method !== 'POST') return json({error:'Not found'},404,allowedOrigin);
-  if (!env.STRIPE_SECRET_KEY || !env.STRIPE_WEBHOOK_SECRET || !env.WORKER_GAS_SECRET || !env.GAS_WEBHOOK_URL || !env.CATALOG_URL || !env.SITE_BASE_URL) return json({error:'Checkout is not configured'},503,allowedOrigin);
-  const raw = await request.text();
-  if (raw.length > MAX_BODY_BYTES) return json({error:'Request too large'},413,allowedOrigin);
-  let input;
-  try { input = JSON.parse(raw); } catch { return json({error:'Invalid request'},400,allowedOrigin); }
-  let orderId = '';
-  try {
-    const catalogResponse = await fetch(env.CATALOG_URL,{headers:{accept:'application/json'}});
-    if (!catalogResponse.ok) throw new Error('Catalog unavailable');
-    const checkout = normalizeCheckoutRequest(input,await catalogResponse.json(),env);
-    orderId = crypto.randomUUID();
-    const itemsSummary=(checkout.couponCode ? `Ambassador coupon: ${checkout.couponCode} | ` : '') + checkout.lineItems.filter(x=>x.price_data.product_data.name!=='Shipping').map(x=>`${x.quantity}x ${x.price_data.product_data.name}`).join(' | ');
-    await forwardToGas(env,{action:'stripe_pending',orderId,customer:checkout.customer,itemsSummary:itemsSummary.slice(0,450),expectedTotalCents:checkout.totalCents,subtotalCents:checkout.subtotalCents,shippingCents:checkout.shippingCents,currency:'EUR'});
-    const params = new URLSearchParams();
-    params.set('mode','payment'); params.set('success_url',`${env.SITE_BASE_URL}/checkout.html?payment=success&order_id=${orderId}&session_id={CHECKOUT_SESSION_ID}`);
-    params.set('cancel_url',`${env.SITE_BASE_URL}/checkout.html?payment=cancelled&order_id=${orderId}`);
-    params.set('customer_email',checkout.customer.email); params.set('client_reference_id',orderId);
-    params.set('phone_number_collection[enabled]','true');
-    params.set('billing_address_collection','required');
-    checkout.allowedCountries.forEach(country=>params.append('shipping_address_collection[allowed_countries][]',country));
-    if (checkout.couponCode){
-      params.set('metadata[ambassador_code]',checkout.couponCode);
-      params.set('metadata[coupon_discount_cents]',String(checkout.discountCents));
-      params.set('payment_intent_data[metadata][ambassador_code]',checkout.couponCode);
+    try { input = JSON.parse(raw); } catch { return json({ error:'Invalid request' }, 400, allowedOrigin); }
+    let workerPayload;
+    if (url.pathname === '/public/subscribe') {
+      if (!input || Object.keys(input).some(k => k !== 'email') || typeof input.email !== 'string' || input.email.length > 254 || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(input.email.trim())) return json({ error:'Invalid email' }, 400, allowedOrigin);
+      workerPayload = { action:'public_subscribe', email:input.email.trim() };
+    } else if (url.pathname === '/public/chat-log') {
+      const fields = ['sessionId','language','page','question','route','tier','reason','matchedId','transcript'];
+      const stringFields = ['language','page','question','route','reason','matchedId','transcript'];
+      if (!input || Object.keys(input).some(k => !fields.includes(k)) || stringFields.some(k => input[k] !== undefined && typeof input[k] !== 'string') || typeof input.sessionId !== 'string' || !/^AH-[A-Z0-9-]{3,36}$/.test(input.sessionId) || typeof input.question !== 'string' || !input.question.trim() || input.question.length > 500 || !Number.isInteger(input.tier) || input.tier < 1 || input.tier > 3) return json({ error:'Invalid chat log' }, 400, allowedOrigin);
+      workerPayload = { action:'public_chat_log', sessionId:input.sessionId, language:String(input.language || '').slice(0, 12), page:String(input.page || '').slice(0, 180), question:input.question.trim(), route:String(input.route || '').slice(0, 40), tier:input.tier, reason:String(input.reason || '').slice(0, 80), matchedId:String(input.matchedId || '').slice(0, 30), transcript:String(input.transcript || '').slice(0, 2500) };
+    } else return json({ error:'Not found' }, 404, allowedOrigin);
+    try {
+      const ack = await forwardToGas(env, workerPayload);
+      return json({ ok:true, ...ack }, 200, allowedOrigin);
+    } catch {
+      return json({ error:'Request could not be saved' }, 502, allowedOrigin);
     }
-    params.set('metadata[order_id]',orderId); params.set('metadata[currency]','EUR');
-    params.set('metadata[expected_total_cents]',String(checkout.totalCents));
-    params.set('metadata[shipping_cents]',String(checkout.shippingCents));
-    params.set('metadata[items_summary]',itemsSummary);
-    params.set('payment_intent_data[metadata][order_id]',orderId);
-    params.set('payment_intent_data[metadata][expected_total_cents]',String(checkout.totalCents));
-    discountCheckoutLineItems(checkout).forEach((item,i)=>{ params.set(`line_items[${i}][price_data][currency]`,item.price_data.currency); params.set(`line_items[${i}][price_data][unit_amount]`,String(item.price_data.unit_amount)); params.set(`line_items[${i}][price_data][product_data][name]`,item.price_data.product_data.name); params.set(`line_items[${i}][quantity]`,String(item.quantity)); });
-    const session = await stripePost('checkout/sessions',params,env.STRIPE_SECRET_KEY,`asheerah-${orderId}`);
-    await forwardToGas(env,{action:'stripe_session_created',orderId,sessionId:session.id});
-    return json({checkoutUrl:session.url,orderId},200,allowedOrigin);
+  }
+  if (url.pathname === '/reviews' || url.pathname.startsWith('/reviews/') || url.pathname.startsWith('/review-media/')) return handleReviewRequest(request, url, env, allowedOrigin);
+  if (url.pathname === '/shipping-quote') {
+    if (request.method !== 'POST') return json({ error:'Method not allowed' }, 405, allowedOrigin);
+    const raw = await request.text();
+    if (bodyExceedsLimit(request, raw, 2_000)) return json({ error:'Request too large' }, 413, allowedOrigin);
+    let input;
+    try { input = JSON.parse(raw); } catch { return json({ error:'Invalid request' }, 400, allowedOrigin); }
+    if (!input || typeof input !== 'object' || Array.isArray(input) || Object.keys(input).length !== 1 || typeof input.country !== 'string') return json({ error:'Invalid request' }, 400, allowedOrigin);
+    try {
+      const rate = shippingForCountry(input.country);
+      return json({ currency:'EUR', countryCode:rate.countryCode, region:rate.region, shippingCents:rate.shippingCents }, 200, allowedOrigin);
+    } catch { return json({ error:'Shipping is not available to that destination at the listed rates.' }, 422, allowedOrigin); }
+  }
+  if (url.pathname !== '/create-checkout-session' || request.method !== 'POST') return json({ error:'Not found' }, 404, allowedOrigin);
+  if (!env.STRIPE_SECRET_KEY || !env.STRIPE_WEBHOOK_SECRET || !env.WORKER_GAS_SECRET || !env.GAS_WEBHOOK_URL || !env.CATALOG_URL || !env.SITE_BASE_URL) return json({ error:'Checkout is not configured' }, 503, allowedOrigin);
+  const mode = stripeMode(env);
+  if (env.STRIPE_MODE !== undefined && (!mode || !stripeSecretMatchesMode(env.STRIPE_SECRET_KEY, mode))) return json({ error:'Checkout is not configured' }, 503, allowedOrigin);
+  const raw = await request.text();
+  if (bodyExceedsLimit(request, raw, MAX_BODY_BYTES)) return json({ error:'Request too large' }, 413, allowedOrigin);
+  let input;
+  try { input = JSON.parse(raw); } catch { return json({ error:'Invalid request' }, 400, allowedOrigin); }
+  let orderId = '';
+  let stage = 'catalog';
+  try {
+    const catalogResponse = await fetch(env.CATALOG_URL, { headers:{ accept:'application/json' } });
+    if (!catalogResponse.ok) throw new Error('Catalog unavailable');
+    stage = 'validate_cart';
+    const checkout = normalizeCheckoutRequest(input, await catalogResponse.json(), env);
+    orderId = crypto.randomUUID();
+    const itemsSummary = (checkout.couponCode ? `Ambassador coupon: ${checkout.couponCode} | ` : '') + checkout.lineItems.filter(x => x.price_data.product_data.name !== 'Shipping').map(x => `${x.quantity}x ${x.price_data.product_data.name}`).join(' | ');
+    stage = 'record_pending';
+    await forwardToGas(env, { action:'stripe_pending', orderId, customer:checkout.customer, itemsSummary:itemsSummary.slice(0,450), orderItems:checkout.orderItems, expectedTotalCents:checkout.totalCents, subtotalCents:checkout.subtotalCents, shippingCents:checkout.shippingCents, couponCode:checkout.couponCode, currency:'EUR' });
+    const params = new URLSearchParams();
+    params.set('mode', 'payment');
+    params.set('success_url', `${env.SITE_BASE_URL}/checkout.html?payment=success&order_id=${orderId}&session_id={CHECKOUT_SESSION_ID}`);
+    params.set('cancel_url', `${env.SITE_BASE_URL}/checkout.html?payment=cancelled&order_id=${orderId}`);
+    params.set('customer_email', checkout.customer.email);
+    params.set('client_reference_id', orderId);
+    params.set('billing_address_collection', 'auto');
+    checkout.allowedCountries.forEach(country => params.append('shipping_address_collection[allowed_countries][]', country));
+    if (checkout.couponCode) {
+      params.set('metadata[ambassador_code]', checkout.couponCode);
+      params.set('metadata[coupon_discount_cents]', String(checkout.discountCents));
+      params.set('payment_intent_data[metadata][ambassador_code]', checkout.couponCode);
+    }
+    params.set('metadata[order_id]', orderId);
+    params.set('metadata[currency]', 'EUR');
+    params.set('metadata[expected_total_cents]', String(checkout.totalCents));
+    params.set('metadata[shipping_cents]', String(checkout.shippingCents));
+    params.set('metadata[shipping_country]', checkout.countryCode);
+    params.set('metadata[shipping_region]', checkout.shippingRegion);
+    params.set('metadata[items_summary]', itemsSummary);
+    params.set('payment_intent_data[metadata][order_id]', orderId);
+    params.set('payment_intent_data[metadata][expected_total_cents]', String(checkout.totalCents));
+    params.set('payment_intent_data[metadata][shipping_cents]', String(checkout.shippingCents));
+    params.set('payment_intent_data[metadata][shipping_country]', checkout.countryCode);
+    discountCheckoutLineItems(checkout).forEach((item, i) => {
+      params.set(`line_items[${i}][price_data][currency]`, item.price_data.currency);
+      params.set(`line_items[${i}][price_data][unit_amount]`, String(item.price_data.unit_amount));
+      params.set(`line_items[${i}][price_data][product_data][name]`, item.price_data.product_data.name);
+      params.set(`line_items[${i}][quantity]`, String(item.quantity));
+    });
+    stage = 'create_stripe_session';
+    const session = await stripePost('checkout/sessions', params, env.STRIPE_SECRET_KEY, `asheerah-${orderId}`);
+    stage = 'record_session';
+    await forwardToGas(env, { action:'stripe_session_created', orderId, sessionId:session.id });
+    return json({ checkoutUrl:session.url, orderId }, 200, allowedOrigin);
   } catch (err) {
-    if (orderId) { try { await forwardToGas(env,{action:'stripe_checkout_failed',orderId}); } catch {} }
-    if (err.message === 'Shipping rate is not configured for this destination') return json({error:'Shipping is not available to that destination at the listed rates.'},422,allowedOrigin);
-    return json({error:'Unable to start secure checkout'},502,allowedOrigin);
+    if (orderId) {
+      try { await forwardToGas(env, { action:'stripe_checkout_failed', orderId }); } catch {}
+    }
+    if (err.message === 'Shipping rate is not configured for this destination') return json({ error:'Shipping is not available to that destination at the listed rates.' }, 422, allowedOrigin);
+    return json({ error:'Unable to start secure checkout', ...(env.CHECKOUT_DIAGNOSTIC === '1' ? { stage, reason:err.diagnostic || 'unclassified' } : {}) }, 502, allowedOrigin);
   }
 }
-module.exports = { normalizeCheckoutRequest, verifyStripeSignature, handleRequest, fetch: handleRequest };
+module.exports = { EU_COUNTRIES, COUNTRY_ENTRIES, shippingForCountry, normalizeCheckoutRequest, verifyStripeSignature, handleRequest, fetch: handleRequest };

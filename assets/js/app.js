@@ -124,12 +124,13 @@ function cartTotals(coupon, shippingAmount=CONFIG.shipping){
   subtotalOriginal = round2(subtotalOriginal);
   itemDiscount = round2(itemDiscount);
 
+  const merchandiseSubtotal = round2(subtotalOriginal - itemDiscount);
   let couponDiscount = 0;
   if (coupon){
     if (coupon.type === 'percent'){
-      couponDiscount = round2(subtotalOriginal * coupon.value / 100);
+      couponDiscount = round2(merchandiseSubtotal * coupon.value / 100);
     } else if (coupon.type === 'fixed'){
-      couponDiscount = round2(Math.min(coupon.value, subtotalOriginal));
+      couponDiscount = round2(Math.min(coupon.value, merchandiseSubtotal));
     }
   }
   const totalDiscount = round2(itemDiscount + couponDiscount);
@@ -956,6 +957,76 @@ function renderCartPage(){
 }
 
 // ---------- Checkout ----------
+const EU_COUNTRY_CODES = Object.freeze(['AT','BE','BG','HR','CY','CZ','DK','EE','FI','FR','DE','GR','HU','IE','IT','LV','LT','LU','MT','NL','PL','PT','RO','SK','SI','ES','SE']);
+const EU_SHIPPING_CENTS = 599;
+const INTL_SHIPPING_CENTS = 2000;
+const CHECKOUT_COUNTRY_ENTRIES = [["AD","Andorra","Andorre"],["AE","United Arab Emirates","Emirados Árabes Unidos","Emiratos Árabes Unidos","Vereinigte Arabische Emirate","Émirats arabes unis","Emirati Arabi Uniti"],["AF","Afghanistan","Afeganistão","Afganistán"],["AG","Antigua & Barbuda","Antigua and Barbuda","Antígua e Barbuda","Antigua y Barbuda","Antigua und Barbuda","Antigua-et-Barbuda","Antigua e Barbuda"],["AI","Anguilla","Anguila"],["AL","Albania","Albânia","Albanien","Albanie"],["AM","Armenia","Armênia","Armenien","Arménie"],["AO","Angola"],["AQ","Antarctica","Antártida","Antarktis","Antarctique","Antartide"],["AR","Argentina","Argentinien","Argentine"],["AT","Austria","Áustria","Österreich","Autriche"],["AU","Australia","Austrália","Australien","Australie"],["AW","Aruba"],["AX","Åland Islands","Ilhas Aland","Islas Aland","Ålandinseln","Îles Åland","Isole Åland"],["AZ","Azerbaijan","Azerbaijão","Azerbaiyán","Aserbaidschan","Azerbaïdjan","Azerbaigian"],["BA","Bosnia & Herzegovina","Bosnia and Herzegovina","Bósnia e Herzegovina","Bosnia y Herzegovina","Bosnien und Herzegowina","Bosnie-Herzégovine","Bosnia ed Erzegovina"],["BB","Barbados","Barbade"],["BD","Bangladesh","Bangladés","Bangladesch"],["BE","Belgium","Bélgica","Belgien","Belgique","Belgio"],["BF","Burkina Faso","Burquina Faso"],["BG","Bulgaria","Bulgária","Bulgarien","Bulgarie"],["BH","Bahrain","Barein","Baréin","Bahreïn","Bahrein"],["BI","Burundi"],["BJ","Benin","Benín","Bénin"],["BL","St. Barthélemy","São Bartolomeu","San Bartolomé","Saint-Barthélemy"],["BM","Bermuda","Bermudas","Bermudes"],["BN","Brunei","Brunéi","Brunei Darussalam"],["BO","Bolivia","Bolívia","Bolivien","Bolivie"],["BQ","Caribbean Netherlands","Países Baixos Caribenhos","Caribe neerlandés","Karibische Niederlande","Pays-Bas caribéens","Caraibi Olandesi"],["BR","Brazil","Brasil","Brasilien","Brésil","Brasile"],["BS","Bahamas"],["BT","Bhutan","Butão","Bután","Bhoutan"],["BV","Bouvet Island","Ilha Bouvet","Isla Bouvet","Bouvetinsel","Île Bouvet","Isola Bouvet"],["BW","Botswana","Botsuana"],["BY","Belarus","Bielorrússia","Bielorrusia","Biélorussie","Bielorussia"],["BZ","Belize","Belice"],["CA","Canada","Canadá","Kanada"],["CD","Congo - Kinshasa","República Democrática del Congo","Kongo-Kinshasa","Congo-Kinshasa"],["CF","Central African Republic","República Centro-Africana","República Centroafricana","Zentralafrikanische Republik","République centrafricaine","Repubblica Centrafricana"],["CG","Congo - Brazzaville","República do Congo","Congo","Kongo-Brazzaville","Congo-Brazzaville"],["CH","Switzerland","Suíça","Suiza","Schweiz","Suisse","Svizzera"],["CI","Côte d’Ivoire","Costa do Marfim","Costa d’Avorio","Ivory Coast","Cote d Ivoire","Costa de Marfil","Elfenbeinküste"],["CK","Cook Islands","Ilhas Cook","Islas Cook","Cookinseln","Îles Cook","Isole Cook"],["CL","Chile","Chili","Cile"],["CM","Cameroon","Camarões","Camerún","Kamerun","Cameroun","Camerun"],["CN","China","Chine","Cina"],["CO","Colombia","Colômbia","Kolumbien","Colombie"],["CR","Costa Rica"],["CV","Cape Verde","Cabo Verde","Cap-Vert","Capo Verde","Kap Verde"],["CW","Curaçao","Curazao"],["CY","Cyprus","Chipre","Zypern","Chypre","Cipro"],["CZ","Czechia","Tchéquia","Chequia","Tschechien","Tchéquie","Cechia","Czech Republic","Chéquia","República Checa","Repubblica Ceca"],["DE","Germany","Alemanha","Alemania","Deutschland","Allemagne","Germania"],["DJ","Djibouti","Djibuti","Yibuti","Dschibuti","Gibuti"],["DK","Denmark","Dinamarca","Dänemark","Danemark","Danimarca"],["DM","Dominica","Dominique"],["DO","Dominican Republic","República Dominicana","Dominikanische Republik","République dominicaine","Repubblica Dominicana"],["DZ","Algeria","Argélia","Argelia","Algerien","Algérie"],["EC","Ecuador","Equador","Équateur"],["EE","Estonia","Estônia","Estland","Estonie"],["EG","Egypt","Egito","Egipto","Ägypten","Égypte","Egitto"],["EH","Western Sahara","Saara Ocidental","Sáhara Occidental","Westsahara","Sahara occidental","Sahara Occidentale"],["ER","Eritrea","Eritreia","Érythrée"],["ES","Spain","Espanha","España","Spanien","Espagne","Spagna"],["ET","Ethiopia","Etiópia","Etiopía","Äthiopien","Éthiopie","Etiopia"],["FI","Finland","Finlândia","Finlandia","Finnland","Finlande"],["FJ","Fiji","Fiyi","Fidschi","Fidji","Figi"],["FK","Falkland Islands","Ilhas Malvinas","Islas Malvinas","Falklandinseln","Îles Malouines","Isole Falkland"],["FO","Faroe Islands","Ilhas Faroé","Islas Feroe","Färöer","Îles Féroé","Isole Fær Øer"],["FR","France","França","Francia","Frankreich"],["GA","Gabon","Gabão","Gabón","Gabun"],["GB","United Kingdom","Reino Unido","Vereinigtes Königreich","Royaume-Uni","Regno Unito","UK","Great Britain","Britain","England","Scotland","Wales","Northern Ireland","Grande-Bretagne","Grossbritannien","Großbritannien"],["GD","Grenada","Granada","Grenade"],["GE","Georgia","Geórgia","Georgien","Géorgie"],["GF","French Guiana","Guiana Francesa","Guayana Francesa","Französisch-Guayana","Guyane française","Guyana Francese"],["GG","Guernsey","Guernesey"],["GH","Ghana","Gana"],["GI","Gibraltar","Gibilterra"],["GL","Greenland","Groenlândia","Groenlandia","Grönland","Groenland"],["GM","Gambia","Gâmbia","Gambie"],["GN","Guinea","Guiné","Guinée"],["GP","Guadeloupe","Guadalupe","Guadalupa"],["GQ","Equatorial Guinea","Guiné Equatorial","Guinea Ecuatorial","Äquatorialguinea","Guinée équatoriale","Guinea Equatoriale"],["GR","Greece","Grécia","Grecia","Griechenland","Grèce"],["GS","South Georgia & South Sandwich Islands","South Georgia and South Sandwich Islands","Ilhas Geórgia do Sul e Sandwich do Sul","Islas Georgia del Sur y Sandwich del Sur","Südgeorgien und die Südlichen Sandwichinseln","Géorgie du Sud-et-les Îles Sandwich du Sud","Georgia del Sud e Sandwich Australi"],["GT","Guatemala"],["GU","Guam"],["GW","Guinea-Bissau","Guiné-Bissau","Guinea-Bisáu","Guinée-Bissau"],["GY","Guyana","Guiana"],["HK","Hong Kong SAR China","Hong Kong, RAE da China","RAE de Hong Kong (China)","Sonderverwaltungsregion Hongkong","R.A.S. chinoise de Hong Kong","RAS di Hong Kong"],["HN","Honduras"],["HR","Croatia","Croácia","Croacia","Kroatien","Croatie","Croazia"],["HT","Haiti","Haití","Haïti"],["HU","Hungary","Hungria","Hungría","Ungarn","Hongrie","Ungheria"],["ID","Indonesia","Indonésia","Indonesien","Indonésie"],["IE","Ireland","Irlanda","Irland","Irlande"],["IL","Israel","Israël","Israele"],["IM","Isle of Man","Ilha de Man","Isla de Man","Île de Man","Isola di Man"],["IN","India","Índia","Indien","Inde"],["IQ","Iraq","Iraque","Irak"],["IS","Iceland","Islândia","Islandia","Island","Islande","Islanda"],["IT","Italy","Itália","Italia","Italien","Italie"],["JE","Jersey"],["JM","Jamaica","Jamaika","Jamaïque","Giamaica"],["JO","Jordan","Jordânia","Jordania","Jordanien","Jordanie","Giordania"],["JP","Japan","Japão","Japón","Japon","Giappone"],["KE","Kenya","Quênia","Kenia"],["KG","Kyrgyzstan","Quirguistão","Kirguistán","Kirgisistan","Kirghizstan","Kirghizistan"],["KH","Cambodia","Camboja","Camboya","Kambodscha","Cambodge","Cambogia"],["KI","Kiribati","Quiribati"],["KM","Comoros","Comores","Comoras","Komoren","Comore"],["KN","St. Kitts & Nevis","St. Kitts and Nevis","São Cristóvão e Névis","San Cristóbal y Nieves","St. Kitts und Nevis","Saint-Christophe-et-Niévès","Saint Kitts e Nevis"],["KR","South Korea","Coreia do Sul","Corea del Sur","Südkorea","Corée du Sud","Corea del Sud"],["KW","Kuwait","Koweït"],["KY","Cayman Islands","Ilhas Cayman","Islas Caimán","Kaimaninseln","Îles Caïmans","Isole Cayman"],["KZ","Kazakhstan","Cazaquistão","Kazajistán","Kasachstan","Kazakistan"],["LA","Laos"],["LB","Lebanon","Líbano","Libanon","Liban","Libano"],["LC","St. Lucia","Santa Lúcia","Santa Lucía","Sainte-Lucie","Saint Lucia"],["LI","Liechtenstein"],["LK","Sri Lanka"],["LR","Liberia","Libéria"],["LS","Lesotho","Lesoto"],["LT","Lithuania","Lituânia","Lituania","Litauen","Lituanie"],["LU","Luxembourg","Luxemburgo","Luxemburg","Lussemburgo"],["LV","Latvia","Letônia","Letonia","Lettland","Lettonie","Lettonia"],["LY","Libya","Líbia","Libia","Libyen","Libye"],["MA","Morocco","Marrocos","Marruecos","Marokko","Maroc","Marocco"],["MC","Monaco","Mônaco","Mónaco"],["MD","Moldova","Moldávia","Moldavia","Republik Moldau","Moldavie"],["ME","Montenegro","Monténégro"],["MF","St. Martin","São Martinho","San Martín","Saint-Martin","Saint Martin"],["MG","Madagascar","Madagaskar"],["MK","North Macedonia","Macedônia do Norte","Macedonia del Norte","Nordmazedonien","Macédoine du Nord","Macedonia del Nord"],["ML","Mali"],["MM","Myanmar (Burma)","Mianmar (Birmânia)","Myanmar (Birmania)","Myanmar","Myanmar (Birmanie)"],["MN","Mongolia","Mongólia","Mongolei","Mongolie"],["MO","Macao SAR China","Macau, RAE da China","RAE de Macao (China)","Sonderverwaltungsregion Macau","R.A.S. chinoise de Macao","RAS di Macao"],["MQ","Martinique","Martinica"],["MR","Mauritania","Mauritânia","Mauretanien","Mauritanie"],["MS","Montserrat"],["MT","Malta","Malte"],["MU","Mauritius","Maurício","Mauricio","Maurice"],["MV","Maldives","Maldivas","Malediven","Maldive"],["MW","Malawi","Malaui"],["MX","Mexico","México","Mexiko","Mexique","Messico"],["MY","Malaysia","Malásia","Malasia","Malaisie"],["MZ","Mozambique","Moçambique","Mosambik","Mozambico"],["NA","Namibia","Namíbia","Namibie"],["NC","New Caledonia","Nova Caledônia","Nueva Caledonia","Neukaledonien","Nouvelle-Calédonie","Nuova Caledonia"],["NE","Niger","Níger"],["NG","Nigeria","Nigéria"],["NI","Nicaragua","Nicarágua"],["NL","Netherlands","Países Baixos","Países Bajos","Niederlande","Pays-Bas","Paesi Bassi","The Netherlands","Holland","Holanda"],["NO","Norway","Noruega","Norwegen","Norvège","Norvegia"],["NP","Nepal","Népal"],["NR","Nauru"],["NU","Niue"],["NZ","New Zealand","Nova Zelândia","Nueva Zelanda","Neuseeland","Nouvelle-Zélande","Nuova Zelanda"],["OM","Oman","Omã","Omán"],["PA","Panama","Panamá"],["PE","Peru","Perú","Pérou","Perù"],["PF","French Polynesia","Polinésia Francesa","Polinesia Francesa","Französisch-Polynesien","Polynésie française","Polinesia Francese"],["PG","Papua New Guinea","Papua-Nova Guiné","Papúa Nueva Guinea","Papua-Neuguinea","Papouasie-Nouvelle-Guinée","Papua Nuova Guinea"],["PH","Philippines","Filipinas","Philippinen","Filippine"],["PK","Pakistan","Paquistão","Pakistán"],["PL","Poland","Polônia","Polonia","Polen","Pologne"],["PM","St. Pierre & Miquelon","St. Pierre and Miquelon","São Pedro e Miquelão","San Pedro y Miquelón","St. Pierre und Miquelon","Saint-Pierre-et-Miquelon","Saint-Pierre e Miquelon"],["PN","Pitcairn Islands","Ilhas Pitcairn","Islas Pitcairn","Pitcairninseln","Îles Pitcairn","Isole Pitcairn"],["PR","Puerto Rico","Porto Rico","Portorico"],["PS","Palestinian Territories","Territórios palestinos","Territorios Palestinos","Palästinensische Autonomiegebiete","Territoires palestiniens","Territori Palestinesi"],["PT","Portugal","Portogallo"],["PY","Paraguay","Paraguai"],["QA","Qatar","Catar","Katar"],["RE","Réunion","Reunião","Reunión","La Réunion","Riunione"],["RO","Romania","Romênia","Rumanía","Rumänien","Roumanie"],["RS","Serbia","Sérvia","Serbien","Serbie"],["RU","Russia","Rússia","Rusia","Russland","Russie"],["RW","Rwanda","Ruanda"],["SA","Saudi Arabia","Arábia Saudita","Arabia Saudí","Saudi-Arabien","Arabie saoudite","Arabia Saudita"],["SB","Solomon Islands","Ilhas Salomão","Islas Salomón","Salomonen","Îles Salomon","Isole Salomone"],["SC","Seychelles","Seicheles","Seychellen"],["SE","Sweden","Suécia","Suecia","Schweden","Suède","Svezia"],["SG","Singapore","Singapura","Singapur","Singapour"],["SH","St. Helena","Santa Helena","Santa Elena","Sainte-Hélène","Sant’Elena"],["SI","Slovenia","Eslovênia","Eslovenia","Slowenien","Slovénie"],["SJ","Svalbard & Jan Mayen","Svalbard and Jan Mayen","Svalbard e Jan Mayen","Svalbard y Jan Mayen","Spitzbergen und Jan Mayen","Svalbard et Jan Mayen"],["SK","Slovakia","Eslováquia","Eslovaquia","Slowakei","Slovaquie","Slovacchia"],["SL","Sierra Leone","Serra Leoa","Sierra Leona"],["SM","San Marino","Saint-Marin"],["SN","Senegal","Sénégal"],["SO","Somalia","Somália","Somalie"],["SR","Suriname","Surinam"],["SS","South Sudan","Sudão do Sul","Sudán del Sur","Südsudan","Soudan du Sud","Sud Sudan"],["ST","São Tomé & Príncipe","São Tomé and Príncipe","São Tomé e Príncipe","Santo Tomé y Príncipe","São Tomé und Príncipe","Sao Tomé-et-Principe","Sao Tome and Principe"],["SV","El Salvador","Salvador"],["SX","Sint Maarten","Saint-Martin (partie néerlandaise)"],["SZ","Eswatini","Essuatíni","Esuatini"],["TA","Tristan da Cunha","Tristão da Cunha","Tristán de Acuña"],["TC","Turks & Caicos Islands","Turks and Caicos Islands","Ilhas Turcas e Caicos","Islas Turcas y Caicos","Turks- und Caicosinseln","Îles Turques-et-Caïques","Isole Turks e Caicos"],["TD","Chad","Chade","Tschad","Tchad","Ciad"],["TF","French Southern Territories","Territórios Franceses do Sul","Territorios Australes Franceses","Französische Süd- und Antarktisgebiete","Terres australes françaises","Terre Australi Francesi"],["TG","Togo"],["TH","Thailand","Tailândia","Tailandia","Thaïlande","Thailandia"],["TJ","Tajikistan","Tadjiquistão","Tayikistán","Tadschikistan","Tadjikistan","Tagikistan"],["TK","Tokelau"],["TL","Timor-Leste","Timor oriental","Timor Est"],["TM","Turkmenistan","Turcomenistão","Turkmenistán","Turkménistan"],["TN","Tunisia","Tunísia","Túnez","Tunesien","Tunisie"],["TO","Tonga"],["TR","Türkiye","Turquia","Turquía","Türkei","Turquie","Turchia"],["TT","Trinidad & Tobago","Trinidad and Tobago","Trinidad e Tobago","Trinidad y Tobago","Trinidad und Tobago","Trinité-et-Tobago"],["TV","Tuvalu"],["TW","Taiwan","Taiwán","Taïwan"],["TZ","Tanzania","Tanzânia","Tansania","Tanzanie"],["UA","Ukraine","Ucrânia","Ucrania","Ucraina"],["UG","Uganda","Ouganda"],["US","United States","Estados Unidos","Vereinigte Staaten","États-Unis","Stati Uniti","USA","United States of America","U.S.","U.S.A."],["UY","Uruguay","Uruguai"],["UZ","Uzbekistan","Uzbequistão","Uzbekistán","Usbekistan","Ouzbékistan"],["VA","Vatican City","Cidade do Vaticano","Ciudad del Vaticano","Vatikanstadt","État de la Cité du Vatican","Città del Vaticano"],["VC","St. Vincent & Grenadines","St. Vincent and Grenadines","São Vicente e Granadinas","San Vicente y las Granadinas","St. Vincent und die Grenadinen","Saint-Vincent-et-les Grenadines","Saint Vincent e Grenadine"],["VE","Venezuela"],["VG","British Virgin Islands","Ilhas Virgens Britânicas","Islas Vírgenes Británicas","Britische Jungferninseln","Îles Vierges britanniques","Isole Vergini Britanniche"],["VN","Vietnam","Vietnã","Viêt Nam"],["VU","Vanuatu"],["WF","Wallis & Futuna","Wallis and Futuna","Wallis e Futuna","Wallis y Futuna","Wallis und Futuna","Wallis-et-Futuna"],["WS","Samoa"],["XK","Kosovo"],["YE","Yemen","Iêmen","Jemen","Yémen"],["YT","Mayotte"],["ZA","South Africa","África do Sul","Sudáfrica","Südafrika","Afrique du Sud","Sudafrica"],["ZM","Zambia","Zâmbia","Sambia","Zambie"],["ZW","Zimbabwe","Zimbábue","Zimbabue","Simbabwe"]];
+function normalizeCountryKey(value){
+  return String(value||'').normalize('NFD').replace(/\p{M}/gu,'').toLowerCase().replace(/[^a-z0-9]/g,'');
+}
+const CHECKOUT_COUNTRY_LOOKUP = Object.fromEntries(
+  CHECKOUT_COUNTRY_ENTRIES.flatMap(([code, ...names]) => [
+    [normalizeCountryKey(code), code],
+    ...names.map(name => [normalizeCountryKey(name), code]),
+  ])
+);
+function resolveCountryCode(value){
+  return CHECKOUT_COUNTRY_LOOKUP[normalizeCountryKey(value)] || '';
+}
+function shippingRateForCountry(value){
+  const code = resolveCountryCode(value);
+  if (!code) return null;
+  const isEU = EU_COUNTRY_CODES.includes(code);
+  return {
+    countryCode: code,
+    region: isEU ? 'EU' : 'INTL',
+    shippingCents: isEU ? EU_SHIPPING_CENTS : INTL_SHIPPING_CENTS,
+  };
+}
+function countryDisplayName(code, lang){
+  const cleanCode = resolveCountryCode(code);
+  if (!cleanCode) return '';
+  const activeLang = lang || (typeof LANG === 'string' && LANG ? LANG : 'pt');
+  try {
+    if (typeof Intl !== 'undefined' && typeof Intl.DisplayNames === 'function'){
+      const dn = new Intl.DisplayNames([activeLang === 'pt' ? 'pt-PT' : activeLang, 'en'], { type:'region' });
+      const label = dn.of(cleanCode);
+      if (label) return label;
+    }
+  } catch(e){}
+  const entry = CHECKOUT_COUNTRY_ENTRIES.find(x => x[0] === cleanCode);
+  return entry ? entry[1] : cleanCode;
+}
+function getCountryCatalog(lang){
+  const activeLang = lang || (typeof LANG === 'string' && LANG ? LANG : 'pt');
+  return CHECKOUT_COUNTRY_ENTRIES.map(([code, ...aliases]) => {
+    const label = countryDisplayName(code, activeLang);
+    const searchText = [code, label, ...aliases].map(normalizeCountryKey).join(' ');
+    return { code, label, searchText };
+  }).sort((a, b) => a.label.localeCompare(b.label, activeLang));
+}
+
+const CHECKOUT_DRAFT_KEY = 'ash_checkout_draft';
+function loadCheckoutDraft(){
+  try {
+    const raw = sessionStorage.getItem(CHECKOUT_DRAFT_KEY) || localStorage.getItem(CHECKOUT_DRAFT_KEY);
+    const parsed = raw ? JSON.parse(raw) : {};
+    return parsed && typeof parsed === 'object' ? parsed : {};
+  } catch(e){ return {}; }
+}
+function saveCheckoutDraft(patch){
+  try {
+    const next = Object.assign({}, loadCheckoutDraft(), patch || {});
+    const raw = JSON.stringify(next);
+    try { sessionStorage.setItem(CHECKOUT_DRAFT_KEY, raw); } catch(e){}
+    try { localStorage.setItem(CHECKOUT_DRAFT_KEY, raw); } catch(e){}
+  } catch(e){}
+}
+function clearCheckoutDraft(){
+  try { sessionStorage.removeItem(CHECKOUT_DRAFT_KEY); } catch(e){}
+  try { localStorage.removeItem(CHECKOUT_DRAFT_KEY); } catch(e){}
+}
+
 function renderCheckoutPage(){
   const root = document.getElementById('checkoutRoot'); if (!root) return;
   const paymentReturn = new URLSearchParams(window.location.search).get('payment');
@@ -975,7 +1046,12 @@ function renderCheckoutPage(){
     return;
   }
 
-  const t = cartTotals(getAppliedCoupon());
+  const draft = loadCheckoutDraft();
+  const savedCountryCode = resolveCountryCode(draft.country || '');
+  const initialQuote = savedCountryCode ? shippingRateForCountry(savedCountryCode) : null;
+  const t = cartTotals(getAppliedCoupon(), initialQuote ? initialQuote.shippingCents / 100 : null);
+  const selectCountryPrompt = uiTxt('shipping_select_country') || 'Select your country to calculate shipping.';
+
   const itemsHTML = cart.map(i => {
     const subtotal = money(i.priceEur * i.qty, cur);
     return `<div class="co-item">
@@ -1012,7 +1088,16 @@ function renderCheckoutPage(){
           <div class="fld"><label for="coFirst">${uiTxt('first_name')} *</label><input id="coFirst" name="first" autocomplete="given-name" required><p class="ferr" data-for="first"></p></div>
           <div class="fld"><label for="coLast">${uiTxt('last_name')} *</label><input id="coLast" name="last" autocomplete="family-name" required><p class="ferr" data-for="last"></p></div>
         </div>
-        <div class="fld"><label for="coCountry">${uiTxt('country_region')} *</label><input id="coCountry" name="country" autocomplete="country-name" required><p class="ferr" data-for="country"></p></div>
+        <div class="fld fld-country">
+          <label id="coCountryLabel" for="coCountrySearch">${uiTxt('country_region')} *</label>
+          <div class="country-combobox" id="coCountryCombobox">
+            <input id="coCountrySearch" type="text" role="combobox" aria-autocomplete="list" aria-expanded="false" aria-controls="coCountryList" aria-labelledby="coCountryLabel" autocomplete="off" placeholder="${escapeHTML(uiTxt('country_search_ph') || 'Search or select country…')}" required>
+            <button type="button" class="country-combobox-toggle" id="coCountryToggle" tabindex="-1" aria-label="${escapeHTML(uiTxt('country_region'))}">⌄</button>
+            <input id="coCountry" name="country" type="hidden" value="${escapeHTML(savedCountryCode)}">
+            <ul id="coCountryList" class="country-combobox-list" role="listbox" aria-labelledby="coCountryLabel" hidden></ul>
+          </div>
+          <p class="ferr" data-for="country"></p>
+        </div>
         <div class="fld"><label for="coAddr">${uiTxt('address_line')} *</label><input id="coAddr" name="address" autocomplete="street-address" required><p class="ferr" data-for="address"></p></div>
         <div class="fld"><label for="coApt">${uiTxt('apartment')}</label><input id="coApt" name="apt" autocomplete="address-line2"></div>
         <div class="fld-row">
@@ -1052,43 +1137,302 @@ function renderCheckoutPage(){
         <h2>${uiTxt('items_summary')}</h2>
         ${itemsHTML}
         <div class="totals">
-          <div class="row"><span>${uiTxt('subtotal_original')}</span><span>${money(t.subtotalOriginal,cur)}</span></div>
-          ${t.totalDiscount>0?`<div class="row disc"><span>${uiTxt('discount_total')}</span><span>−${money(t.totalDiscount,cur)}</span></div>`:''}
-          <div class="row"><span>${uiTxt('shipping')}</span><span id="coShippingAmount">${t.shippingKnown?money(t.shipping,cur):uiTxt('shipping_calc_checkout')}</span></div>
+          <div class="row"><span>${uiTxt('subtotal_original')}</span><span id="coSubtotalOriginal">${money(t.subtotalOriginal,cur)}</span></div>
+          ${t.totalDiscount>0?`<div class="row disc"><span>${uiTxt('discount_total')}</span><span id="coDiscountTotal">−${money(t.totalDiscount,cur)}</span></div>`:''}
+          <div class="row"><span>${uiTxt('merchandise_subtotal') || uiTxt('subtotal')}</span><span id="coMerchandiseSubtotal">${money(t.subtotalFinal,cur)}</span></div>
+          <div class="row"><span>${uiTxt('shipping')}</span><span id="coShippingAmount">${t.shippingKnown?money(t.shipping,cur):selectCountryPrompt}</span></div>
       <div class="shipping-eta">${uiTxt('shipping_eta')}: ${escapeHTML(CONFIG.shippingEta || '6–10 days')}</div>
           ${t.taxes>0?`<div class="row"><span>${uiTxt('taxes')}</span><span>${money(t.taxes,cur)}</span></div>`:''}
-          <div class="row total"><span>${uiTxt('final_total')}</span><span id="coGrandTotal">${t.shippingKnown?money(t.totalFinal,cur):uiTxt('shipping_calc_checkout')}</span></div>
+          <div class="row total"><span>${uiTxt('final_total')}</span><span id="coGrandTotal">${t.shippingKnown?money(t.totalFinal,cur):selectCountryPrompt}</span></div>
         </div>
       </div>
     </div>
   </form>`;
 
-  // ---- Destination-based shipping quote ----
+  // ---- Restore persisted customer details ----
+  const form = document.getElementById('checkoutForm');
+  const textFields = ['email','phone','first','last','address','apt','zip','city','district','notes'];
+  textFields.forEach(name => {
+    const field = form.querySelector(`[name="${name}"]`);
+    if (field && typeof draft[name] === 'string') field.value = draft[name];
+    if (field) {
+      field.addEventListener('input', () => saveCheckoutDraft({ [name]: field.value }));
+      field.addEventListener('change', () => saveCheckoutDraft({ [name]: field.value }));
+    }
+  });
+
+  // ---- Searchable Country Combobox + Destination-based shipping quote ----
   const countryInput = document.getElementById('coCountry');
+  const countrySearch = document.getElementById('coCountrySearch');
+  const countryToggle = document.getElementById('coCountryToggle');
+  const countryList = document.getElementById('coCountryList');
+  const countryBox = document.getElementById('coCountryCombobox');
   const shippingAmount = document.getElementById('coShippingAmount');
   const grandTotal = document.getElementById('coGrandTotal');
+  const countryCatalog = getCountryCatalog();
+  let filteredCountries = countryCatalog.slice();
+  let activeOptionIndex = -1;
   let quoteSequence = 0;
+
+  if (savedCountryCode) {
+    countryInput.value = savedCountryCode;
+    countrySearch.value = countryDisplayName(savedCountryCode);
+  }
+
+  function clearCountryError(){
+    const errEl = form.querySelector('.ferr[data-for="country"]');
+    countryInput.classList.remove('invalid');
+    countryInput.setAttribute('aria-invalid', 'false');
+    countrySearch.classList.remove('invalid');
+    countrySearch.setAttribute('aria-invalid', 'false');
+    if (errEl) { errEl.textContent = ''; errEl.removeAttribute('role'); }
+  }
+
+  function applyTotalsDisplay(shippingCents){
+    const pending = uiTxt('shipping_select_country') || uiTxt('shipping_calc_checkout') || 'Select your country to calculate shipping.';
+    if (!Number.isInteger(shippingCents) || shippingCents < 0) {
+      shippingAmount.textContent = pending;
+      grandTotal.textContent = pending;
+      return;
+    }
+    const totals = cartTotals(getAppliedCoupon(), shippingCents / 100);
+    shippingAmount.textContent = money(totals.shipping, cur);
+    grandTotal.textContent = money(totals.totalFinal, cur);
+  }
+
   async function refreshShippingQuote(){
     const sequence = ++quoteSequence;
-    const country = countryInput.value.trim();
+    const rawValue = countryInput.value.trim();
+    const code = resolveCountryCode(rawValue);
+    const pending = uiTxt('shipping_select_country') || uiTxt('shipping_calc_checkout') || 'Select your country to calculate shipping.';
+    if (!code) {
+      shippingAmount.textContent = pending;
+      grandTotal.textContent = pending;
+      return;
+    }
+    if (countryInput.value !== code) countryInput.value = code;
+    const localRate = shippingRateForCountry(code);
+    if (localRate) {
+      applyTotalsDisplay(localRate.shippingCents);
+    }
     const endpoint = stripeWorkerURL('shipping-quote');
-    const pending = uiTxt('shipping_calc_checkout');
-    if (!country || !endpoint){ shippingAmount.textContent=pending; grandTotal.textContent=pending; return; }
-    shippingAmount.textContent=pending; grandTotal.textContent=pending;
+    if (!endpoint) return;
     try {
-      const response=await fetch(endpoint,{method:'POST',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify({country})});
-      const quote=await response.json();
-      if (sequence!==quoteSequence || countryInput.value.trim()!==country) return;
-      if (!response.ok || quote.currency!=='EUR' || !Number.isInteger(quote.shippingCents) || quote.shippingCents<0){ shippingAmount.textContent=uiTxt('shipping_unavailable'); grandTotal.textContent='—'; return; }
-      const totals=cartTotals(getAppliedCoupon(),quote.shippingCents/100);
-      shippingAmount.textContent=money(totals.shipping,cur);
-      grandTotal.textContent=money(totals.totalFinal,cur);
+      const response = await fetch(endpoint,{method:'POST',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify({country:code})});
+      const quote = await response.json();
+      if (sequence !== quoteSequence || resolveCountryCode(countryInput.value.trim()) !== code) return;
+      if (!response.ok || quote.currency !== 'EUR' || !Number.isInteger(quote.shippingCents) || quote.shippingCents < 0) {
+        if (!localRate) { shippingAmount.textContent = uiTxt('shipping_unavailable'); grandTotal.textContent = '—'; }
+        return;
+      }
+      const totals = cartTotals(getAppliedCoupon(), quote.shippingCents / 100);
+      shippingAmount.textContent = money(totals.shipping, cur);
+      grandTotal.textContent = money(totals.totalFinal, cur);
     } catch {
-      if (sequence===quoteSequence){ shippingAmount.textContent=pending; grandTotal.textContent=pending; }
+      if (sequence === quoteSequence && !localRate) {
+        shippingAmount.textContent = pending;
+        grandTotal.textContent = pending;
+      }
     }
   }
-  countryInput.addEventListener('change',refreshShippingQuote);
-  countryInput.addEventListener('blur',refreshShippingQuote);
+
+  function renderCountryOptions(query, keepOpen){
+    const normQ = normalizeCountryKey(query);
+    filteredCountries = normQ
+      ? countryCatalog.filter(c => c.searchText.includes(normQ) || normalizeCountryKey(c.code) === normQ)
+      : countryCatalog.slice();
+    // Sort exact code/prefix matches first when searching
+    if (normQ) {
+      filteredCountries.sort((a, b) => {
+        const aExact = normalizeCountryKey(a.code) === normQ || normalizeCountryKey(a.label).startsWith(normQ) ? 0 : 1;
+        const bExact = normalizeCountryKey(b.code) === normQ || normalizeCountryKey(b.label).startsWith(normQ) ? 0 : 1;
+        return aExact - bExact || a.label.localeCompare(b.label);
+      });
+    }
+    if (!filteredCountries.length) {
+      activeOptionIndex = -1;
+      countryList.innerHTML = `<li class="country-combobox-empty" role="presentation">${escapeHTML(uiTxt('country_no_results') || 'No matching country found')}</li>`;
+    } else {
+      const currentCode = countryInput.value;
+      const selectedIdx = filteredCountries.findIndex(c => c.code === currentCode);
+      activeOptionIndex = normQ ? 0 : (selectedIdx >= 0 ? selectedIdx : 0);
+      countryList.innerHTML = filteredCountries.map((c, idx) => {
+        const isSelected = c.code === currentCode;
+        const isActive = idx === activeOptionIndex;
+        return `<li id="coCountryOpt-${c.code}" class="country-combobox-opt${isSelected?' selected':''}${isActive?' active':''}" role="option" aria-selected="${isSelected?'true':'false'}" data-country-code="${c.code}" data-country-label="${escapeHTML(c.label)}"><span class="country-opt-name">${escapeHTML(c.label)}</span><span class="country-opt-code">${c.code}</span></li>`;
+      }).join('');
+      if (activeOptionIndex >= 0 && filteredCountries[activeOptionIndex]) {
+        countrySearch.setAttribute('aria-activedescendant', `coCountryOpt-${filteredCountries[activeOptionIndex].code}`);
+      }
+    }
+    if (keepOpen) openCountryDropdown();
+  }
+
+  function openCountryDropdown(){
+    countryList.hidden = false;
+    countrySearch.setAttribute('aria-expanded', 'true');
+    countryBox.classList.add('open');
+  }
+
+  function closeCountryDropdown(){
+    countryList.hidden = true;
+    countrySearch.setAttribute('aria-expanded', 'false');
+    countrySearch.removeAttribute('aria-activedescendant');
+    countryBox.classList.remove('open');
+  }
+
+  function selectCountryByCode(code, closeMenu = true){
+    const cleanCode = resolveCountryCode(code);
+    if (!cleanCode) {
+      countryInput.value = '';
+      saveCheckoutDraft({ country: '' });
+      refreshShippingQuote();
+      if (closeMenu) closeCountryDropdown();
+      return;
+    }
+    const label = countryDisplayName(cleanCode);
+    countryInput.value = cleanCode;
+    countrySearch.value = label;
+    clearCountryError();
+    saveCheckoutDraft({ country: cleanCode });
+    if (closeMenu) closeCountryDropdown();
+    refreshShippingQuote();
+  }
+
+  function updateActiveOption(nextIdx){
+    if (!filteredCountries.length) return;
+    activeOptionIndex = (nextIdx + filteredCountries.length) % filteredCountries.length;
+    const opts = countryList.querySelectorAll('.country-combobox-opt');
+    opts.forEach((el, i) => {
+      const active = i === activeOptionIndex;
+      el.classList.toggle('active', active);
+      if (active) {
+        countrySearch.setAttribute('aria-activedescendant', el.id);
+        if (typeof el.scrollIntoView === 'function') el.scrollIntoView({ block: 'nearest' });
+      }
+    });
+  }
+
+  countrySearch.addEventListener('focus', () => {
+    renderCountryOptions('', true);
+  });
+  countrySearch.addEventListener('click', () => {
+    if (countryList.hidden) renderCountryOptions('', true);
+  });
+  countryToggle.addEventListener('click', (e) => {
+    e.preventDefault();
+    if (countryList.hidden) {
+      renderCountryOptions('', true);
+      countrySearch.focus();
+    } else {
+      closeCountryDropdown();
+    }
+  });
+  countrySearch.addEventListener('input', () => {
+    const typed = countrySearch.value;
+    if (!typed.trim()) {
+      countryInput.value = '';
+      saveCheckoutDraft({ country: '' });
+      refreshShippingQuote();
+      renderCountryOptions('', true);
+      return;
+    }
+    // Check if typed text is an exact match for a country name or ISO code
+    const exactCode = resolveCountryCode(typed);
+    if (exactCode) {
+      countryInput.value = exactCode;
+      clearCountryError();
+      saveCheckoutDraft({ country: exactCode });
+      refreshShippingQuote();
+    } else {
+      countryInput.value = '';
+      saveCheckoutDraft({ country: '' });
+      refreshShippingQuote();
+    }
+    renderCountryOptions(typed, true);
+  });
+  countrySearch.addEventListener('keydown', (e) => {
+    if (e.key === 'ArrowDown') {
+      e.preventDefault();
+      if (countryList.hidden) renderCountryOptions(countrySearch.value, true);
+      else updateActiveOption(activeOptionIndex + 1);
+    } else if (e.key === 'ArrowUp') {
+      e.preventDefault();
+      if (countryList.hidden) renderCountryOptions(countrySearch.value, true);
+      else updateActiveOption(activeOptionIndex - 1);
+    } else if (e.key === 'Enter') {
+      if (!countryList.hidden && activeOptionIndex >= 0 && filteredCountries[activeOptionIndex]) {
+        e.preventDefault();
+        selectCountryByCode(filteredCountries[activeOptionIndex].code, true);
+      } else if (resolveCountryCode(countrySearch.value)) {
+        selectCountryByCode(resolveCountryCode(countrySearch.value), true);
+      }
+    } else if (e.key === 'Escape') {
+      if (!countryList.hidden) {
+        e.preventDefault();
+        closeCountryDropdown();
+        if (countryInput.value) countrySearch.value = countryDisplayName(countryInput.value);
+      }
+    }
+  });
+  countryList.addEventListener('mousedown', (e) => {
+    const opt = e.target.closest('[data-country-code]');
+    if (!opt) return;
+    e.preventDefault();
+    selectCountryByCode(opt.getAttribute('data-country-code'), true);
+  });
+  countryList.addEventListener('click', (e) => {
+    const opt = e.target.closest('[data-country-code]');
+    if (!opt) return;
+    selectCountryByCode(opt.getAttribute('data-country-code'), true);
+  });
+  countrySearch.addEventListener('blur', () => {
+    setTimeout(() => {
+      if (countryBox.contains(document.activeElement)) return;
+      closeCountryDropdown();
+      const typed = countrySearch.value.trim();
+      if (!typed) {
+        selectCountryByCode('', false);
+        return;
+      }
+      const matched = resolveCountryCode(typed);
+      if (matched) {
+        selectCountryByCode(matched, false);
+      } else if (countryInput.value && resolveCountryCode(countryInput.value)) {
+        countrySearch.value = countryDisplayName(countryInput.value);
+        refreshShippingQuote();
+      } else if (filteredCountries.length === 1) {
+        selectCountryByCode(filteredCountries[0].code, false);
+      } else {
+        countryInput.value = '';
+        saveCheckoutDraft({ country: '' });
+        refreshShippingQuote();
+      }
+    }, 150);
+  });
+
+  countryInput.addEventListener('change', () => {
+    const code = resolveCountryCode(countryInput.value);
+    if (code) {
+      countryInput.value = code;
+      if (countrySearch && document.activeElement !== countrySearch) {
+        countrySearch.value = countryDisplayName(code);
+      }
+      clearCountryError();
+      saveCheckoutDraft({ country: code });
+    } else {
+      countryInput.value = '';
+      if (countrySearch && document.activeElement !== countrySearch) countrySearch.value = '';
+      saveCheckoutDraft({ country: '' });
+    }
+    refreshShippingQuote();
+  });
+  countryInput.addEventListener('blur', refreshShippingQuote);
+
+  // Trigger initial shipping calculation if a country was restored from draft
+  if (savedCountryCode) {
+    refreshShippingQuote();
+  }
 
   // ---- Coupon ----
   const couponInput = document.getElementById('coCoupon');
@@ -1123,11 +1467,21 @@ function renderCheckoutPage(){
 
   // ---- Payment method toggle + real brand logos ----
   const payMethods = document.getElementById('payMethods');
+  if (draft.pay && ['stripe','paypal','mbway'].includes(draft.pay)) {
+    const savedRadio = payMethods.querySelector(`input[name="pay"][value="${draft.pay}"]`);
+    if (savedRadio) {
+      payMethods.querySelectorAll('input[name="pay"]').forEach(r => {
+        r.checked = (r === savedRadio);
+        r.closest('.method').classList.toggle('active', r === savedRadio);
+      });
+    }
+  }
   payMethods.querySelectorAll('input[name=pay]').forEach(r=>{
     if (r.checked) r.closest('.method').classList.add('active');
     r.addEventListener('change', ()=>{
       payMethods.querySelectorAll('.method').forEach(m=>m.classList.remove('active'));
       r.closest('.method').classList.add('active');
+      saveCheckoutDraft({ pay: r.value });
       updatePayArea(r.value);
     });
   });
@@ -1138,6 +1492,11 @@ function renderCheckoutPage(){
     const pa = document.getElementById('payArea');
     if (method==='mbway'){
       pa.innerHTML = `<div class="fld"><label for="mbwayPhone">${uiTxt('mbway_phone_hint')}</label><input type="tel" id="mbwayPhone" inputmode="tel" placeholder="+351 …"></div>`;
+      const mbwayInput = document.getElementById('mbwayPhone');
+      if (mbwayInput) {
+        if (typeof draft.mbwayPhone === 'string') mbwayInput.value = draft.mbwayPhone;
+        mbwayInput.addEventListener('input', () => saveCheckoutDraft({ mbwayPhone: mbwayInput.value }));
+      }
     } else {
       const cfg = CONFIG.payment && CONFIG.payment[method];
       pa.innerHTML = cfg && cfg.configured
@@ -1147,7 +1506,6 @@ function renderCheckoutPage(){
   }
 
   // ---- Submit + security ----
-  const form = document.getElementById('checkoutForm');
   form.addEventListener('submit', (e)=>{
     e.preventDefault();
     if (checkoutSubmitting) return; // block double submission
@@ -1187,12 +1545,18 @@ function paymentMethodHTML(m, idx){
 
 /* Validate the checkout form; attaches per-field errors and returns validity. */
 function validateCheckout(form){
+  const countryEl = form.querySelector('[name="country"]');
+  const searchEl = form.querySelector('#coCountrySearch');
+  if (countryEl && !resolveCountryCode(countryEl.value) && searchEl && resolveCountryCode(searchEl.value)) {
+    countryEl.value = resolveCountryCode(searchEl.value);
+    searchEl.value = countryDisplayName(countryEl.value);
+  }
   const checks = [
     ['email', v => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v), 'fld_email'],
     ['phone', v => v.trim().length >= 7, 'fld_required'],
     ['first', v => v.trim()!=='', 'fld_required'],
     ['last',  v => v.trim()!=='', 'fld_required'],
-    ['country', v => v.trim()!=='', 'fld_required'],
+    ['country', v => Boolean(resolveCountryCode(v)), 'fld_required'],
     ['address', v => v.trim()!=='', 'fld_required'],
     ['zip',   v => v.trim()!=='', 'fld_required'],
     ['city',  v => v.trim()!=='', 'fld_required'],
@@ -1203,22 +1567,24 @@ function validateCheckout(form){
     const errEl = form.querySelector('.ferr[data-for="'+name+'"]');
     const valid = input && test(input.value);
     if (input){ input.classList.toggle('invalid', !valid); input.setAttribute('aria-invalid', valid?'false':'true'); }
+    if (name === 'country' && searchEl){ searchEl.classList.toggle('invalid', !valid); searchEl.setAttribute('aria-invalid', valid?'false':'true'); }
     if (errEl){ errEl.textContent = valid ? '' : uiTxt(key); if (valid) errEl.removeAttribute('role'); else errEl.setAttribute('role','alert'); }
     if (!valid) ok = false;
   });
   return ok;
 }
 function focusFirstError(form){
-  const first = form.querySelector('.invalid, [aria-invalid="true"]');
-  if (first){ first.focus(); }
+  const first = form.querySelector('input:not([type="hidden"]).invalid, textarea.invalid, input:not([type="hidden"])[aria-invalid="true"], .invalid, [aria-invalid="true"]');
+  if (first && typeof first.focus === 'function'){ first.focus(); }
 }
 
 async function startStripeCheckout(customer, cart, note, btn){
   if (!CONFIG.stripeCheckoutURL) throw new Error('Stripe checkout is not configured');
+  const countryCode = resolveCountryCode(customer.country) || customer.country;
   const requestBody = {
     customer: {
       name:customer.name, email:customer.email, phone:customer.phone,
-      country:customer.country, address:[customer.address,customer.apt].filter(Boolean).join(', '),
+      country:countryCode, address:[customer.address,customer.apt].filter(Boolean).join(', '),
       city:customer.city, postalCode:customer.zip,
     },
     items:cart.map(i=>({handle:i.handle, options:i.opts, quantity:i.qty})),
@@ -1241,7 +1607,10 @@ async function startStripeCheckout(customer, cart, note, btn){
 function placeOrder(btn){
   const cur = 'EUR'; // settlement currency
   const cart = getCart();
-  const t = cartTotals(getAppliedCoupon());
+  const rawCountry = document.getElementById('coCountry').value.trim();
+  const countryCode = resolveCountryCode(rawCountry) || rawCountry;
+  const rate = shippingRateForCountry(countryCode);
+  const t = cartTotals(getAppliedCoupon(), rate ? rate.shippingCents / 100 : null);
   const method = (document.querySelector('input[name=pay]:checked')?.value) || 'pending';
   const mbwayPhone = document.getElementById('mbwayPhone')?.value || '';
   const coupon = getAppliedCoupon();
@@ -1249,7 +1618,7 @@ function placeOrder(btn){
     name: document.getElementById('coFirst').value.trim() + ' ' + document.getElementById('coLast').value.trim(),
     email: document.getElementById('coEmail').value.trim(),
     phone: document.getElementById('coPhone').value.trim(),
-    country: document.getElementById('coCountry').value.trim(),
+    country: countryCode,
     address: document.getElementById('coAddr').value.trim(),
     apt: document.getElementById('coApt').value.trim(),
     zip: document.getElementById('coZip').value.trim(),
@@ -1257,6 +1626,20 @@ function placeOrder(btn){
     district: document.getElementById('coDistrict').value.trim(),
     notes: document.getElementById('coNotes').value.trim(),
   };
+  saveCheckoutDraft({
+    first: document.getElementById('coFirst').value,
+    last: document.getElementById('coLast').value,
+    email: document.getElementById('coEmail').value,
+    phone: document.getElementById('coPhone').value,
+    country: countryCode,
+    address: document.getElementById('coAddr').value,
+    apt: document.getElementById('coApt').value,
+    zip: document.getElementById('coZip').value,
+    city: document.getElementById('coCity').value,
+    district: document.getElementById('coDistrict').value,
+    notes: document.getElementById('coNotes').value,
+    pay: method,
+  });
 
   const items = cart.map(i => ({ title:i.title, opts:i.opts, optionNames:i.optionNames, qty:i.qty, priceEur:i.priceEur, compareEur:i.compareEur }));
   const lines = cart.map(i =>
@@ -1264,8 +1647,8 @@ function placeOrder(btn){
   ).join('\n');
   const addressLine = [data.address, data.apt].filter(Boolean).join(', ') + ', ' + data.zip + ' ' + data.city + (data.district?', '+data.district:'') + (data.country?', '+data.country:'');
 
-  const shippingText = t.shippingKnown ? money(t.shipping,'EUR') : uiTxt('shipping_calc_checkout');
-  const totalText = t.shippingKnown ? money(t.totalFinal,'EUR') : uiTxt('shipping_calc_checkout');
+  const shippingText = t.shippingKnown ? money(t.shipping,'EUR') : (uiTxt('shipping_select_country') || uiTxt('shipping_calc_checkout'));
+  const totalText = t.shippingKnown ? money(t.totalFinal,'EUR') : (uiTxt('shipping_select_country') || uiTxt('shipping_calc_checkout'));
   const text = `NOVO PEDIDO DE PAGAMENTO (Asheerah Hair)\n${lines}${coupon?`\nCupom de embaixador: ${coupon.code}`:''}\n\nSubtotal original: ${money(t.subtotalOriginal,'EUR')}\nDesconto: −${money(t.totalDiscount,'EUR')}\nEnvio: ${shippingText}\nTOTAL ESTIMADO: ${totalText}\nMétodo preferido: ${method}${mbwayPhone?'\nTelemóvel MB Way: '+mbwayPhone:''}\n\nCliente: ${data.name}\nEmail: ${data.email}\nTelefone: ${data.phone}\nMorada: ${addressLine}${data.notes?'\nNotas: '+data.notes:''}`;
 
   const payload = {
