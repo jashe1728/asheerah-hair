@@ -145,9 +145,10 @@ function buildOrderRow_(body) {
     return it.title + ' x' + it.qty + ' (' + Object.values(it.opts||{}).filter(Boolean).join(',') + ')';
   }).join(' | ');
   var couponCode = String(body.coupon||'').trim().toUpperCase();
-  if (['ONIKA10','LILIAN10','TUCHA10','CASSIE10'].indexOf(couponCode) !== -1) {
+  if (couponCode && checkoutDiscountCents_(couponCode,Math.round(subtotal*100)) >= 0) {
     itemText = 'Ambassador coupon: ' + couponCode + (itemText ? ' | ' + itemText : '');
   }
+  if (body.fulfillmentMethod) itemText += ' | ' + checkoutFulfillmentText_(body.fulfillmentMethod);
   return [new Date(), orderNum, cust.name||'', cust.email||'', cust.phone||'', body.method||'',
           itemText, r2(subtotal), r2(shipping), r2(totalEur), r2(cogs), feeCell, profitCell];
 }
@@ -383,12 +384,17 @@ function recordStripePending_(payload) {
   var c=payload.customer||{};
   var orderId=String(payload.orderId||'');
   var expected=Number(payload.expectedTotalCents), subtotal=Number(payload.subtotalCents), shipping=Number(payload.shippingCents);
-  if (!/^[a-f0-9-]{36}$/i.test(orderId) || payload.currency!=='EUR' || !Number.isSafeInteger(expected) || expected<=0 || expected!==subtotal+shipping || !c.email || !c.name) return {ok:false,error:'Invalid pending order'};
+  var couponCode=String(payload.couponCode||'').trim().toUpperCase();
+  var discount=checkoutDiscountCents_(couponCode,subtotal);
+  var fulfillmentMethod=payload.fulfillmentMethod||'delivery';
+  if (discount<0 || (payload.discountCents!==undefined && Number(payload.discountCents)!==discount)) return {ok:false,error:'Invalid discount'};
+  if (['delivery','pickup'].indexOf(fulfillmentMethod)===-1 || (fulfillmentMethod==='pickup' && (c.country!=='PT' || shipping!==0))) return {ok:false,error:'Invalid fulfillment'};
+  if (!/^[a-f0-9-]{36}$/i.test(orderId) || payload.currency!=='EUR' || !Number.isSafeInteger(expected) || expected<=0 || !Number.isSafeInteger(subtotal) || subtotal<=0 || !Number.isSafeInteger(shipping) || shipping<0 || expected!==subtotal-discount+shipping || !c.email || !c.name) return {ok:false,error:'Invalid pending order'};
   var lock=LockService.getScriptLock(); lock.waitLock(10000);
   try {
     var sheet=stripePaymentsSheet_(), rows=sheet.getDataRange().getValues(), found=stripeOrderRow_(rows,orderId);
     if (found) return Math.round(Number(rows[found-1][10])*100)===expected ? {ok:true,duplicate:true} : {ok:false,error:'Order already exists with different amount'};
-    var address=[c.address,c.city,c.postalCode,c.country].filter(Boolean).join(', ');
+    var address=fulfillmentMethod==='pickup' ? checkoutFulfillmentText_('pickup') : [c.address,c.city,c.postalCode,c.country].filter(Boolean).join(', ');
     sheet.appendRow(['pending:'+orderId,orderId,'pending','','',safeCell_(c.email,254),safeCell_(c.phone,40),safeCell_(c.name,120),safeCell_(address,500),safeCell_(payload.itemsSummary,450),expected/100,'EUR',new Date()]);
     return {ok:true,saved:true};
   } finally { lock.releaseLock(); }
@@ -463,4 +469,13 @@ function authMail() {
   MailApp.sendEmail(Session.getActiveUser().getEmail(),
     'Asheerah Hair backend authorized',
     'MailApp is now authorized for the Asheerah Hair order backend.');
+}
+
+// Legacy codes remain readable for orders started before the coupon migration.
+function checkoutDiscountCents_(code, subtotal) {
+  var values={ONIKA01:700,LILIAN01:700,TUCHA01:700,CASSIE01:700,ONIKAAH:1500,LILIANAH:1500,TUCHAAH:1500,CASSIEAH:1500,ONIKA10:700,LILIAN10:700,TUCHA10:700,CASSIE10:700};
+  return code ? (Object.prototype.hasOwnProperty.call(values,code) ? Math.min(values[code],subtotal) : -1) : 0;
+}
+function checkoutFulfillmentText_(method) {
+  return method==='pickup' ? 'Pickup: Midana Beauty, Centro Comercial da Amadora; Rua Elias Garcia, n.º 229, 2700-319 Amadora, Portugal; 1.º andar, Loja E' : 'Home delivery';
 }

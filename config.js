@@ -16,12 +16,17 @@ window.CONFIG = {
   taxRate: 0,
 
   // Separate public code per ambassador, each with a €7 display discount.
-  // The checkout Worker validates the code and enforces its €7 value server-side.
+  // Personal codes offer a €15 discount.
+  // The checkout Worker validates the code and enforces its value server-side.
   coupons: {
-    ONIKA10: { type: 'fixed', value: 7, minSubtotalEur: 0 },
-    LILIAN10: { type: 'fixed', value: 7, minSubtotalEur: 0 },
-    TUCHA10: { type: 'fixed', value: 7, minSubtotalEur: 0 },
-    CASSIE10: { type: 'fixed', value: 7, minSubtotalEur: 0 },
+    ONIKA01: { type: 'fixed', value: 7, minSubtotalEur: 0 },
+    LILIAN01: { type: 'fixed', value: 7, minSubtotalEur: 0 },
+    TUCHA01: { type: 'fixed', value: 7, minSubtotalEur: 0 },
+    CASSIE01: { type: 'fixed', value: 7, minSubtotalEur: 0 },
+    ONIKAAH: { type: 'fixed', value: 15, minSubtotalEur: 0 },
+    LILIANAH: { type: 'fixed', value: 15, minSubtotalEur: 0 },
+    TUCHAAH: { type: 'fixed', value: 15, minSubtotalEur: 0 },
+    CASSIEAH: { type: 'fixed', value: 15, minSubtotalEur: 0 },
   },
 
   // ---- Payment methods ----

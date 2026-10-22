@@ -5,15 +5,15 @@ const vm = require('node:vm');
 const source = fs.readFileSync(require.resolve('../assets/js/app.js'), 'utf8');
 const fn = source.slice(source.indexOf('function placeOrder(btn)'), source.indexOf('function showOrderConfirmation('));
 
-function setup({method='orange_money', response={ok:true}, httpOk=true, reject=false}={}) {
+function setup({method='orange_money', response={ok:true}, httpOk=true, reject=false, country='PT', fulfillment='delivery', shipping=7.99}={}) {
   const calls={clear:0,confirm:0,stripe:0,fetch:0};
   const note={innerHTML:'',textContent:'',querySelector:()=>null};
   const cart=[{title:'Test item',opts:{length:'16'},qty:1,priceEur:100}];
   const c={
     CONFIG:{backendURL:'https://example.invalid/order',whatsapp:'351914522508'},
-    document:{getElementById:id=>id==='orderNote'?note:{value:id==='coCountry'?'PT':'Test'},querySelector:()=>({value:method})},
-    getCart:()=>cart, resolveCountryCode:()=> 'PT', shippingRateForCountry:()=>({shippingCents:599}),
-    getAppliedCoupon:()=>null,cartTotals:()=>({shippingKnown:true,shipping:5.99,totalFinal:105.99,subtotalOriginal:100,totalDiscount:0}),
+    document:{getElementById:id=>id==='orderNote'?note:{value:id==='coCountry'?country:'Test'},querySelector:s=>({value:s.includes('fulfillmentMethod')?fulfillment:method,checked:true})},
+    getCart:()=>cart, resolveCountryCode:()=> country, shippingRateForCountry:()=>({shippingCents:Math.round(shipping*100)}),
+    getAppliedCoupon:()=>null,cartTotals:()=>({shippingKnown:true,shipping,totalFinal:100+shipping,subtotalOriginal:100,totalDiscount:0}),
     saveCheckoutDraft(){},money:n=>String(n),uiTxt:k=>k,escapeHTML:s=>String(s),
     clearCart(){calls.clear++;},showOrderConfirmation(){calls.confirm++;},
     startStripeCheckout(){calls.stripe++;return Promise.resolve();},
@@ -45,4 +45,17 @@ test('obsolete and unknown payment choices cannot submit',()=>{
     const {c,calls,note}=setup({method});c.placeOrder({});
     assert.equal(calls.fetch,0);assert.equal(calls.stripe,0);assert.equal(note.textContent,'invalid_payment_method');
   }
+});
+
+test('Orange Money pickup transmits the fixed location and zero shipping without marking paid',async()=>{
+  const {c,calls}=setup({fulfillment:'pickup',shipping:0});c.placeOrder({});await new Promise(setImmediate);
+  assert.equal(calls.payload.fulfillmentMethod,'pickup');assert.equal(calls.payload.shippingEur,0);
+  assert.match(calls.payload.pickupLocation,/Midana Beauty/);assert.match(calls.payload.text,/Loja E/);
+  assert.equal(calls.payload.customer.city,'Amadora');assert.equal(calls.confirm,0);assert.equal(calls.clear,0);
+});
+
+test('international Orange Money delivery message uses the actual shipping charge',async()=>{
+  const {c,calls}=setup({country:'US',shipping:20});c.placeOrder({});await new Promise(setImmediate);
+  assert.equal(calls.payload.fulfillmentMethod,'delivery');assert.equal(calls.payload.shippingEur,20);
+  assert.match(calls.payload.text,/Envio: 20/);assert.doesNotMatch(calls.payload.text,/delivery_home_pt/);
 });

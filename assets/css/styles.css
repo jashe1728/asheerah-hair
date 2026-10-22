@@ -647,6 +647,25 @@ html.js .reveal.in{opacity:1;transform:none}
 .country-combobox-opt.selected{background:var(--gold-soft);font-weight:600}
 .country-combobox-opt .country-opt-code{font-size:.76rem;font-weight:700;color:var(--muted);letter-spacing:.05em}
 .country-combobox-empty{padding:.75rem;text-align:center;color:var(--muted);font-size:.88rem}
+
+/* ---- PT Fulfillment Method (Delivery vs Pickup) ---- */
+.co-fulfillment-group{border:none;padding:0;margin:0 0 1.2rem}
+.co-fulfillment-group[hidden]{display:none!important}
+.co-fulfillment-group legend{font-weight:600;font-size:.85rem;margin-bottom:.5rem;color:var(--ink-soft);font-family:inherit}
+.fulfillment-options{display:grid;grid-template-columns:1fr 1fr;gap:.75rem}
+@media(max-width:520px){.fulfillment-options{grid-template-columns:1fr}}
+.fulfillment-opt{display:flex;align-items:center;gap:.6rem;border:2px solid var(--border);border-radius:var(--r-md);padding:.85rem 1rem;cursor:pointer;background:var(--card);transition:.2s;font-size:.9rem;font-weight:600;color:var(--ink)}
+.fulfillment-opt:hover{border-color:var(--gold)}
+.fulfillment-opt.active{border-color:var(--gold);background:var(--gold-soft)}
+.fulfillment-opt input[type="radio"]{accent-color:var(--gold);width:16px;height:16px;margin:0;cursor:pointer}
+.pickup-location-card{margin-top:.75rem;padding:1rem 1.15rem;border:1.5px solid var(--gold);border-radius:var(--r-md);background:var(--ivory);box-shadow:0 4px 14px rgba(54,37,17,.04)}
+.pickup-location-card[hidden]{display:none!important}
+.pickup-badge{display:inline-block;font-size:.72rem;font-weight:700;letter-spacing:.05em;text-transform:uppercase;color:var(--gold-d);margin-bottom:.35rem}
+.pickup-name{font-size:.95rem;font-weight:700;color:var(--ink);margin-bottom:.25rem}
+.pickup-addr{font-size:.86rem;color:var(--ink-soft);margin-bottom:.15rem}
+.pickup-floor{font-size:.84rem;color:var(--muted);margin-bottom:.35rem}
+.pickup-cost{font-size:.85rem;font-weight:700;color:var(--gold-d)}
+.fld input:disabled,.fld textarea:disabled{background:rgba(0,0,0,.03);color:var(--muted);cursor:not-allowed;border-color:var(--border)}
 .co-summary .summary{position:sticky;top:100px}
 .co-summary .summary h2{font-size:1.3rem;margin-bottom:1rem;font-family:'Cormorant Garamond',serif;color:var(--ink)}
 .co-item{display:flex;gap:.8rem;padding:.7rem 0;border-bottom:1px solid var(--border);align-items:flex-start}
