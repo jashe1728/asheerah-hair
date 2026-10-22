@@ -31,6 +31,8 @@ var COST = {
 
 // Payment fees (per method): fixed EUR + % of total
 var FEES = {
+  // Owner confirmed no Orange Money fee; negligible withdrawal costs are excluded from this estimate.
+  'orange_money': { pct: 0, fixed: 0 },
   'stripe': { pct: 0.029, fixed: 0.30 },
   'paypal': { pct: 0.0349, fixed: 0.49 },
   'mbway':  { pct: 0.014,  fixed: 0.28 }
