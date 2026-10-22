@@ -1047,6 +1047,13 @@ function renderCheckoutPage(){
   }
 
   const draft = loadCheckoutDraft();
+  let activePay = draft.pay;
+  if (!activePay || ['paypal', 'mbway'].includes(activePay) || !['stripe', 'orange_money'].includes(activePay)) {
+    activePay = 'stripe';
+    if (draft.pay && draft.pay !== 'stripe') {
+      saveCheckoutDraft({ pay: 'stripe' });
+    }
+  }
   const savedCountryCode = resolveCountryCode(draft.country || '');
   const initialQuote = savedCountryCode ? shippingRateForCountry(savedCountryCode) : null;
   const t = cartTotals(getAppliedCoupon(), initialQuote ? initialQuote.shippingCents / 100 : null);
@@ -1112,7 +1119,7 @@ function renderCheckoutPage(){
         <legend>${uiTxt('payment_method')}</legend>
         <p class="payment-intro">${uiTxt('payment_choose')}</p>
         <div class="methods" id="payMethods">
-          ${['stripe','paypal','mbway'].map((m,idx)=> paymentMethodHTML(m,idx)).join('')}
+          ${['stripe','orange_money'].map((m,idx)=> paymentMethodHTML(m,idx,activePay)).join('')}
         </div>
         <div id="payArea" class="pay-area" aria-live="polite"></div>
       </fieldset>
@@ -1128,7 +1135,7 @@ function renderCheckoutPage(){
       </div>
 
       <p class="sec-note">${uiTxt('secure_checkout_note')}</p>
-      <button type="submit" id="placeOrderBtn" class="btn-primary co-submit">${uiTxt('place_order')}</button>
+      <button type="submit" id="placeOrderBtn" class="btn-primary co-submit">${activePay === 'orange_money' ? uiTxt('submit_om_request') : uiTxt('pay_with_stripe')}</button>
       <p id="orderNote" class="order-note" role="status"></p>
     </div>
 
@@ -1467,41 +1474,62 @@ function renderCheckoutPage(){
 
   // ---- Payment method toggle + real brand logos ----
   const payMethods = document.getElementById('payMethods');
-  if (draft.pay && ['stripe','paypal','mbway'].includes(draft.pay)) {
-    const savedRadio = payMethods.querySelector(`input[name="pay"][value="${draft.pay}"]`);
+  let currentPay = draft.pay;
+  if (!currentPay || ['paypal', 'mbway'].includes(currentPay) || !['stripe', 'orange_money'].includes(currentPay)) {
+    currentPay = 'stripe';
+    if (draft.pay && draft.pay !== 'stripe') {
+      saveCheckoutDraft({ pay: 'stripe' });
+    }
+  }
+  if (payMethods) {
+    const savedRadio = payMethods.querySelector(`input[name="pay"][value="${currentPay}"]`);
     if (savedRadio) {
       payMethods.querySelectorAll('input[name="pay"]').forEach(r => {
         r.checked = (r === savedRadio);
         r.closest('.method').classList.toggle('active', r === savedRadio);
       });
     }
-  }
-  payMethods.querySelectorAll('input[name=pay]').forEach(r=>{
-    if (r.checked) r.closest('.method').classList.add('active');
-    r.addEventListener('change', ()=>{
-      payMethods.querySelectorAll('.method').forEach(m=>m.classList.remove('active'));
-      r.closest('.method').classList.add('active');
-      saveCheckoutDraft({ pay: r.value });
-      updatePayArea(r.value);
+    payMethods.querySelectorAll('input[name=pay]').forEach(r => {
+      if (r.checked) r.closest('.method').classList.add('active');
+      r.addEventListener('change', () => {
+        payMethods.querySelectorAll('.method').forEach(m => m.classList.remove('active'));
+        r.closest('.method').classList.add('active');
+        saveCheckoutDraft({ pay: r.value });
+        updatePayArea(r.value);
+      });
     });
-  });
-  const payDefault = document.querySelector('input[name=pay]:checked') || document.querySelector('input[name=pay]');
+  }
+  const payDefault = (payMethods && payMethods.querySelector('input[name=pay]:checked')) || (payMethods && payMethods.querySelector('input[name=pay]'));
   if (payDefault) updatePayArea(payDefault.value);
 
   function updatePayArea(method){
     const pa = document.getElementById('payArea');
-    if (method==='mbway'){
-      pa.innerHTML = `<div class="fld"><label for="mbwayPhone">${uiTxt('mbway_phone_hint')}</label><input type="tel" id="mbwayPhone" inputmode="tel" placeholder="+351 …"></div>`;
-      const mbwayInput = document.getElementById('mbwayPhone');
-      if (mbwayInput) {
-        if (typeof draft.mbwayPhone === 'string') mbwayInput.value = draft.mbwayPhone;
-        mbwayInput.addEventListener('input', () => saveCheckoutDraft({ mbwayPhone: mbwayInput.value }));
-      }
+    if (!pa) return;
+    const btn = document.getElementById('placeOrderBtn');
+    if (method === 'orange_money') {
+      pa.innerHTML = `<div class="om-instructions-box">
+        <div class="om-details">
+          <div class="om-field">
+            <span class="om-label">${escapeHTML(uiTxt('om_recipient_name_label'))}:</span>
+            <span class="om-value" style="user-select:all;-webkit-user-select:all;">Ciara Ly</span>
+          </div>
+          <div class="om-field">
+            <span class="om-label">${escapeHTML(uiTxt('om_recipient_phone_label'))}:</span>
+            <span class="om-value" style="user-select:all;-webkit-user-select:all;">+245 95 734 21 44</span>
+          </div>
+        </div>
+        <div class="om-notice-banner">
+          <p class="om-notice"><strong>${escapeHTML(uiTxt('om_notice_warning'))}</strong></p>
+        </div>
+        <p class="om-desc">${escapeHTML(uiTxt('om_instructions'))}</p>
+      </div>`;
+      if (btn) btn.textContent = uiTxt('submit_om_request');
     } else {
-      const cfg = CONFIG.payment && CONFIG.payment[method];
-      pa.innerHTML = cfg && cfg.configured
-        ? `<p class="pay-ready">${method==='stripe'?uiTxt('pay_card'):uiTxt('pay_paypal')}</p>`
-        : `<p class="pay-pending">${uiTxt('pay_config_note')}</p>`;
+      pa.innerHTML = `<div class="stripe-info">
+        <p class="pay-ready">${escapeHTML(uiTxt('pay_stripe_desc'))}</p>
+        <p class="pay-qualifier">${escapeHTML(uiTxt('pay_stripe_qualifications'))}</p>
+      </div>`;
+      if (btn) btn.textContent = uiTxt('pay_with_stripe');
     }
   }
 
@@ -1520,24 +1548,27 @@ function renderCheckoutPage(){
   // restore submitted state in case of re-render
   if (getAppliedCoupon()){ /* coupon UI already handled above */ }
 }
-function paymentMethodHTML(m, idx){
+function paymentMethodHTML(m, idx, activeMethod){
   const cfg = CONFIG.payment && CONFIG.payment[m];
   const configured = !!(cfg && cfg.configured);
-  const labels = { stripe:'pay_card', paypal:'pay_paypal', mbway:'pay_mbway' };
-  const descriptions = { stripe:'pay_card_desc', paypal:'pay_paypal_desc', mbway:'pay_mbway_desc' };
+  const labels = { stripe:'pay_stripe', orange_money:'pay_orange_money' };
+  const descriptions = { stripe:'pay_stripe_desc', orange_money:'pay_orange_money_desc' };
   const logos = {
     stripe: `<span class="pay-logo card-logos" aria-hidden="true"><svg viewBox="0 0 48 32"><rect x="1" y="1" width="46" height="30" rx="5"/><path d="M8 11h32M8 17h12"/></svg><span class="visa">VISA</span><span class="mc">●●</span></span>`,
+    orange_money: `<span class="pay-logo om-logo" aria-hidden="true"><svg viewBox="0 0 32 32" width="28" height="28"><rect width="32" height="32" rx="6" fill="#ff7900"/><path d="M9 16a7 7 0 1 1 14 0 7 7 0 0 1-14 0z" fill="#fff"/></svg></span>`,
     paypal: `<span class="pay-logo paypal-logo" aria-hidden="true"><svg viewBox="0 0 24 30"><path d="M5 28 9 3h7c5 0 7 2 6 6-1 5-5 7-10 7h-2l-2 12Z"/><path d="M9 22h5c4 0 6-2 7-6"/></svg><span>Pay<span>Pal</span></span></span>`,
     mbway: `<span class="pay-logo mbway-logo" aria-hidden="true"><svg viewBox="0 0 22 30"><rect x="2" y="1" width="18" height="28" rx="4"/><circle cx="11" cy="25" r="1"/><path d="m7 9 3 3 5-5M7 18h8"/></svg><span>MB<span>WAY</span></span></span>`,
   };
-  return `<label class="method${idx===0?' active':''}${configured?' is-ready':''}">
-    <input type="radio" name="pay" value="${m}"${idx===0?' checked':''}>
+  const isChecked = activeMethod ? (m === activeMethod) : (idx === 0);
+  const tagText = configured ? uiTxt('pay_ready') : (cfg && cfg.manual ? uiTxt('pay_manual_pending') : uiTxt('pay_preview'));
+  return `<label class="method${isChecked ? ' active' : ''}${configured ? ' is-ready' : ''}">
+    <input type="radio" name="pay" value="${m}"${isChecked ? ' checked' : ''}>
     <span class="m-radio"></span>
-    ${logos[m]}
+    ${logos[m] || ''}
     <span class="m-body">
-      <span class="m-name">${uiTxt(labels[m])}</span>
-      <span class="m-sub">${uiTxt(descriptions[m])}</span>
-      <span class="m-pending-tag">${configured ? uiTxt('pay_ready') : uiTxt('pay_preview')}</span>
+      <span class="m-name">${uiTxt(labels[m] || m)}</span>
+      <span class="m-sub">${uiTxt(descriptions[m] || m)}</span>
+      <span class="m-pending-tag">${tagText}</span>
     </span>
     <span class="method-chevron" aria-hidden="true">›</span>
   </label>`;
@@ -1611,8 +1642,23 @@ function placeOrder(btn){
   const countryCode = resolveCountryCode(rawCountry) || rawCountry;
   const rate = shippingRateForCountry(countryCode);
   const t = cartTotals(getAppliedCoupon(), rate ? rate.shippingCents / 100 : null);
-  const method = (document.querySelector('input[name=pay]:checked')?.value) || 'pending';
-  const mbwayPhone = document.getElementById('mbwayPhone')?.value || '';
+  const method = (document.querySelector('input[name=pay]:checked')?.value) || '';
+  const note = document.getElementById('orderNote');
+
+  // In placeOrder allow only stripe or orange_money.
+  if (method !== 'stripe' && method !== 'orange_money') {
+    if (note) {
+      note.textContent = uiTxt('invalid_payment_method');
+      note.className = 'order-note error';
+    }
+    if (btn) {
+      btn.disabled = false;
+      btn.textContent = uiTxt('place_order');
+    }
+    checkoutSubmitting = false;
+    return;
+  }
+
   const coupon = getAppliedCoupon();
   const data = {
     name: document.getElementById('coFirst').value.trim() + ' ' + document.getElementById('coLast').value.trim(),
@@ -1649,12 +1695,13 @@ function placeOrder(btn){
 
   const shippingText = t.shippingKnown ? money(t.shipping,'EUR') : (uiTxt('shipping_select_country') || uiTxt('shipping_calc_checkout'));
   const totalText = t.shippingKnown ? money(t.totalFinal,'EUR') : (uiTxt('shipping_select_country') || uiTxt('shipping_calc_checkout'));
-  const text = `NOVO PEDIDO DE PAGAMENTO (Asheerah Hair)\n${lines}${coupon?`\nCupom de embaixador: ${coupon.code}`:''}\n\nSubtotal original: ${money(t.subtotalOriginal,'EUR')}\nDesconto: −${money(t.totalDiscount,'EUR')}\nEnvio: ${shippingText}\nTOTAL ESTIMADO: ${totalText}\nMétodo preferido: ${method}${mbwayPhone?'\nTelemóvel MB Way: '+mbwayPhone:''}\n\nCliente: ${data.name}\nEmail: ${data.email}\nTelefone: ${data.phone}\nMorada: ${addressLine}${data.notes?'\nNotas: '+data.notes:''}`;
+  const methodLabel = method === 'orange_money' ? uiTxt('pay_orange_money') : uiTxt('pay_stripe');
+  const text = `NOVO PEDIDO DE PAGAMENTO (Asheerah Hair)\n${lines}${coupon?`\nCupom de embaixador: ${coupon.code}`:''}\n\nSubtotal original: ${money(t.subtotalOriginal,'EUR')}\nDesconto: −${money(t.totalDiscount,'EUR')}\nEnvio: ${shippingText}\nTOTAL ESTIMADO: ${totalText}\nMétodo preferido: ${methodLabel}\n\nCliente: ${data.name}\nEmail: ${data.email}\nTelefone: ${data.phone}\nMorada: ${addressLine}${data.notes?'\nNotas: '+data.notes:''}`;
 
   const payload = {
     type:'order',
     text,
-    method, mbwayPhone,
+    method,
     items,
     subtotalEur: t.subtotalOriginal,
     shippingEur: t.shippingKnown ? t.shipping : null,
@@ -1663,38 +1710,75 @@ function placeOrder(btn){
     coupon: coupon ? coupon.code : null,
     currency:'EUR',
     customer: data,
-    // Values below are what the browser computed. The backend MUST re-validate
-    // prices server-side before treating the order as paid. This frontend value
-    // is informational only and never authoritative.
     clientComputed:{ subtotalOriginalEur:t.subtotalOriginal, totalDiscountEur:t.totalDiscount, totalFinalEur:t.shippingKnown?t.totalFinal:null },
   };
 
-  const note = document.getElementById('orderNote');
+  // Preserve Stripe flow unchanged.
   if (method === 'stripe') {
     startStripeCheckout(data, cart, note, btn).catch(err=>{
       if (note){ note.textContent = err.message; note.className='order-note error'; }
-      if (btn){ btn.textContent = uiTxt('place_order'); btn.disabled = false; }
+      if (btn){ btn.textContent = uiTxt('pay_with_stripe'); btn.disabled = false; }
       checkoutSubmitting = false;
     });
     return;
   }
+
+  // Orange Money flow
+  const waUrl = `https://wa.me/${CONFIG.whatsapp}?text=${encodeURIComponent(text)}`;
+
+  function attachHandoffListener(){
+    if (!note) return;
+    const waLink = note.querySelector('#omWaBtn');
+    if (waLink) {
+      waLink.addEventListener('click', () => {
+        const info = note.querySelector('.om-note-info');
+        if (info) info.textContent = uiTxt('om_handoff_opened');
+      });
+    }
+  }
+
   const fallback = () => {
-    window.open(`https://wa.me/${CONFIG.whatsapp}?text=${encodeURIComponent(text)}`,'_blank');
-    if (note){ note.textContent = uiTxt('order_saved_confirm'); note.className='order-note ok'; }
-    if (btn){ btn.textContent = uiTxt('place_order'); btn.disabled = false; }
+    window.open(waUrl, '_blank');
+    if (note) {
+      note.className = 'order-note ok';
+      note.innerHTML = `<span class="om-note-info">${escapeHTML(uiTxt('om_handoff_opened'))}</span> <a href="${waUrl}" target="_blank" rel="noopener noreferrer" class="btn-secondary om-wa-btn" id="omWaBtn">${escapeHTML(uiTxt('om_open_whatsapp'))}</a>`;
+      attachHandoffListener();
+    }
+    if (btn) { btn.textContent = uiTxt('submit_om_request'); btn.disabled = false; }
     checkoutSubmitting = false;
   };
 
-  if (CONFIG.backendURL){
-    fetch(CONFIG.backendURL, { method:'POST', headers:{'Content-Type':'text/plain;charset=utf-8'}, body: JSON.stringify(payload) })
-      .then(r=>r.json())
-      .then(d=>{
-        if (note){ note.textContent = d && d.ok ? uiTxt('order_saved_confirm') : uiTxt('order_saved_confirm'); note.className='order-note ok'; }
-        // Order recorded server-side — clear the cart and show confirmation.
-        clearCart();
-        showOrderConfirmation(payload, text);
+  if (CONFIG.backendURL) {
+    fetch(CONFIG.backendURL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+      body: JSON.stringify(payload)
+    })
+      .then(r => {
+        if (!r.ok) throw new Error('Request could not be recorded');
+        return r.json();
       })
-      .catch(fallback);
+      .then(d => {
+        if (!d || !d.ok) {
+          throw new Error('Server returned non-ok response');
+        }
+        if (note) {
+          note.className = 'order-note ok';
+          note.innerHTML = `<span class="om-note-info">${escapeHTML(uiTxt('om_request_recorded'))} ${escapeHTML(uiTxt('om_cart_retained'))}</span> <a href="${waUrl}" target="_blank" rel="noopener noreferrer" class="btn-secondary om-wa-btn" id="omWaBtn">${escapeHTML(uiTxt('om_open_whatsapp'))}</a>`;
+          attachHandoffListener();
+        }
+        if (btn) { btn.textContent = uiTxt('submit_om_request'); btn.disabled = false; }
+        checkoutSubmitting = false;
+      })
+      .catch(() => {
+        if (note) {
+          note.className = 'order-note error';
+          note.innerHTML = `<span class="om-note-info">${escapeHTML(uiTxt('om_record_failed'))}</span> <a href="${waUrl}" target="_blank" rel="noopener noreferrer" class="btn-secondary om-wa-btn" id="omWaBtn">${escapeHTML(uiTxt('om_open_whatsapp'))}</a>`;
+          attachHandoffListener();
+        }
+        if (btn) { btn.textContent = uiTxt('submit_om_request'); btn.disabled = false; }
+        checkoutSubmitting = false;
+      });
   } else {
     fallback();
   }

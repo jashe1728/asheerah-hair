@@ -27,12 +27,11 @@ window.CONFIG = {
   // ---- Payment methods ----
   // `configured:true` means a REAL processor integration is wired up and the
   // frontend can present it as functional. Leave false until actually integrated.
-  // `accepted` lists the card brands actually accepted by the Stripe account.
+  // Listed Stripe methods depend on account enablement and customer eligibility.
   // Frontend payment methods.
   payment: {
-    stripe: { configured: true, accepted: ['visa', 'mastercard'] },
-    paypal: { configured: false },
-    mbway: { configured: false },
+    stripe: { configured: true, accepted: ['visa', 'mastercard', 'apple_pay', 'mbway', 'klarna'] },
+    orange_money: { configured: false, manual: true },
   },
 
   // ---- Business contact ----
@@ -49,8 +48,4 @@ window.CONFIG = {
   // Public Worker endpoint/site key only; server-side secrets stay in Worker config.
   reviewAPIURL: '',
   reviewTurnstileSiteKey: '',
-  // PayPal: Developer → Apps & Credentials → Client ID
-  paypalClientId: '',
-  // MB Way: handled via Stripe (if enabled) or a MONEI key. Leave '' to use WhatsApp fallback.
-  mbwayKey: '',
 };

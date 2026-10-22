@@ -135,7 +135,8 @@ function buildOrderRow_(body) {
   var shipping = Number(body.shippingEur) || 0;
   var cogs = cogsFor_(body.items);
   var fee = feeFor_(body.method, totalEur);
-  var profit = totalEur - cogs - fee;
+  var feeCell = (typeof fee === 'number' && !isNaN(fee)) ? r2(fee) : '';
+  var profitCell = (typeof fee === 'number' && !isNaN(fee)) ? r2(totalEur - cogs - fee) : '';
   var cust = body.customer || {};
   var orderNum = 'ASH-' + Utilities.formatDate(new Date(), Session.getScriptTimeZone(), 'yyyyMMdd-HHmmss');
   var itemText = (body.items||[]).map(function(it){
@@ -146,7 +147,7 @@ function buildOrderRow_(body) {
     itemText = 'Ambassador coupon: ' + couponCode + (itemText ? ' | ' + itemText : '');
   }
   return [new Date(), orderNum, cust.name||'', cust.email||'', cust.phone||'', body.method||'',
-          itemText, r2(subtotal), r2(shipping), r2(totalEur), r2(cogs), r2(fee), r2(profit)];
+          itemText, r2(subtotal), r2(shipping), r2(totalEur), r2(cogs), feeCell, profitCell];
 }
 
 /** Compute Cost of Goods Sold (EUR) for a list of cart items. */
@@ -204,8 +205,8 @@ function weight100_(opt2) {
 }
 
 function feeFor_(method, totalEur) {
-  if (method === 'pending') return 0;
-  var f = FEES[method] || FEES.mbway;
+  var f = FEES[method];
+  if (!f) return null;
   return r2(totalEur * f.pct + f.fixed);
 }
 

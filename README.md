@@ -21,7 +21,7 @@ reference snapshot, not the current import source.
 - `shop.html` — product grid (filter by `?cat=wigs|bundles|crochet`)
 - `product.html` — product detail (`?h=<handle>`)
 - `cart.html` — cart
-- `checkout.html` — Stripe / PayPal / MB Way checkout
+- `checkout.html` — Stripe / pending Orange Money checkout
 - `faq.html` — full FAQ + chatbot
 - `pages/` — about, contact, shipping, returns, privacy, terms
 
