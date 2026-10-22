@@ -1555,12 +1555,12 @@ function paymentMethodHTML(m, idx, activeMethod){
   const descriptions = { stripe:'pay_stripe_desc', orange_money:'pay_orange_money_desc' };
   const logos = {
     stripe: `<span class="pay-logo card-logos" aria-hidden="true"><svg viewBox="0 0 48 32"><rect x="1" y="1" width="46" height="30" rx="5"/><path d="M8 11h32M8 17h12"/></svg><span class="visa">VISA</span><span class="mc">●●</span></span>`,
-    orange_money: `<span class="pay-logo om-logo" aria-hidden="true"><svg viewBox="0 0 32 32" width="28" height="28"><rect width="32" height="32" rx="6" fill="#ff7900"/><path d="M9 16a7 7 0 1 1 14 0 7 7 0 0 1-14 0z" fill="#fff"/></svg></span>`,
+    orange_money: `<span class="pay-logo om-logo" aria-hidden="true"><img src="assets/img/orange-money-logo.png" alt="" width="500" height="336"></span>`,
     paypal: `<span class="pay-logo paypal-logo" aria-hidden="true"><svg viewBox="0 0 24 30"><path d="M5 28 9 3h7c5 0 7 2 6 6-1 5-5 7-10 7h-2l-2 12Z"/><path d="M9 22h5c4 0 6-2 7-6"/></svg><span>Pay<span>Pal</span></span></span>`,
     mbway: `<span class="pay-logo mbway-logo" aria-hidden="true"><svg viewBox="0 0 22 30"><rect x="2" y="1" width="18" height="28" rx="4"/><circle cx="11" cy="25" r="1"/><path d="m7 9 3 3 5-5M7 18h8"/></svg><span>MB<span>WAY</span></span></span>`,
   };
   const isChecked = activeMethod ? (m === activeMethod) : (idx === 0);
-  const tagText = configured ? uiTxt('pay_ready') : (cfg && cfg.manual ? uiTxt('pay_manual_pending') : uiTxt('pay_preview'));
+  const tagText = configured ? uiTxt('pay_ready') : (cfg && cfg.manual ? uiTxt('pay_manual_transfer') : uiTxt('pay_preview'));
   return `<label class="method${isChecked ? ' active' : ''}${configured ? ' is-ready' : ''}">
     <input type="radio" name="pay" value="${m}"${isChecked ? ' checked' : ''}>
     <span class="m-radio"></span>
