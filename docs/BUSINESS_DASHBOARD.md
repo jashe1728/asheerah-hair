@@ -18,6 +18,8 @@ Orange Money receipt confirmation requires a reference, explicit acknowledgement
 
 Only paid orders can progress: new → sent to supplier → supplier accepted → courier received → delivered. Pickup instead uses ready for collection → collected after supplier acceptance. The operator sends the supplier summary manually, then registers that it was sent. No message is automatically sent to the supplier, courier or customer by these workflow buttons.
 
+Orders before the configured MANAGEMENT_HISTORY_CUTOFF have an unknown initial fulfillment state. They require an operator to confirm the prior state against their records, with an observation, before supplier export/progression is offered. They are not silently treated as new unfulfilled orders. Existing explicitly saved operations remain authoritative.
+
 The supplier summary contains the order reference, items/options, destination name, phone and delivery address. It omits retail prices and customer email. CSV cells escape quotes and neutralize formula prefixes. Downloads contain personal data and should only be shared with the responsible recipient.
 
 Confirmations require acknowledgement. Concurrent edits require refresh rather than silently overwriting another operator. There is no delete, refund, financial reversal or fulfillment rollback in v1; the owner can request a correction workflow next.
@@ -54,10 +56,10 @@ Routes: /gestao* and /management-api/* on the existing Worker. No payment secret
 
 ## Verification and remaining acceptance
 
-154 Node tests pass, including existing checkout/email regressions and new auth, replay/concurrency, expiry, allowlist, CSRF, workflow/payment gating, pickup, archival retention, test exclusion, export privacy, CSV formula handling and page-header checks. Wrangler dry-run bundles successfully.
+155 Node tests pass, including existing checkout/email regressions and new auth, replay/concurrency, expiry, allowlist, CSRF, workflow/payment gating, historical classification, pickup, archival retention, test exclusion, export privacy, CSV formula handling and page-header checks. Wrangler dry-run bundles successfully.
 
 The local synthetic preview was exercised through receipt confirmation, supplier handoff, supplier acceptance, courier tracking, note persistence, search, summary copy/download button behavior, and desktop/phone layout. The supplier summary's contents are tested directly; a browser automation download-event wait was unavailable, so a saved downloaded artifact was not independently inspected.
 
-Production deployment and live unauthenticated rejection should be recorded below when complete. Full sign-in acceptance requires an authorized user to receive their email code and open the live app. No live order should be altered merely to test the workflow; use a separately agreed staging record if an actual server mutation test is needed. Older accounting history, refunds/fees/profit, correction controls and Orange Money accounting synchronization remain follow-up work.
+The dashboard was published and the live API rejected missing/forged sessions, unlisted-account verification and cross-origin sign-in. The live page returned CSP/frame-denial/no-store headers and had no browser console errors. Shelton confirmed successful live sign-in using his inbox code on 23 October 2026. No real order was modified for testing. Older accounting history, refunds/fees/profit, correction controls and Orange Money accounting synchronization remain follow-up work.
 
 Authentication design reference: https://cheatsheetseries.owasp.org/cheatsheets/Forgot_Password_Cheat_Sheet.html (random, expiring, single-use codes and request/attempt limits).

@@ -42,6 +42,14 @@ test('concurrent edits and oversized notes are rejected',()=>{
  const saved=dashboard.applyAction(o,op,{version:0,action:'note',notes:'Supplier follow-up'},'owner@example.com');assert.equal(saved.notes,'Supplier follow-up');assert.equal(saved.stage,'new');
 });
 test('dashboard responses omit provider/session identifiers',()=>{const safe=dashboard.safeOrder(order());for(const key of ['sessionId','requestDigest','emailProviderId'])assert.equal(safe[key],undefined);});
+test('older imported orders require an explicit initial-state confirmation before supplier handoff',()=>{
+ const o=order(),env={MANAGEMENT_HISTORY_CUTOFF:'2026-10-23T13:00:00Z'},op=dashboard.blankOperations(o,env);assert.equal(op.stage,'needs_review');
+ assert.throws(()=>dashboard.applyAction(o,op,{action:'supplier_sent',version:0,acknowledged:true},'owner@example.com'),/próximo passo/);
+ assert.throws(()=>dashboard.applyAction(o,op,{action:'classify_history',stage:'delivered',version:0,acknowledged:true,reference:''},'owner@example.com'),/estado real/);
+ const confirmed=dashboard.applyAction(o,op,{action:'classify_history',stage:'delivered',version:0,acknowledged:true,reference:'Confirmed against prior delivery record'},'owner@example.com');assert.equal(confirmed.stage,'delivered');assert.equal(confirmed.events[0].stage,'delivered');
+ assert.equal(dashboard.blankOperations({...o,createdAt:'2026-10-23T14:00:00Z'},env).stage,'new');
+ assert.equal(dashboard.safeOrder(o,null,env).operations.stage,'needs_review');
+});
 test('dashboard page proxy prevents framing and never forwards credentials to static hosting',async()=>{
  const original=global.fetch;global.fetch=async(url,opts)=>{assert.equal(url,'https://jashe1728.github.io/asheerah-hair/gestao/');assert.equal(opts.headers,undefined);return new Response('<html></html>',{headers:{'content-type':'text/html'}});};
  try{const response=await dashboard.handlePage(new Request('https://asheerahhair.com/gestao/',{headers:{Cookie:'private-cookie'}}));assert.equal(response.status,200);assert.equal(response.headers.get('x-frame-options'),'DENY');assert.match(response.headers.get('content-security-policy'),/frame-ancestors 'none'/);assert.equal(response.headers.get('cache-control'),'no-store');}finally{global.fetch=original;}

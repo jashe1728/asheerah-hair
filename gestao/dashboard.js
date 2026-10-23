@@ -6,9 +6,10 @@ const date=s=>s?new Date(s).toLocaleString('pt-PT',{day:'2-digit',month:'short',
 const demo=['127.0.0.1','localhost'].includes(location.hostname)&&new URLSearchParams(location.search).get('demo')==='1';
 const DEMO_KEY='asheerah-management-demo-v1';
 const state={orders:[],view:'overview',selected:null,cursor:null,busy:false,pendingAction:null,challenge:null};
-const stageLabels={new:'Enviar ao fornecedor',supplier_sent:'Aguardar fornecedor',supplier_accepted:'Aguardar transportadora',courier_accepted:'Com a transportadora',pickup_ready:'Pronta para recolha',delivered:'Concluída'};
+const stageLabels={needs_review:'Confirmar estado anterior',new:'Enviar ao fornecedor',supplier_sent:'Aguardar fornecedor',supplier_accepted:'Aguardar transportadora',courier_accepted:'Com a transportadora',pickup_ready:'Pronta para recolha',delivered:'Concluída'};
 const actionLabels={confirm_payment:'Pagamento confirmado manualmente',supplier_sent:'Pedido enviado ao fornecedor',supplier_accepted:'Fornecedor aceitou o pedido',courier_accepted:'Transportadora recebeu a encomenda',pickup_ready:'Encomenda pronta para recolha',delivered:'Entrega / recolha confirmada',note:'Nota interna guardada'};
 const actionCopy={
+ classify_history:['Confirmar estado de pedido anterior','Este pedido já existia antes da área de gestão. Consulta os teus registos antes de indicar o estado atual.','Verifiquei o estado real deste pedido nos meus registos.'],
  confirm_payment:['Confirmar pagamento Orange Money','Confirma apenas depois de verificares que o valor integral entrou na conta. Este registo manual fica identificado no histórico.','Verifiquei a receção do valor total desta encomenda.'],
  supplier_sent:['Já enviaste o pedido ao fornecedor?','Primeiro descarrega o resumo e envia-o pelo canal habitual. Este botão regista que o envio foi feito por ti.','Já enviei o pedido ao fornecedor.'],
  supplier_accepted:['O fornecedor confirmou?','Regista a resposta do fornecedor. A aceitação do pedido ainda não significa que a transportadora recebeu a encomenda.','Recebi a confirmação de aceitação do fornecedor.'],
@@ -16,6 +17,8 @@ const actionCopy={
  pickup_ready:['Pronta para recolha','Confirma que a encomenda está disponível na loja e que avisaste a cliente pelo teu canal habitual.','A encomenda está na loja e já avisei a cliente.'],
  delivered:['Concluir encomenda','Regista a entrega ou recolha apenas depois de receberes a respetiva confirmação.','Confirmei que a cliente recebeu ou recolheu a encomenda.']
 };
+actionLabels.classify_history='Estado anterior confirmado';
+actionLabels.needs_review='Pedido anterior a rever';
 function paid(o){return o.status==='paid'||!!o.operations?.paymentConfirmation;}
 function stage(o){return o.operations?.stage||'new';}
 function incomplete(o){return ['pending_checkout','checkout_failed','expired','payment_failed'].includes(o.status)&&!paid(o);}
@@ -28,7 +31,7 @@ function saveDemo(){localStorage.setItem(DEMO_KEY,JSON.stringify(state.orders));
 function initialDemo(){
  const now=Date.now(),stamp=days=>new Date(now-days*86400000).toISOString();
  const products=[['X_Onika Ginger Bombshell','assets/img/x-onika-ginger-bombshell-1.png',29999,'26″ · 13x4 HD · 200% · M'],['Chocolate Caramel Highlight Wig','assets/img/chocolate-caramel-highlight-wig-1.jpeg',25599,'20″ · 5x5 HD · 200% · M'],['Burmese Curly Bundles','assets/img/burmese-curly-bundles-model-1.jpeg',15299,'18″ · 300 g'],['Pixie Curly Bundles','assets/img/pixie-curly-bundles-1.webp',15299,'16″ · 300 g']];
- const stages=['new','new','supplier_sent','supplier_accepted','courier_accepted','delivered','new','pickup_ready'];
+ const stages=['new','new','needs_review','supplier_accepted','courier_accepted','delivered','new','pickup_ready'];
  return ['Inês Exemplo','Marta Exemplo','Ciara Exemplo','Diana Exemplo','Sofia Exemplo','Ana Exemplo','Lara Exemplo','Rita Exemplo'].map((name,i)=>{
   const [title,image,unitCents,variant]=products[i%4],pickup=i===7,method=i===1?'orange_money':'stripe',status=i===1?'awaiting_payment':i===6?'pending_checkout':'paid';
   return {id:`00000000-0000-4000-8000-${String(i+1).padStart(12,'0')}`,createdAt:stamp(i*.5),language:'pt',method,status,customer:{name,email:`cliente${i+1}@example.com`,phone:'+351 000 000 000',country:i===1?'GW':'PT',address:'Morada fictícia para demonstração',city:i===1?'Bissau':'Lisboa',postalCode:'0000-000'},items:[{title,image,qty:1,unitCents,variant}],subtotalCents:unitCents,discountCents:0,shippingCents:pickup?0:799,totalCents:unitCents+(pickup?0:799),fulfillmentMethod:pickup?'pickup':'delivery',fulfillmentAddress:pickup?'Midana Beauty · Rua Elias Garcia, 229, 1.º andar, Loja E, Amadora':'Morada fictícia para demonstração',operations:{version:0,stage:stages[i],notes:i===2?'Confirmar disponibilidade antes de preparar.':'',tracking:i===4?'EXEMPLO-12345':'',events:i>1&&i!==6?[{action:stages[i],at:stamp(i*.5-.1),by:'Equipa · demonstração',reference:'Exemplo de confirmação'}]:[]}};
@@ -61,7 +64,7 @@ function filterOrders(){const q=$('search').value.toLocaleLowerCase('pt'),f=$('s
  if(state.view==='shipping'&&!paid(o))return false;
  if(f==='unpaid')return !paid(o)&&!incomplete(o);if(f==='incomplete')return incomplete(o);if(f!=='all')return paid(o)&&stage(o)===f;return true;
  }).sort((a,b)=>{
-  const priority=o=>incomplete(o)?6:!paid(o)?1:({new:0,supplier_accepted:2,supplier_sent:3,pickup_ready:3,courier_accepted:4,delivered:5})[stage(o)]??6;
+  const priority=o=>incomplete(o)?6:!paid(o)?1:({new:0,needs_review:2,supplier_accepted:2,supplier_sent:3,pickup_ready:3,courier_accepted:4,delivered:5})[stage(o)]??6;
   return (state.view==='overview'?priority(a)-priority(b):0)||Date.parse(b.createdAt)-Date.parse(a.createdAt);
  });}
 function render(){
@@ -80,16 +83,32 @@ function renderDetail(){
  const o=state.orders.find(o=>o.id===state.selected);if(!o)return;const op=o.operations||{},s=stage(o),isPaid=paid(o),pickup=o.fulfillmentMethod==='pickup';
  const steps=[['payment','Pagamento confirmado'],['supplier_sent','Pedido enviado ao fornecedor'],['supplier_accepted','Fornecedor aceitou'],[pickup?'pickup_ready':'courier_accepted',pickup?'Disponível para recolha':'Entregue à transportadora'],['delivered',pickup?'Recolha confirmada':'Entrega confirmada']];
  const current=steps.findIndex(([key])=>key===s),done=i=>i===0?isPaid:i<=current;
- let action=!isPaid?(o.method==='orange_money'&&!incomplete(o)?'confirm_payment':null):({new:'supplier_sent',supplier_sent:'supplier_accepted',supplier_accepted:pickup?'pickup_ready':'courier_accepted',courier_accepted:'delivered',pickup_ready:'delivered'})[s];
+ let action=!isPaid?(o.method==='orange_money'&&!incomplete(o)?'confirm_payment':null):({needs_review:'classify_history',new:'supplier_sent',supplier_sent:'supplier_accepted',supplier_accepted:pickup?'pickup_ready':'courier_accepted',courier_accepted:'delivered',pickup_ready:'delivered'})[s];
  $('detail').innerHTML=`<div class="detail-header"><h2 id="detailTitle">${esc(o.customer.name)}</h2><p>Encomenda #${esc(o.id.slice(-8).toUpperCase())} · ${date(o.createdAt)}</p><div class="detail-badges">${paymentBadge(o)}<span class="badge neutral">${pickup?'Recolha na loja':'Entrega'}</span></div></div><section class="detail-section"><h3>O próximo passo</h3>${steps.map(([key,label],i)=>`<div class="step ${done(i)?'done':''}"><span class="step-number">${done(i)?'✓':i+1}</span><div><strong>${label}</strong><small>${i===0?o.method==='orange_money'?'Recebimento verificado pela equipa':'Confirmação automática do pagamento online':key==='courier_accepted'?'Confirmação recebida fora da plataforma':key==='supplier_sent'?'Contacto manual com o fornecedor':''}</small></div></div>`).join('')}${!isPaid?`<p class="detail-note">${o.method==='stripe'?'O pagamento online é confirmado automaticamente. Não é possível marcá-lo como pago manualmente.':'Verifica a receção do valor antes de confirmar o pagamento.'}</p>`:''}<div class="detail-actions">${action?`<button class="button primary" data-action="${action}">${esc({confirm_payment:'Confirmar pagamento',supplier_sent:'Já enviei ao fornecedor',supplier_accepted:'Fornecedor confirmou',courier_accepted:'Transportadora confirmou',pickup_ready:'Pronta para recolha',delivered:pickup?'Confirmar recolha':'Confirmar entrega'}[action])}</button>`:''}${isPaid?'<button class="button subtle" id="supplierSummary">↓ Resumo para fornecedor</button>':''}</div>${op.tracking?`<p class="detail-note">Seguimento: <strong>${esc(op.tracking)}</strong></p>`:''}</section><section class="detail-section"><h3>A cliente e a entrega</h3><div class="detail-contact"><div><strong>E-mail</strong><p>${esc(o.customer.email)}</p></div><div><strong>Telefone</strong><p>${esc(o.customer.phone||'—')}</p></div><div class="full"><strong>${pickup?'Local de recolha':'Morada de entrega'}</strong><p>${esc(o.fulfillmentAddress||[o.customer.address,o.customer.city,o.customer.postalCode,o.customer.country].filter(Boolean).join(', '))}</p></div>${o.customer.notes?`<div class="full"><strong>Nota da cliente</strong><p>${esc(o.customer.notes)}</p></div>`:''}</div></section><section class="detail-section"><h3>O que foi escolhido</h3>${o.items.map(i=>`<div class="detail-product"><img src="${esc(safeImage(i.image))}" alt=""><div><strong>${esc(i.title)}</strong><p>${esc(options(i))}</p><p>Quantidade: ${i.qty}</p></div><span>${money(i.unitCents*i.qty)}</span></div>`).join('')}<div class="totals"><div><span>Produtos</span><span>${money(o.subtotalCents)}</span></div><div><span>Desconto${o.couponCode?' · '+esc(o.couponCode):''}</span><span>−${money(o.discountCents)}</span></div><div><span>Entrega</span><span>${money(o.shippingCents)}</span></div><div class="total"><span>Total</span><span>${money(o.totalCents)}</span></div></div></section><section class="detail-section"><h3>Notas só para a equipa</h3><label class="note-label" for="internalNote">Disponibilidade, contacto com fornecedor, lembretes…</label><textarea id="internalNote" maxlength="2000">${esc(op.notes||'')}</textarea><button class="button subtle" id="saveNote">Guardar nota</button></section><section class="detail-section"><h3>Histórico</h3><ul class="audit">${(op.events||[]).slice().reverse().map(e=>`<li>${esc(actionLabels[e.action]||e.action)}${e.reference?` · ${esc(e.reference)}`:''}<small>${date(e.at)} · ${esc(e.by)}</small></li>`).join('')}<li>Pedido recebido<small>${date(o.createdAt)} · Loja online</small></li></ul></section>`;
  if(isPaid){const copy=document.createElement('button');copy.className='button subtle';copy.id='copySupplierSummary';copy.textContent='Copiar resumo';document.getElementById('detail').querySelector('.detail-actions').append(copy);}
+ if(s==='needs_review'){
+  const note=document.createElement('p');note.className='detail-note';note.textContent='Pedido anterior à área de gestão. Confirma o estado real antes de preparar um novo envio ao fornecedor.';document.getElementById('detail').querySelector('.detail-actions').before(note);
+  const button=document.getElementById('detail').querySelector('[data-action="classify_history"]');if(button)button.textContent='Confirmar estado anterior';
+  for(const id of ['supplierSummary','copySupplierSummary']){const button=document.getElementById(id);if(button){button.disabled=true;button.title='Confirma primeiro o estado anterior.';}}
+ }
 }
-function beginAction(action){const copy=actionCopy[action];if(!copy)return;state.pendingAction=action;$('actionTitle').textContent=copy[0];$('actionDescription').textContent=copy[1];$('acknowledgement').textContent=copy[2];$('actionReference').value='';$('actionReference').required=action==='confirm_payment';$('actionReference').placeholder=action==='confirm_payment'?'Referência do recebimento (obrigatória)':'Ex.: confirmação recebida por WhatsApp';$('trackingLabel').hidden=action!=='courier_accepted';$('actionTracking').value='';$('actionAcknowledged').checked=false;$('actionError').hidden=true;$('actionDialog').showModal();}
+function beginAction(action){
+ const copy=actionCopy[action];if(!copy)return;state.pendingAction=action;
+ $('actionTitle').textContent=copy[0];$('actionDescription').textContent=copy[1];$('acknowledgement').textContent=copy[2];
+ $('actionReference').value='';$('actionReference').required=['confirm_payment','classify_history'].includes(action);
+ $('actionReference').placeholder=action==='confirm_payment'?'Referência do recebimento (obrigatória)':'Ex.: confirmação nos registos anteriores';
+ $('trackingLabel').hidden=action!=='courier_accepted';$('actionTracking').value='';
+ if(!$('historyStageLabel')){const label=document.createElement('label');label.id='historyStageLabel';label.innerHTML='Estado atual da encomenda<select id="actionStage" aria-label="Estado atual da encomenda"></select>';$('trackingLabel').before(label);}
+ $('historyStageLabel').hidden=action!=='classify_history';
+ const order=state.orders.find(o=>o.id===state.selected),pickup=order?.fulfillmentMethod==='pickup';
+ $('actionStage').innerHTML=['new','supplier_sent','supplier_accepted',pickup?'pickup_ready':'courier_accepted','delivered'].map(s=>`<option value="${s}">${esc(stageLabels[s])}</option>`).join('');
+ $('actionAcknowledged').checked=false;$('actionError').hidden=true;$('actionDialog').showModal();
+}
 async function mutate(action,extra={}){
  const o=state.orders.find(o=>o.id===state.selected);if(!o)throw Error('Encomenda não encontrada.');
  if(demo){
   o.operations=o.operations||{version:0,stage:'new',events:[]};const op=o.operations;
-  if(action==='note')op.notes=extra.notes;else if(action==='confirm_payment')op.paymentConfirmation={at:new Date().toISOString(),by:'Equipa · demonstração',reference:extra.reference,amountCents:o.totalCents};else op.stage=action;
+  if(action==='note')op.notes=extra.notes;else if(action==='confirm_payment')op.paymentConfirmation={at:new Date().toISOString(),by:'Equipa · demonstração',reference:extra.reference,amountCents:o.totalCents};else op.stage=action==='classify_history'?extra.stage:action;
   if(extra.tracking)op.tracking=extra.tracking;op.version++;op.events.push({action,at:new Date().toISOString(),by:'Equipa · demonstração',reference:extra.reference||''});saveDemo();
  }else{const data=await api('orders/'+encodeURIComponent(o.id),{action,version:o.operations?.version||0,...extra});state.orders[state.orders.findIndex(x=>x.id===o.id)]=data.order;}
  render();renderDetail();toast(action==='note'?'Nota guardada.':'Confirmação guardada no histórico.');
@@ -100,12 +119,14 @@ function supplierText(o){
  return text;
 }
 async function supplierSummary(copy=false){const o=state.orders.find(o=>o.id===state.selected);if(!o||!paid(o))return;
+ if(stage(o)==='needs_review'){toast('Confirma primeiro o estado anterior desta encomenda.');return;}
  if(copy){try{await navigator.clipboard.writeText(supplierText(o));toast('Resumo copiado. Partilha apenas com o fornecedor responsável.');}catch{toast('Não foi possível copiar. Usa a opção de download.');}}
  else{download('Asheerah-fornecedor-'+o.id.slice(-8)+'.txt',supplierText(o));toast('Resumo descarregado. Envia-o ao fornecedor pelo teu canal habitual.');}
 }
 function csvCell(value){const text=String(value);return '"'+(/^\s*[=+@\-\t\r\n]/.test(text)?"'"+text:text).replaceAll('"','""')+'"';}
 function exportCsv(){const rows=[['Referência','Data','Cliente','Produtos','Total EUR','Pagamento','Método','Estado de envio'],...filterOrders().map(o=>[o.id,o.createdAt,o.customer.name,o.items.map(i=>`${i.qty} × ${i.title}`).join(' / '),(o.totalCents/100).toFixed(2),paid(o)?'Confirmado':incomplete(o)?'Por concluir':'Pendente',o.method,next(o)])];download('Asheerah-encomendas.csv','\uFEFF'+rows.map(r=>r.map(csvCell).join(';')).join('\r\n'),'text/csv;charset=utf-8');}
 $('today').textContent=new Date().toLocaleDateString('pt-PT',{weekday:'long',day:'numeric',month:'long'}).toUpperCase();
+const historyFilter=document.createElement('option');historyFilter.value='needs_review';historyFilter.textContent='Estado anterior por confirmar';$('statusFilter').append(historyFilter);
 $('demoBanner').hidden=!demo;$('logout').hidden=demo;$('logoutMobile').hidden=demo;
 $('loginForm').onsubmit=async e=>{
  e.preventDefault();$('loginSubmit').disabled=true;$('loginError').hidden=true;
@@ -124,7 +145,7 @@ for(const id of ['search','statusFilter','period'])$(id).addEventListener(id==='
 $('ordersBody').addEventListener('click',e=>{const row=e.target.closest('[data-id]');if(row)openOrder(row.dataset.id);});
 $('detail').addEventListener('click',async e=>{const b=e.target.closest('button');if(!b)return;if(b.dataset.action)beginAction(b.dataset.action);if(b.id==='supplierSummary')supplierSummary();if(b.id==='copySupplierSummary')supplierSummary(true);if(b.id==='saveNote'){b.disabled=true;try{await mutate('note',{notes:$('internalNote').value});}catch(err){toast(err.message);}finally{b.disabled=false;}}});
 $('closeDetail').onclick=()=>$('orderDialog').close();for(const id of ['closeAction','cancelAction'])$(id).onclick=()=>$('actionDialog').close();
-$('actionForm').onsubmit=async e=>{e.preventDefault();$('submitAction').disabled=true;try{await mutate(state.pendingAction,{reference:$('actionReference').value.trim(),tracking:$('actionTracking').value.trim(),acknowledged:true});$('actionDialog').close();}catch(err){$('actionError').textContent=err.message;$('actionError').hidden=false;}finally{$('submitAction').disabled=false;}};
+$('actionForm').onsubmit=async e=>{e.preventDefault();$('submitAction').disabled=true;try{await mutate(state.pendingAction,{reference:$('actionReference').value.trim(),tracking:$('actionTracking').value.trim(),stage:$('actionStage')?.value,acknowledged:true});$('actionDialog').close();}catch(err){$('actionError').textContent=err.message;$('actionError').hidden=false;}finally{$('submitAction').disabled=false;}};
 $('refresh').onclick=()=>load();$('loadMore').onclick=()=>load(true);$('export').onclick=exportCsv;$('clearFilters').onclick=()=>{$('search').value='';$('statusFilter').value='all';$('period').value='all';render();};
 $('resetDemo').onclick=()=>{localStorage.removeItem(DEMO_KEY);load();};
 load();setInterval(()=>{if(!demo&&!document.hidden&&!$('orderDialog').open&&!$('actionDialog').open&&!state.cursor)load(false,true);},60000);

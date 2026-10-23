@@ -20,6 +20,7 @@ routes = [
 
 [vars]
 MANAGEMENT_CAPTURE_ENABLED = "1"
+MANAGEMENT_HISTORY_CUTOFF = "2026-10-23T13:18:28Z"
 ORDER_EMAIL_ENABLED = "1"
 MANUAL_ORDER_GAS_URL = "https://script.google.com/macros/s/AKfycbzKCanbiHbmlJkhhjy77g2LyTGef6jqcOBNp-2LmUsw21eOCJfSiATnLrw3i2lXlnMP/exec"
 STRIPE_MODE = "live"

@@ -20,7 +20,7 @@ async function persistOrder(env,order){
  throw Error('Business order update conflict');
 }
 const identity=auth.identity;
-function blankOperations(){return {version:0,stage:'new',notes:'',tracking:'',events:[]};}
+function blankOperations(order={},env={}){return {version:0,stage:Date.parse(order.createdAt)<Date.parse(env.MANAGEMENT_HISTORY_CUTOFF)?'needs_review':'new',notes:'',tracking:'',events:[]};}
 async function backfill(env){
  if(env.MANAGEMENT_CAPTURE_ENABLED!=='1'||!env.REVIEW_MEDIA||await env.REVIEW_MEDIA.get('business-backfill-complete'))return;
  const position=await env.REVIEW_MEDIA.get('business-backfill-cursor'),cursor=position?await position.text():'';
@@ -29,9 +29,9 @@ async function backfill(env){
  if(batch.truncated)await env.REVIEW_MEDIA.put('business-backfill-cursor',batch.cursor);
  else await env.REVIEW_MEDIA.put('business-backfill-complete',new Date().toISOString());
 }
-function safeOrder(order,operations){
+function safeOrder(order,operations,env={}){
  const {id,createdAt,language,method,status,customer,items,subtotalCents,discountCents,shippingCents,totalCents,couponCode,fulfillmentMethod,fulfillmentAddress}=order;
- return {id,createdAt,language,method,status,customer,items,subtotalCents,discountCents,shippingCents,totalCents,couponCode,fulfillmentMethod,fulfillmentAddress,operations:operations||blankOperations()};
+ return {id,createdAt,language,method,status,customer,items,subtotalCents,discountCents,shippingCents,totalCents,couponCode,fulfillmentMethod,fulfillmentAddress,operations:operations||blankOperations(order,env)};
 }
 function applyAction(order,previous,input,by,at=new Date().toISOString()){
  if(!input||!Number.isSafeInteger(input.version)||input.version!==previous.version)throw Error('Este pedido foi atualizado por outra pessoa. Atualiza a página antes de continuar.');
@@ -48,6 +48,10 @@ function applyAction(order,previous,input,by,at=new Date().toISOString()){
   if(action==='confirm_payment'){
    if(order.method!=='orange_money'||order.status!=='awaiting_payment'||paid||!reference.trim())throw Error('Só é possível confirmar um pagamento Orange Money pendente, com referência.');
    op.paymentConfirmation={at,by,reference:reference.trim(),amountCents:order.totalCents};
+  }else if(action==='classify_history'){
+   const stages=['new','supplier_sent','supplier_accepted',order.fulfillmentMethod==='pickup'?'pickup_ready':'courier_accepted','delivered'];
+   if(!paid||op.stage!=='needs_review'||!stages.includes(input.stage)||!reference.trim())throw Error('Confirma o pagamento e o estado real deste pedido anterior, com uma observação.');
+   op.stage=input.stage;
   }else{
    if(!paid)throw Error('Confirma o pagamento antes de avançar com a encomenda.');
    const next={new:'supplier_sent',supplier_sent:'supplier_accepted',supplier_accepted:order.fulfillmentMethod==='pickup'?'pickup_ready':'courier_accepted',courier_accepted:'delivered',pickup_ready:'delivered'}[op.stage];
@@ -56,7 +60,7 @@ function applyAction(order,previous,input,by,at=new Date().toISOString()){
    if(action==='courier_accepted')op.tracking=tracking.trim();
   }
  }
- op.version++;op.updatedAt=at;op.events.push({action,at,by,reference:action==='note'?'':reference.trim()});return op;
+ op.version++;op.updatedAt=at;op.events.push({action,at,by,stage:op.stage,reference:action==='note'?'':reference.trim()});return op;
 }
 async function handle(request,env){
  if(new URL(request.url).pathname.startsWith('/management-api/auth/'))return auth.handle(request,env);
@@ -69,7 +73,7 @@ async function handle(request,env){
   if(cursor&&cursor.length>2048)return response({error:'Página inválida.'},400);
   try{
    const batch=await env.REVIEW_MEDIA.list({prefix:'business-orders/',limit:100,...(cursor?{cursor}:{})});
-   const orders=(await Promise.all(batch.objects.map(async obj=>{const saved=await readJson(env.REVIEW_MEDIA,obj.key);if(!saved||saved.value.isTest)return null;const op=await readJson(env.REVIEW_MEDIA,operationsKey(saved.value.id));return safeOrder(saved.value,op?.value);}))).filter(Boolean);
+   const orders=(await Promise.all(batch.objects.map(async obj=>{const saved=await readJson(env.REVIEW_MEDIA,obj.key);if(!saved||saved.value.isTest)return null;const op=await readJson(env.REVIEW_MEDIA,operationsKey(saved.value.id));return safeOrder(saved.value,op?.value,env);}))).filter(Boolean);
    return response({orders,cursor:batch.truncated?batch.cursor:null,identity:user,historyReady:!!await env.REVIEW_MEDIA.get('business-backfill-complete')});
   }catch{return response({error:'Não foi possível carregar as encomendas. Tenta novamente.'},502);}
  }
@@ -81,11 +85,11 @@ async function handle(request,env){
   let input;try{input=JSON.parse(raw);}catch{return response({error:'Pedido inválido.'},400);}
   const saved=await readJson(env.REVIEW_MEDIA,snapshotKey(match[1]));if(!saved||saved.value.isTest)return response({error:'Encomenda não encontrada.'},404);
   const key=operationsKey(match[1]),current=await readJson(env.REVIEW_MEDIA,key);
-  let op;try{op=applyAction(saved.value,current?.value||blankOperations(),input,user);}catch(e){return response({error:e.message},409);}
+  let op;try{op=applyAction(saved.value,current?.value||blankOperations(saved.value,env),input,user);}catch(e){return response({error:e.message},409);}
   try{
    const written=await env.REVIEW_MEDIA.put(key,JSON.stringify(op),{onlyIf:current?{etagMatches:current.etag}:{etagDoesNotMatch:'*'},httpMetadata:{contentType:'application/json'}});
    if(!written)return response({error:'Outra pessoa atualizou este pedido. Atualiza a página.'},409);
-   return response({order:safeOrder(saved.value,op)});
+   return response({order:safeOrder(saved.value,op,env)});
   }catch{return response({error:'Não foi possível guardar. Tenta novamente.'},502);}
  }
  return response({error:'Não encontrado.'},404);
