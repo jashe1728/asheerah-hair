@@ -2,13 +2,13 @@
 <html lang="pt">
 <head>
   <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
   <meta name="robots" content="noindex,nofollow,noarchive">
   <meta name="referrer" content="same-origin">
   <title>O meu negócio — Asheerah Hair</title>
   <link rel="icon" href="../assets/logo-sm.png">
-  <link rel="stylesheet" href="dashboard.css?v=2">
-  <script src="dashboard.js?v=2" defer></script>
+  <link rel="stylesheet" href="dashboard.css?v=3-mobile">
+  <script src="dashboard.js?v=3-mobile" defer></script>
 </head>
 <body class="is-locked">
   <section id="loginScreen" class="login-screen" aria-label="Entrar na área privada">
@@ -26,20 +26,20 @@
     </form>
   </section>
   <aside class="sidebar">
-    <button id="logoutMobile" class="mobile-logout" aria-label="Terminar sessão">Sair ↪</button>
+    <button id="logoutMobile" class="mobile-logout" aria-label="Terminar sessão">Sair <span data-icon="logout"></span></button>
     <a class="brand" href="./"><img src="../assets/logo-sm.png" alt="Asheerah Hair"><span>O MEU NEGÓCIO</span></a>
     <nav aria-label="Gestão do negócio">
-      <button class="nav-item active" data-view="overview"><span aria-hidden="true">◫</span> O meu dia</button>
-      <button class="nav-item" data-view="orders"><span aria-hidden="true">▤</span> Encomendas <span class="nav-count" id="orderCount">—</span></button>
-      <button class="nav-item" data-view="payments"><span aria-hidden="true">€</span> Pagamentos</button>
-      <button class="nav-item" data-view="shipping" aria-label="Fornecedor e envios"><span aria-hidden="true">↗</span><span class="nav-long">Fornecedor e envios</span><span class="nav-short" aria-hidden="true">Envios</span></button>
+      <button class="nav-item active" data-view="overview"><span data-icon="grid"></span><span>O meu dia</span></button>
+      <button class="nav-item" data-view="orders"><span data-icon="orders"></span><span>Encomendas</span><span class="nav-count" id="orderCount">—</span></button>
+      <button class="nav-item" data-view="payments"><span data-icon="wallet"></span><span>Pagamentos</span></button>
+      <button class="nav-item" data-view="shipping" aria-label="Fornecedor e envios"><span data-icon="truck"></span><span class="nav-long">Fornecedor e envios</span><span class="nav-short" aria-hidden="true">Envios</span></button>
     </nav>
     <div class="sidebar-note"><span class="small-label">UM PASSO DE CADA VEZ</span><p>Tudo o que precisas para cuidar das tuas encomendas, num só lugar.</p></div>
-    <div class="account"><span class="avatar">AH</span><div><strong>Asheerah Hair</strong><small id="identity">Área privada</small></div><button id="logout" aria-label="Terminar sessão" title="Terminar sessão">↪</button></div>
+    <div class="account"><span class="avatar">AH</span><div><strong>Asheerah Hair</strong><small id="identity">Área privada</small></div><button id="logout" aria-label="Terminar sessão" title="Terminar sessão"><span data-icon="logout"></span></button></div>
   </aside>
   <main>
     <div class="demo-banner" id="demoBanner" hidden><strong>Pré-visualização · dados fictícios</strong><span>Podes experimentar os botões. Nenhuma encomenda real é alterada.</span><button id="resetDemo">Repor exemplo</button></div>
-    <header class="page-header"><div><div class="small-label" id="today"></div><h1 id="pageTitle">Um novo dia, com tudo em ordem.</h1><p id="pageIntro">Acompanha cada encomenda, do primeiro pedido ao envio.</p></div><div class="header-actions"><span id="syncStatus" role="status">A ligar…</span><button class="button subtle" id="refresh">↻ <span>Atualizar</span></button><button class="button primary" id="export">↓ Exportar lista</button></div></header>
+    <header class="page-header"><div><div class="small-label" id="today"></div><h1 id="pageTitle">Um novo dia, com tudo em ordem.</h1><p id="pageIntro">Acompanha cada encomenda, do primeiro pedido ao envio.</p></div><div class="header-actions"><span id="syncStatus" role="status">A ligar…</span><button class="button subtle" id="refresh"><span data-icon="refresh"></span><span>Atualizar</span></button><button class="button primary" id="export"><span data-icon="download"></span>Exportar lista</button></div></header>
     <div id="error" class="error" role="alert" hidden></div>
     <p id="paginationNotice" class="detail-note" hidden>Resumo parcial: os totais e a pesquisa incluem apenas as encomendas carregadas. Usa “Carregar mais encomendas” no final da lista para incluir o restante histórico.</p>
     <p id="backfillNotice" class="detail-note" hidden>O histórico recente ainda está a ser carregado. Novas encomendas aparecem automaticamente. Atualiza dentro de alguns minutos.</p>
@@ -47,16 +47,17 @@
     <section class="daily" id="daily"><div class="section-heading"><div><span class="small-label">O QUE PRECISA DE TI</span><h2>Vamos tratar dos próximos passos?</h2></div><span class="muted">Seleciona uma tarefa para ver as encomendas.</span></div><div class="tasks" id="tasks"></div></section>
     <section class="orders-panel">
       <div class="section-heading"><div><span class="small-label">CADA CLIENTE CONTA</span><h2 id="listTitle">As tuas encomendas</h2></div><span id="resultCount" class="muted"></span></div>
-      <div class="toolbar"><label class="search"><span aria-hidden="true">⌕</span><input id="search" type="search" placeholder="Procurar cliente, encomenda ou produto…" aria-label="Procurar encomendas"></label><label><span class="sr-only">Estado</span><select id="statusFilter"><option value="all">Todos os estados</option><option value="unpaid">A aguardar pagamento</option><option value="new">Pagas · por enviar ao fornecedor</option><option value="supplier_sent">À espera do fornecedor</option><option value="supplier_accepted">Fornecedor confirmou</option><option value="courier_accepted">Com a transportadora</option><option value="pickup_ready">Prontas para recolha</option><option value="delivered">Concluídas</option><option value="incomplete">Checkout por concluir</option></select></label><label><span class="sr-only">Período</span><select id="period"><option value="all">Todo o período</option><option value="month">Este mês</option><option value="week">Últimos 7 dias</option></select></label></div>
+      <div class="toolbar"><label class="search"><span data-icon="search"></span><input id="search" type="search" placeholder="Cliente, encomenda ou produto…" aria-label="Procurar encomendas"></label><button class="button subtle mobile-filters" id="toggleFilters" aria-expanded="false" aria-controls="advancedFilters"><span data-icon="filters"></span>Filtrar</button><div id="advancedFilters" class="advanced-filters"><label><span class="filter-label">Estado</span><select id="statusFilter"><option value="all">Todos os estados</option><option value="unpaid">A aguardar pagamento</option><option value="new">Pagas · por enviar ao fornecedor</option><option value="supplier_sent">À espera do fornecedor</option><option value="supplier_accepted">Fornecedor confirmou</option><option value="courier_accepted">Com a transportadora</option><option value="pickup_ready">Prontas para recolha</option><option value="delivered">Concluídas</option><option value="incomplete">Checkout por concluir</option></select></label><label><span class="filter-label">Período</span><select id="period"><option value="all">Todo o período</option><option value="month">Este mês</option><option value="week">Últimos 7 dias</option></select></label></div></div>
+      <div class="quick-filters" id="quickFilters" aria-label="Filtros rápidos de encomendas"></div>
       <div class="table-wrap"><table><thead><tr><th>Encomenda / cliente</th><th>Produtos</th><th>Total</th><th>Pagamento</th><th>Próximo passo</th><th><span class="sr-only">Abrir</span></th></tr></thead><tbody id="ordersBody"></tbody></table></div>
-      <div class="empty" id="empty" hidden><span>♡</span><h3>Tudo tranquilo por aqui.</h3><p>Não há encomendas para estes filtros.</p><button class="button subtle" id="clearFilters">Ver todas as encomendas</button></div>
+      <div class="empty" id="empty" hidden><span data-icon="inbox"></span><h3>Tudo tranquilo por aqui.</h3><p>Não há encomendas para estes filtros.</p><button class="button subtle" id="clearFilters">Ver todas as encomendas</button></div>
       <footer class="panel-footer"><span>Pagamentos online atualizados automaticamente. Fornecedor e envios acompanhados por ti.</span><span>Valores brutos em EUR · sem dedução de taxas ou reembolsos</span></footer>
       <button class="button subtle load-more" id="loadMore" hidden>Carregar mais encomendas</button>
     </section>
     <p class="privacy-note">Só a equipa autorizada tem acesso a esta área. Os contactos com o fornecedor e a transportadora são feitos manualmente.</p>
   </main>
-  <dialog id="orderDialog" aria-labelledby="detailTitle"><div class="drawer-top"><span class="small-label">CUIDAR DE CADA DETALHE</span><button class="icon-button" id="closeDetail" aria-label="Fechar encomenda">×</button></div><div id="detail"></div></dialog>
-  <dialog id="actionDialog" class="action-dialog" aria-labelledby="actionTitle"><form id="actionForm"><div class="drawer-top"><span class="small-label">REGISTAR CONFIRMAÇÃO</span><button type="button" class="icon-button" id="closeAction" aria-label="Fechar">×</button></div><h2 id="actionTitle"></h2><p id="actionDescription"></p><label id="referenceLabel">Referência / observação <input id="actionReference" maxlength="200" autocomplete="off"></label><label id="trackingLabel" hidden>Código de seguimento (opcional)<input id="actionTracking" maxlength="100" autocomplete="off"></label><label class="check-label"><input type="checkbox" id="actionAcknowledged" required><span id="acknowledgement"></span></label><div class="action-buttons"><button type="button" class="button subtle" id="cancelAction">Cancelar</button><button type="submit" class="button primary" id="submitAction">Confirmar e guardar</button></div><p id="actionError" class="error" role="alert" hidden></p></form></dialog>
+  <dialog id="orderDialog" aria-labelledby="detailTitle"><div class="drawer-top"><span class="small-label">CUIDAR DE CADA DETALHE</span><button class="icon-button" id="closeDetail" aria-label="Fechar encomenda"><span data-icon="close"></span></button></div><div id="detail"></div><div id="mobileOrderAction" hidden></div></dialog>
+  <dialog id="actionDialog" class="action-dialog" aria-labelledby="actionTitle"><form id="actionForm"><div class="drawer-top"><span class="small-label">REGISTAR CONFIRMAÇÃO</span><button type="button" class="icon-button" id="closeAction" aria-label="Fechar"><span data-icon="close"></span></button></div><h2 id="actionTitle"></h2><p id="actionDescription"></p><label id="referenceLabel">Referência / observação <input id="actionReference" maxlength="200" autocomplete="off"></label><label id="trackingLabel" hidden>Código de seguimento (opcional)<input id="actionTracking" maxlength="100" autocomplete="off"></label><label class="check-label"><input type="checkbox" id="actionAcknowledged" required><span id="acknowledgement"></span></label><div class="action-buttons"><button type="button" class="button subtle" id="cancelAction">Cancelar</button><button type="submit" class="button primary" id="submitAction">Confirmar e guardar</button></div><p id="actionError" class="error" role="alert" hidden></p></form></dialog>
   <div id="toast" class="toast" role="status" hidden></div>
 </body>
 </html>

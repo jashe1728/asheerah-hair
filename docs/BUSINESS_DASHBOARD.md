@@ -69,3 +69,10 @@ Authentication design reference: https://cheatsheetseries.owasp.org/cheatsheets/
 Initial app commit bd8b696 and historical-order safeguard f76d02a were published. Shelton confirmed live email-code sign-in. Unauthenticated/forged-session order listing returned 401; cross-origin login returned 403; an unlisted account could not verify a code. No real order was modified for acceptance testing. The normal scheduled backfill completed at 2026-10-23T13:11:03.357Z, verified from its timestamp marker without exporting customer data. The original ten-minute schedule is unchanged.
 
 Final session compatibility work was isolated in a separate worktree after another process switched/reset the shared repository branch. Existing changes were preserved; already-issued scoped sessions remain valid until their normal expiry, and logout clears both supported cookie forms.
+## Mobile refinement and connection checks
+
+Owner-facing workflow and system connections: [OWNER_WORKFLOW.md](OWNER_WORKFLOW.md).
+
+The mobile interface now uses fixed bottom navigation, concise phone headings, action-first tasks, readable order cards, quick status chips, expandable full-width advanced filters, full-screen detail and a persistent action footer. Form controls account for safe areas, dynamic viewport height and modal scroll locking. The desktop layout is retained; text-symbol icons were replaced with SVG icons. Dashboard HTML/JavaScript contain no pictographic emoji characters.
+
+158 tests pass, including two new simulated checkout-to-dashboard ingestion tests. They verify that the checkout handler's durable order archive is what the authenticated management endpoint reads, for both online paid events and pending Orange Money requests. No real purchase or customer order was created for these checks.
