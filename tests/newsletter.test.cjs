@@ -32,6 +32,7 @@ test('private newsletter APIs require the existing session and reject cross-orig
  assert.throws(()=>newsletter.validate({...input,buttonUrl:'javascript:alert(1)'}));assert.throws(()=>newsletter.validate({...input,buttonUrl:'https://evil.invalid'}));
  const saved=await (await call(env,'/draft',input,token)).json();assert.equal(saved.campaign.status,'draft');
  const preview=await call(env,'/preview/'+saved.campaign.id,null,token);const html=await preview.text();assert.match(html,/&lt;script&gt;/);assert.doesNotMatch(html,/<script>/);assert.match(preview.headers.get('content-security-policy'),/default-src 'none'/);
+ const page=fs.readFileSync('gestao/newsletter.html','utf8');const sandbox=page.match(/<iframe[^>]+sandbox="([^"]*)"/)[1].split(/\s+/);assert.ok(sandbox.includes('allow-same-origin'),'authenticated preview retains the same-origin cookie context');assert.ok(!sandbox.includes('allow-scripts'),'email preview can never execute scripts');
 });
 test('campaign queue sends only confirmed members, suppresses cancellations and resumes without duplicate emails',async t=>{
  const env=environment(),token=await session(env),original=global.fetch,sent=[];global.fetch=async(url,opts)=>{const payload=JSON.parse(opts.body);sent.push({payload,key:opts.headers['Idempotency-Key']});return new Response(JSON.stringify({id:'mock-'+sent.length}));};t.after(()=>global.fetch=original);
