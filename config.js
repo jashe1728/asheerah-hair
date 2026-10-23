@@ -44,7 +44,9 @@ window.CONFIG = {
   email: 'asheerahhair@gmail.com',
 
   // ---- Google Apps Script backend (orders → Google Sheet) ----
-  backendURL: 'https://script.google.com/macros/s/AKfycbzKCanbiHbmlJkhhjy77g2LyTGef6jqcOBNp-2LmUsw21eOCJfSiATnLrw3i2lXlnMP/exec',
+  backendURL: '',
+  subscribeURL: '/public/subscribe',
+  chatLogURL: '/public/chat-log',
 
   // ---- Payment keys (PUBLISHABLE only — never put secret keys here) ----
   // Stripe: Dashboard → Developers → API keys → Publishable key (pk_live_...)

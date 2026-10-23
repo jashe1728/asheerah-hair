@@ -91,9 +91,9 @@ function chatHandoffButton(question){
   const link=document.createElement('a');link.className='chat-handoff';link.href='https://wa.me/'+number+'?text='+encodeURIComponent(text);link.target='_blank';link.rel='noopener';link.textContent=chatText('whatsappButton');body.appendChild(link);body.scrollTop=body.scrollHeight;
 }
 function chatLog(result,question){
-  const endpoint=window.CONFIG&&CONFIG.backendURL;if(!endpoint)return;
+  const endpoint=(window.CONFIG&&CONFIG.chatLogURL)||'/public/chat-log';if(!endpoint)return;
   const transcript=CHAT_STATE.transcript.slice(-6).map(item=>(item.role==='user'?chatText('customer'):chatText('helper'))+': '+item.text).join('\n');
-  fetch(endpoint,{method:'POST',mode:'no-cors',headers:{'Content-Type':'text/plain;charset=utf-8'},keepalive:true,body:JSON.stringify({type:'chat_log',timestamp:new Date().toISOString(),sessionId:CHAT_SESSION,language:chatLang(),page:location.pathname,question:question.slice(0,500),route:result.kind,tier:result.tier,reason:result.reason,matchedId:result.matchedId||'',transcript:transcript.slice(0,2500)})}).catch(()=>{});
+  fetch(endpoint,{method:'POST',headers:{'Content-Type':'text/plain;charset=utf-8'},keepalive:true,body:JSON.stringify({sessionId:CHAT_SESSION,language:chatLang(),page:location.pathname,question:question.slice(0,500),route:result.kind,tier:result.tier,reason:result.reason,matchedId:result.matchedId||'',transcript:transcript.slice(0,2500)})}).catch(()=>{});
 }
 function sendChat(text){const input=document.getElementById('chatInput'),message=String(text||(input&&input.value)||'').trim();if(!message)return;userSay(message);if(input)input.value='';const result=CHAT_STATE.ready?chatRoute(message):chatUnknown('knowledge_unavailable');setTimeout(()=>{botSay(result.reply);if(result.followUp)botSay(result.followUp);if(result.kind==='handoff'||result.kind==='answer_and_handoff'){chatHandoffButton(message);chatLog(result,message);}},250);}
 function quickAsk(question){sendChat(question);}

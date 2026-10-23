@@ -46,91 +46,26 @@ function doGet(e) {
 
 function doPost(e) {
   try {
+    if (!e || !e.postData || !e.postData.contents) {
+      return json_({ ok: false, error: 'Empty request' });
+    }
     var body = JSON.parse(e.postData.contents);
 
-    // Only the Cloudflare Worker may record Stripe events. It verifies Stripe's
-    // signature, then HMAC-signs this exact payload for the Apps Script backend.
+    // Only the Cloudflare Worker may record events, orders, subscriptions, or chat logs.
+    // It verifies source data, Stripe, or Turnstile, then HMAC-signs the exact payload.
     if (body && typeof body.payload === 'string' && typeof body.signature === 'string') {
-      var stripeEvent = verifyWorkerPayload_(body);
-      if (!stripeEvent) return json_({ ok:false, error:'Unauthorized payment event' });
-      return json_(processStripeWorkerPayload_(stripeEvent));
+      var workerPayload = verifyWorkerPayload_(body);
+      if (!workerPayload) return json_({ ok: false, error: 'Unauthorized payment event' });
+      return json_(processWorkerPayload_(workerPayload));
     }
 
-    if (body.type === 'order') {
-      var row = buildOrderRow_(body);
-      getSheet_(SHEET_NAME, ORDERS_HEADER).appendRow(row);
-      try {
-        MailApp.sendEmail({
-          to: OWNER_EMAIL,
-          subject: 'New Asheerah Hair Order ' + Utilities.formatDate(new Date(), Session.getScriptTimeZone(), 'yyyy-MM-dd HH:mm'),
-          body: body.text || 'Order received.'
-        });
-      } catch (mailErr) { /* mail optional */ }
-      return json_({ ok: true, saved: true, emailed: true, cogs: row[10], fee: row[11], profit: row[12] });
-    }
-
-    if (body.type === 'contact') {
-      getSheet_('Messages', MSG_HEADER)
-        .appendRow([new Date(), body.name||'', body.email||'', body.phone||'', body.comment||'']);
-      return json_({ ok: true, saved: true });
-    }
-
-    if (body.type === 'subscribe') {
-      var email = String(body.email||'').trim();
-      if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) return json_({ ok:false, error:'Invalid email' });
-      var nl = getSheet_('Subscribers', ['Timestamp','Email']);
-      // dedupe by email
-      var existing = nl.getDataRange().getValues();
-      var dup = existing.some(function(r){ return String(r[1]).trim().toLowerCase() === email.toLowerCase(); });
-      if (!dup) nl.appendRow([new Date(), email]);
-      return json_({ ok: true, saved: true, new: !dup });
-    }
-
-    if (body.type === 'chat_log') {
-      var sessionId = safeCell_(body.sessionId, 40);
-      var question = safeCell_(body.question, 500);
-      if (!sessionId || !question) return json_({ ok:false, error:'Missing chat reference or question' });
-
-      var lock = LockService.getScriptLock();
-      lock.waitLock(5000);
-      try {
-        getSheet_('Chatbot Log', CHAT_HEADER).appendRow([
-          new Date(), sessionId, safeCell_(body.page, 180), question,
-          safeCell_(body.route, 40), Number(body.tier)||'', safeCell_(body.reason, 80),
-          safeCell_(body.matchedId, 30), safeCell_(body.transcript, 2500),
-          'Needs review', '', '', ''
-        ]);
-      } finally {
-        lock.releaseLock();
-      }
-
-      // One owner alert per website-chat session prevents a customer conversation
-      // (or repeated button presses) from flooding the owner's inbox.
-      var cache = CacheService.getScriptCache();
-      var mailKey = 'chat-mail-' + digestKey_(sessionId);
-      var alerted = cache.get(mailKey);
-      if (!alerted) {
-        cache.put(mailKey, '1', 21600);
-        try {
-          MailApp.sendEmail({
-            to: OWNER_EMAIL,
-            subject: 'Website chat needs your help — ' + sessionId,
-            body: 'A website visitor reached a Tier ' + (Number(body.tier)||3) + ' handoff.\n\n' +
-              'Question: ' + question + '\nPage: ' + safeCell_(body.page,180) + '\n\n' +
-              safeCell_(body.transcript,2500) + '\n\nThe visitor was offered a WhatsApp button with this same reference.'
-          });
-        } catch (mailErr) { /* The sheet remains the source of truth. */ }
-      }
-      return json_({ ok:true, saved:true });
-    }
-
-    return json_({ ok: false, error: 'Unknown type' });
+    // Direct unauthenticated POSTs are rejected to prevent order injection, email flooding, and quota DoS.
+    return json_({ ok: false, error: 'Unauthorized request' });
   } catch (err) {
     return json_({ ok: false, error: String(err) });
   }
 }
 
-/** Build one structured order row: Timestamp, Order, Customer, ..., Profit. */
 function buildOrderRow_(body) {
   var totalEur = Number(body.totalEur) || 0;
   var subtotal = Number(body.subtotalEur) || 0;
@@ -142,18 +77,33 @@ function buildOrderRow_(body) {
   var cust = body.customer || {};
   var orderNum = 'ASH-' + Utilities.formatDate(new Date(), Session.getScriptTimeZone(), 'yyyyMMdd-HHmmss');
   var itemText = (body.items||[]).map(function(it){
-    return it.title + ' x' + it.qty + ' (' + Object.values(it.opts||{}).filter(Boolean).join(',') + ')';
+    var title = safeCell_(it.title, 120);
+    var qty = Number(it.qty) || 1;
+    var opts = Object.values(it.opts||{}).filter(Boolean).map(function(o){ return safeCell_(o, 60); }).join(',');
+    return title + ' x' + qty + (opts ? ' (' + opts + ')' : '');
   }).join(' | ');
   var couponCode = String(body.coupon||'').trim().toUpperCase();
   if (couponCode && checkoutDiscountCents_(couponCode,Math.round(subtotal*100)) >= 0) {
-    itemText = 'Ambassador coupon: ' + couponCode + (itemText ? ' | ' + itemText : '');
+    itemText = 'Ambassador coupon: ' + safeCell_(couponCode, 20) + (itemText ? ' | ' + itemText : '');
   }
-  if (body.fulfillmentMethod) itemText += ' | ' + checkoutFulfillmentText_(body.fulfillmentMethod);
-  return [new Date(), orderNum, cust.name||'', cust.email||'', cust.phone||'', body.method||'',
-          itemText, r2(subtotal), r2(shipping), r2(totalEur), r2(cogs), feeCell, profitCell];
+  if (body.fulfillmentMethod) itemText += ' | ' + safeCell_(checkoutFulfillmentText_(body.fulfillmentMethod), 200);
+  return [
+    new Date(),
+    orderNum,
+    safeCell_(cust.name, 120),
+    safeCell_(cust.email, 254),
+    safeCell_(cust.phone, 40),
+    safeCell_(body.method, 40),
+    safeCell_(itemText, 500),
+    r2(subtotal),
+    r2(shipping),
+    r2(totalEur),
+    r2(cogs),
+    feeCell,
+    profitCell
+  ];
 }
 
-/** Compute Cost of Goods Sold (EUR) for a list of cart items. */
 function cogsFor_(items) {
   if (!items || !items.length) return 0;
   var usd = 0;
@@ -216,8 +166,11 @@ function feeFor_(method, totalEur) {
 function r2(x) { return Math.round(Number(x) * 100) / 100; }
 
 function safeCell_(value, maxLen) {
-  var text = String(value||'').replace(/[\u0000-\u001F\u007F]/g, ' ').trim().slice(0,maxLen);
-  return /^[=+\-@]/.test(text) ? "'" + text : text;
+  var text = String(value == null ? '' : value).replace(/[\u0000-\u001F\u007F]/g, ' ').trim();
+  if (typeof maxLen === 'number' && maxLen > 0 && text.length > maxLen) {
+    text = text.slice(0, maxLen);
+  }
+  return /^[=+\-@\t\r\n]/.test(text) ? "'" + text : text;
 }
 
 function digestKey_(value) {
@@ -364,13 +317,95 @@ function verifyWorkerPayload_(wrapper) {
   } catch (err) { return null; }
 }
 
+function processWorkerPayload_(payload) {
+  if (!payload) return { ok: false, error: 'Invalid worker payload' };
+  var action = payload.action || payload.type;
+  if (!action) return { ok: false, error: 'Invalid worker action' };
+
+  if (action === 'stripe_pending') return recordStripePending_(payload);
+  if (action === 'stripe_session_created') return recordStripeSession_(payload);
+  if (action === 'stripe_checkout_failed') return recordStripeCheckoutFailure_(payload);
+  if (action === 'stripe_event') return recordStripeEvent_(payload);
+  if (action === 'manual_order' || action === 'order') return recordWorkerOrder_(payload);
+  if (action === 'public_subscribe' || action === 'subscribe') return recordWorkerSubscribe_(payload);
+  if (action === 'public_chat_log' || action === 'chat_log') return recordWorkerChatLog_(payload);
+  if (action === 'contact') return recordWorkerContact_(payload);
+  return { ok: false, error: 'Unsupported worker action' };
+}
+
 function processStripeWorkerPayload_(payload) {
-  if (!payload || !payload.action) return { ok:false, error:'Invalid worker action' };
-  if (payload.action === 'stripe_pending') return recordStripePending_(payload);
-  if (payload.action === 'stripe_session_created') return recordStripeSession_(payload);
-  if (payload.action === 'stripe_checkout_failed') return recordStripeCheckoutFailure_(payload);
-  if (payload.action === 'stripe_event') return recordStripeEvent_(payload);
-  return { ok:false, error:'Unsupported worker action' };
+  return processWorkerPayload_(payload);
+}
+
+function recordWorkerOrder_(body) {
+  var row = buildOrderRow_(body);
+  getSheet_(SHEET_NAME, ORDERS_HEADER).appendRow(row);
+  try {
+    MailApp.sendEmail({
+      to: OWNER_EMAIL,
+      subject: 'New Asheerah Hair Order ' + Utilities.formatDate(new Date(), Session.getScriptTimeZone(), 'yyyy-MM-dd HH:mm'),
+      body: safeCell_(body.text, 4000) || 'Order received.'
+    });
+  } catch (mailErr) { /* mail optional */ }
+  return { ok: true, saved: true, emailed: true, cogs: row[10], fee: row[11], profit: row[12] };
+}
+
+function recordWorkerSubscribe_(body) {
+  var email = safeCell_(body.email, 254);
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) return { ok: false, error: 'Invalid email' };
+  var nl = getSheet_('Subscribers', ['Timestamp', 'Email']);
+  var existing = nl.getDataRange().getValues();
+  var dup = existing.some(function(r) { return String(r[1]).trim().toLowerCase() === email.toLowerCase(); });
+  if (!dup) nl.appendRow([new Date(), email]);
+  return { ok: true, saved: true, new: !dup };
+}
+
+function recordWorkerChatLog_(body) {
+  var sessionId = safeCell_(body.sessionId, 40);
+  var question = safeCell_(body.question, 500);
+  if (!sessionId || !question) return { ok: false, error: 'Missing chat reference or question' };
+
+  var lock = LockService.getScriptLock();
+  lock.waitLock(5000);
+  try {
+    getSheet_('Chatbot Log', CHAT_HEADER).appendRow([
+      new Date(), sessionId, safeCell_(body.page, 180), question,
+      safeCell_(body.route, 40), Number(body.tier) || '', safeCell_(body.reason, 80),
+      safeCell_(body.matchedId, 30), safeCell_(body.transcript, 2500),
+      'Needs review', '', '', ''
+    ]);
+  } finally {
+    lock.releaseLock();
+  }
+
+  var cache = CacheService.getScriptCache();
+  var mailKey = 'chat-mail-' + digestKey_(sessionId);
+  var alerted = cache.get(mailKey);
+  if (!alerted) {
+    cache.put(mailKey, '1', 21600);
+    try {
+      MailApp.sendEmail({
+        to: OWNER_EMAIL,
+        subject: 'Website chat needs your help — ' + sessionId,
+        body: 'A website visitor reached a Tier ' + (Number(body.tier) || 3) + ' handoff.\n\n' +
+          'Question: ' + question + '\nPage: ' + safeCell_(body.page, 180) + '\n\n' +
+          safeCell_(body.transcript, 2500) + '\n\nThe visitor was offered a WhatsApp button with this same reference.'
+      });
+    } catch (mailErr) { /* The sheet remains the source of truth. */ }
+  }
+  return { ok: true, saved: true };
+}
+
+function recordWorkerContact_(body) {
+  getSheet_('Messages', MSG_HEADER)
+    .appendRow([
+      new Date(),
+      safeCell_(body.name, 120),
+      safeCell_(body.email, 254),
+      safeCell_(body.phone, 40),
+      safeCell_(body.comment, 1000)
+    ]);
+  return { ok: true, saved: true };
 }
 
 function stripePaymentsSheet_() {

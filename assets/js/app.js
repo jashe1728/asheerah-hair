@@ -572,9 +572,11 @@ function initNewsletter(){
       if (!list.includes(email)) list.push(email);
       localStorage.setItem('ash_subscribers', JSON.stringify(list));
     } catch(err){}
-    if (CONFIG && CONFIG.backendURL){
+    const subscribeEndpoint = (CONFIG && CONFIG.subscribeURL) || (CONFIG && CONFIG.backendURL);
+    if (subscribeEndpoint){
+      const subUrl = subscribeEndpoint;
       try {
-        await fetch(CONFIG.backendURL, {
+        await fetch(subUrl, {
           method:'POST', headers:{'Content-Type':'text/plain;charset=utf-8'},
           body: JSON.stringify({ type:'subscribe', email })
         });
@@ -857,7 +859,7 @@ function renderProduct(){
             <button type="button" onclick="qtyChange(1)" aria-label="${uiTxt('quantity')} +">+</button>
           </div>
           ${addBtn}
-          <div class="desc"><h3>${uiTxt('description')}</h3><p>${p.description}</p></div>
+          <div class="desc"><h3>${uiTxt('description')}</h3><p>${escapeHTML(p.description)}</p></div>
         </div>
       </div>
       <div class="mobile-purchase-bar">
@@ -1092,6 +1094,7 @@ const CHECKOUT_DRAFT_KEY = 'ash_checkout_draft';
 function loadCheckoutDraft(){
   try {
     const raw = sessionStorage.getItem(CHECKOUT_DRAFT_KEY) || localStorage.getItem(CHECKOUT_DRAFT_KEY);
+    if (localStorage.getItem(CHECKOUT_DRAFT_KEY)) { try { localStorage.removeItem(CHECKOUT_DRAFT_KEY); } catch(e){} }
     const parsed = raw ? JSON.parse(raw) : {};
     return parsed && typeof parsed === 'object' ? parsed : {};
   } catch(e){ return {}; }
@@ -1101,7 +1104,7 @@ function saveCheckoutDraft(patch){
     const next = Object.assign({}, loadCheckoutDraft(), patch || {});
     const raw = JSON.stringify(next);
     try { sessionStorage.setItem(CHECKOUT_DRAFT_KEY, raw); } catch(e){}
-    try { localStorage.setItem(CHECKOUT_DRAFT_KEY, raw); } catch(e){}
+    // localStorage persistence removed for PII privacy (AH-SEC-05)
   } catch(e){}
 }
 function clearCheckoutDraft(){
@@ -1994,7 +1997,7 @@ function placeOrder(btn){
   const shippingText = t.shippingKnown ? (t.shipping === 0 ? (uiTxt('free') || 'Grátis') : money(t.shipping,'EUR')) : (uiTxt('shipping_select_country') || uiTxt('shipping_calc_checkout'));
   const totalText = t.shippingKnown ? money(t.totalFinal,'EUR') : (uiTxt('shipping_select_country') || uiTxt('shipping_calc_checkout'));
   const methodLabel = method === 'orange_money' ? uiTxt('pay_orange_money') : uiTxt('pay_stripe');
-  const text = `NOVO PEDIDO DE PAGAMENTO (Asheerah Hair)\n${lines}${coupon?`\nCupom de embaixador: ${coupon.code}`:''}\n\nSubtotal original: ${money(t.subtotalOriginal,'EUR')}\nDesconto: −${money(t.totalDiscount,'EUR')}\nEnvio: ${shippingText}\nTOTAL ESTIMADO: ${totalText}\nMétodo de envio: ${fulfillmentLabel}${isPickup ? `\n${storeAddressLine}` : ''}\nMétodo preferido: ${methodLabel}\n\nCliente: ${customerData.name}\nEmail: ${customerData.email}\nTelefone: ${customerData.phone}\nMorada: ${addressLine}${customerData.notes?'\nNotas: '+customerData.notes:''}`;
+  const text = `NOVO PEDIDO DE PAGAMENTO (Asheerah Hair)\n${lines}${coupon?`\nCupom de embaixador: ${coupon.code}`:''}\n\nSubtotal original: ${money(t.subtotalOriginal,'EUR')}\nDesconto: −${money(t.totalDiscount,'EUR')}\nEnvio: ${shippingText}\nTOTAL ESTIMADO: ${totalText}\nMétodo de envio: ${fulfillmentLabel}${isPickup ? `\n${storeAddressLine}` : ''}\nMétodo preferido: ${methodLabel}\n\nCliente: ${customerData.name}\nEmail: ${customerData.email}\nTelefone: ${customerData.phone}\nLocalidade: ${isPickup ? storeAddressLine : ([customerData.city, customerData.country].filter(Boolean).join(', ') + ' (morada completa registada no pedido)')}${customerData.notes?'\nNotas: '+customerData.notes:''}`;
 
   const payload = {
     type:'order',

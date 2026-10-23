@@ -416,13 +416,14 @@ async function handleRequest(request, env) {
   if (request.method === 'OPTIONS') return new Response(null, { status:204, headers:{ 'access-control-allow-origin':allowedOrigin, 'access-control-allow-methods':'POST,GET,OPTIONS', 'access-control-allow-headers':'content-type,authorization', 'vary':'Origin' } });
   if (url.pathname.startsWith('/public/')) {
     if (request.method !== 'POST') return json({ error:'Method not allowed' }, 405, allowedOrigin);
+    if (url.pathname === '/public/csp-report') return new Response(null, { status: 204, headers: { 'access-control-allow-origin': allowedOrigin } });
     if (!env.GAS_WEBHOOK_URL || !env.WORKER_GAS_SECRET) return json({ error:'Public form service is not configured' }, 503, allowedOrigin);
     const raw = await request.text();
     if (bodyExceedsLimit(request, raw, 4_000)) return json({ error:'Request too large' }, 413, allowedOrigin);
     let input;
     try { input = JSON.parse(raw); } catch { return json({ error:'Invalid request' }, 400, allowedOrigin); }
     let workerPayload;
-    if (url.pathname === '/public/subscribe') {
+        if (url.pathname === '/public/subscribe') {
       if (!input || Object.keys(input).some(k => k !== 'email') || typeof input.email !== 'string' || input.email.length > 254 || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(input.email.trim())) return json({ error:'Invalid email' }, 400, allowedOrigin);
       workerPayload = { action:'public_subscribe', email:input.email.trim() };
     } else if (url.pathname === '/public/chat-log') {
@@ -466,7 +467,12 @@ async function handleRequest(request, env) {
         const mail=orderEmail.renderEmail(order);
         const accounting={type:'order',method:'orange_money',orderId:id,text:mail.text,customer:{...checkout.customer,zip:checkout.customer.postalCode},items:checkout.orderItems.map(i=>({...i,priceEur:i.unitCents/100})),fulfillmentMethod:'delivery',subtotalEur:checkout.subtotalCents/100,shippingEur:checkout.shippingCents/100,totalEur:checkout.totalCents/100,totalDiscountEur:checkout.discountCents/100,coupon:checkout.couponCode,currency:'EUR'};
         try {
-          const response=await fetch(env.MANUAL_ORDER_GAS_URL,{method:'POST',headers:{'content-type':'text/plain;charset=utf-8'},body:JSON.stringify(accounting)});
+          const rawAccounting = JSON.stringify(accounting);
+          const secret = String(env.WORKER_GAS_SECRET || '').normalize('NFKC').trim().replace(/^(['"])([\s\S]*)\1$/, '$2').replace(/\s+/g, '').toLowerCase();
+          const signature = secret ? crypto.createHmac('sha256', secret).update(rawAccounting).digest('hex') : '';
+          const targetUrl = env.MANUAL_ORDER_GAS_URL || env.GAS_WEBHOOK_URL;
+          const bodyPayload = JSON.stringify({ ...accounting, payload: rawAccounting, signature });
+          const response=await fetch(targetUrl,{method:'POST',headers:{'content-type':'text/plain;charset=utf-8'},body:bodyPayload});
           const ack=await response.json();order.accountingStatus=response.ok&&ack.ok?'recorded':'needs_review';
         }catch{order.accountingStatus='needs_review';}
         order.status='awaiting_payment';await orderEmail.writeOrder(env,order);
