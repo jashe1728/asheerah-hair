@@ -43,7 +43,7 @@ const SEEDED_PRODUCT_REVIEWS = [
 ];
 async function loadCatalog(){
   if (CATALOG) return CATALOG;
-  const r = await fetch('catalog.json?v=20261023-onika-first');
+  const r = await fetch('catalog.json?v=20261023-burmese-media');
   CATALOG = await r.json();
   refreshCartPrices();
   return CATALOG;
@@ -614,17 +614,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 function renderFeatured(){
   const grid = document.getElementById('featuredGrid'); if (!grid || !CATALOG) return;
   const cur = curCode();
-  const preferred = ['wigs','bundles','crochet'];
-  const pools = Object.fromEntries(preferred.map(cat => [cat, CATALOG.products.filter(p => p.category === cat && p.images && p.images[0])]));
-  // Lead with Onika and Chocolate, followed by bundles and crochet.
-  const list = ['x-onika-ginger-bombshell','chocolate-caramel-highlight-wig'].map(handle => CATALOG.products.find(p => p.handle === handle)).filter(Boolean);
-  for (const cat of ['bundles','crochet']){
-    if (pools[cat][0]) list.push(pools[cat][0]);
-  }
-  for (const cat of preferred){
-    if (list.length >= 4) break;
-    if (pools[cat][1]) list.push(pools[cat][1]);
-  }
+  const list = ['x-onika-ginger-bombshell','chocolate-caramel-highlight-wig','burmese-curly-bundles','pixie-curly-bundles'].map(handle => CATALOG.products.find(p => p.handle === handle)).filter(Boolean);
   grid.innerHTML = list.slice(0,4).map(p => {
     const pricing = variantPricing(p, defaultOpts(p));
     const price = priceHTML(pricing.priceEur, pricing.hasPromo ? pricing.compareEur : null, cur);

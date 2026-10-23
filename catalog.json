@@ -1199,6 +1199,228 @@
       ]
     },
     {
+      "id": 15613670490489,
+      "handle": "burmese-curly-bundles",
+      "title": "Burmese Curly Bundles",
+      "category": "bundles",
+      "description": "Achieve a bold and voluminous look with our Luxury Burmese Curly Human Hair Bundles. Made from 100% Virgin Human Hair, these bundles feature soft, defined curls with exceptional fullness and natural shine. They are minimal shedding, tangle-resistant, and can be dyed, bleached, and styled to suit your desired look. 100% Virgin Human Hair Soft, Defined Burmese Curls Minimal Shedding & Tangle-Free Natural Black ( #1B ) Heat & Color Safe Lengths Available: 10\"–32\" Approx. 100g Per Bundle",
+      "images": [
+        "assets/img/burmese-curly-bundles-model-1.jpeg",
+        "assets/img/burmese-curly-bundles-detail.jpeg",
+        "assets/img/burmese-curly-bundles-model-2.jpeg",
+        "https://cdn.shopify.com/s/files/1/1018/3927/4361/files/photo_5890814080925240876_y.jpg",
+        "https://cdn.shopify.com/s/files/1/1018/3927/4361/files/photo_5890814080925240877_y.jpg"
+      ],
+      "type": "hair bundles",
+      "options": [
+        {
+          "name": "Hair Length",
+          "values": [
+            "12",
+            "14",
+            "16",
+            "18",
+            "20",
+            "22",
+            "24",
+            "26",
+            "28"
+          ]
+        },
+        {
+          "name": "Bundle Weight",
+          "values": [
+            "300g (3 pcs)"
+          ]
+        }
+      ],
+      "variants": [
+        {
+          "title": "12 / 300g (3 pcs)",
+          "opt1": "12",
+          "opt2": "300g (3 pcs)",
+          "opt3": null,
+          "price_eur": 152.99,
+          "compare_eur": 217.99
+        },
+        {
+          "title": "14 / 300g (3 pcs)",
+          "opt1": "14",
+          "opt2": "300g (3 pcs)",
+          "opt3": null,
+          "price_eur": 163.99,
+          "compare_eur": 228.99
+        },
+        {
+          "title": "16 / 300g (3 pcs)",
+          "opt1": "16",
+          "opt2": "300g (3 pcs)",
+          "opt3": null,
+          "price_eur": 176.99,
+          "compare_eur": 241.99
+        },
+        {
+          "title": "18 / 300g (3 pcs)",
+          "opt1": "18",
+          "opt2": "300g (3 pcs)",
+          "opt3": null,
+          "price_eur": 189.99,
+          "compare_eur": 254.99
+        },
+        {
+          "title": "20 / 300g (3 pcs)",
+          "opt1": "20",
+          "opt2": "300g (3 pcs)",
+          "opt3": null,
+          "price_eur": 202.99,
+          "compare_eur": 267.99
+        },
+        {
+          "title": "22 / 300g (3 pcs)",
+          "opt1": "22",
+          "opt2": "300g (3 pcs)",
+          "opt3": null,
+          "price_eur": 215.99,
+          "compare_eur": 280.99
+        },
+        {
+          "title": "24 / 300g (3 pcs)",
+          "opt1": "24",
+          "opt2": "300g (3 pcs)",
+          "opt3": null,
+          "price_eur": 231.99,
+          "compare_eur": 296.99
+        },
+        {
+          "title": "26 / 300g (3 pcs)",
+          "opt1": "26",
+          "opt2": "300g (3 pcs)",
+          "opt3": null,
+          "price_eur": 252.99,
+          "compare_eur": 317.99
+        },
+        {
+          "title": "28 / 300g (3 pcs)",
+          "opt1": "28",
+          "opt2": "300g (3 pcs)",
+          "opt3": null,
+          "price_eur": 265.99,
+          "compare_eur": 330.99
+        }
+      ],
+      "videos": [
+        "assets/video/burmese-curly-bundles.mp4"
+      ]
+    },
+    {
+      "handle": "pixie-curly-bundles",
+      "title": "Pixie Curly Bundles",
+      "category": "bundles",
+      "description": "Pixie Curly bundles, sold as a 300g set of 3 pieces. Select your preferred length.",
+      "images": [
+        "assets/img/pixie-curly-bundles-1.webp",
+        "assets/img/pixie-curly-bundles-3.webp",
+        "assets/img/pixie-curly-bundles-5.webp"
+      ],
+      "type": "Pixie Curly Bundles",
+      "options": [
+        {
+          "name": "Hair Length",
+          "values": [
+            "12",
+            "14",
+            "16",
+            "18",
+            "20",
+            "22",
+            "24",
+            "26",
+            "28"
+          ]
+        },
+        {
+          "name": "Bundle Weight",
+          "values": [
+            "300g (3 pcs)"
+          ]
+        }
+      ],
+      "variants": [
+        {
+          "title": "12 / 300g (3 pcs)",
+          "opt1": "12",
+          "opt2": "300g (3 pcs)",
+          "opt3": null,
+          "price_eur": 152.99,
+          "compare_eur": 217.99
+        },
+        {
+          "title": "14 / 300g (3 pcs)",
+          "opt1": "14",
+          "opt2": "300g (3 pcs)",
+          "opt3": null,
+          "price_eur": 163.99,
+          "compare_eur": 228.99
+        },
+        {
+          "title": "16 / 300g (3 pcs)",
+          "opt1": "16",
+          "opt2": "300g (3 pcs)",
+          "opt3": null,
+          "price_eur": 176.99,
+          "compare_eur": 241.99
+        },
+        {
+          "title": "18 / 300g (3 pcs)",
+          "opt1": "18",
+          "opt2": "300g (3 pcs)",
+          "opt3": null,
+          "price_eur": 189.99,
+          "compare_eur": 254.99
+        },
+        {
+          "title": "20 / 300g (3 pcs)",
+          "opt1": "20",
+          "opt2": "300g (3 pcs)",
+          "opt3": null,
+          "price_eur": 202.99,
+          "compare_eur": 267.99
+        },
+        {
+          "title": "22 / 300g (3 pcs)",
+          "opt1": "22",
+          "opt2": "300g (3 pcs)",
+          "opt3": null,
+          "price_eur": 215.99,
+          "compare_eur": 280.99
+        },
+        {
+          "title": "24 / 300g (3 pcs)",
+          "opt1": "24",
+          "opt2": "300g (3 pcs)",
+          "opt3": null,
+          "price_eur": 231.99,
+          "compare_eur": 296.99
+        },
+        {
+          "title": "26 / 300g (3 pcs)",
+          "opt1": "26",
+          "opt2": "300g (3 pcs)",
+          "opt3": null,
+          "price_eur": 252.99,
+          "compare_eur": 317.99
+        },
+        {
+          "title": "28 / 300g (3 pcs)",
+          "opt1": "28",
+          "opt2": "300g (3 pcs)",
+          "opt3": null,
+          "price_eur": 265.99,
+          "compare_eur": 330.99
+        }
+      ]
+    },
+    {
       "id": 15615480201593,
       "handle": "pixie-curly-crochet-human-hair",
       "title": "Pixie Curly Crochet human hair",
@@ -1857,114 +2079,6 @@
         "https://cdn.shopify.com/s/files/1/1018/3927/4361/files/photo_5890814080925240881_y.jpg",
         "https://cdn.shopify.com/s/files/1/1018/3927/4361/files/photo_5890814080925240882_y.jpg",
         "https://cdn.shopify.com/s/files/1/1018/3927/4361/files/photo_5890814080925240883_y.jpg"
-      ],
-      "type": "hair bundles",
-      "options": [
-        {
-          "name": "Hair Length",
-          "values": [
-            "12",
-            "14",
-            "16",
-            "18",
-            "20",
-            "22",
-            "24",
-            "26",
-            "28"
-          ]
-        },
-        {
-          "name": "Bundle Weight",
-          "values": [
-            "300g (3 pcs)"
-          ]
-        }
-      ],
-      "variants": [
-        {
-          "title": "12 / 300g (3 pcs)",
-          "opt1": "12",
-          "opt2": "300g (3 pcs)",
-          "opt3": null,
-          "price_eur": 152.99,
-          "compare_eur": 217.99
-        },
-        {
-          "title": "14 / 300g (3 pcs)",
-          "opt1": "14",
-          "opt2": "300g (3 pcs)",
-          "opt3": null,
-          "price_eur": 163.99,
-          "compare_eur": 228.99
-        },
-        {
-          "title": "16 / 300g (3 pcs)",
-          "opt1": "16",
-          "opt2": "300g (3 pcs)",
-          "opt3": null,
-          "price_eur": 176.99,
-          "compare_eur": 241.99
-        },
-        {
-          "title": "18 / 300g (3 pcs)",
-          "opt1": "18",
-          "opt2": "300g (3 pcs)",
-          "opt3": null,
-          "price_eur": 189.99,
-          "compare_eur": 254.99
-        },
-        {
-          "title": "20 / 300g (3 pcs)",
-          "opt1": "20",
-          "opt2": "300g (3 pcs)",
-          "opt3": null,
-          "price_eur": 202.99,
-          "compare_eur": 267.99
-        },
-        {
-          "title": "22 / 300g (3 pcs)",
-          "opt1": "22",
-          "opt2": "300g (3 pcs)",
-          "opt3": null,
-          "price_eur": 215.99,
-          "compare_eur": 280.99
-        },
-        {
-          "title": "24 / 300g (3 pcs)",
-          "opt1": "24",
-          "opt2": "300g (3 pcs)",
-          "opt3": null,
-          "price_eur": 231.99,
-          "compare_eur": 296.99
-        },
-        {
-          "title": "26 / 300g (3 pcs)",
-          "opt1": "26",
-          "opt2": "300g (3 pcs)",
-          "opt3": null,
-          "price_eur": 252.99,
-          "compare_eur": 317.99
-        },
-        {
-          "title": "28 / 300g (3 pcs)",
-          "opt1": "28",
-          "opt2": "300g (3 pcs)",
-          "opt3": null,
-          "price_eur": 265.99,
-          "compare_eur": 330.99
-        }
-      ]
-    },
-    {
-      "id": 15613670490489,
-      "handle": "burmese-curly-bundles",
-      "title": "Burmese Curly Bundles",
-      "category": "bundles",
-      "description": "Achieve a bold and voluminous look with our Luxury Burmese Curly Human Hair Bundles. Made from 100% Virgin Human Hair, these bundles feature soft, defined curls with exceptional fullness and natural shine. They are minimal shedding, tangle-resistant, and can be dyed, bleached, and styled to suit your desired look. 100% Virgin Human Hair Soft, Defined Burmese Curls Minimal Shedding & Tangle-Free Natural Black ( #1B ) Heat & Color Safe Lengths Available: 10\"–32\" Approx. 100g Per Bundle",
-      "images": [
-        "https://cdn.shopify.com/s/files/1/1018/3927/4361/files/photo_5890814080925240876_y.jpg",
-        "https://cdn.shopify.com/s/files/1/1018/3927/4361/files/photo_5890814080925240877_y.jpg"
       ],
       "type": "hair bundles",
       "options": [
@@ -15735,114 +15849,6 @@
           "price_eur": 377.99,
           "compare_eur": 422.99,
           "opt4": "LARGE"
-        }
-      ]
-    },
-    {
-      "handle": "pixie-curly-bundles",
-      "title": "Pixie Curly Bundles",
-      "category": "bundles",
-      "description": "Pixie Curly bundles, sold as a 300g set of 3 pieces. Select your preferred length.",
-      "images": [
-        "assets/img/pixie-curly-bundles-1.webp",
-        "assets/img/pixie-curly-bundles-3.webp",
-        "assets/img/pixie-curly-bundles-5.webp"
-      ],
-      "type": "Pixie Curly Bundles",
-      "options": [
-        {
-          "name": "Hair Length",
-          "values": [
-            "12",
-            "14",
-            "16",
-            "18",
-            "20",
-            "22",
-            "24",
-            "26",
-            "28"
-          ]
-        },
-        {
-          "name": "Bundle Weight",
-          "values": [
-            "300g (3 pcs)"
-          ]
-        }
-      ],
-      "variants": [
-        {
-          "title": "12 / 300g (3 pcs)",
-          "opt1": "12",
-          "opt2": "300g (3 pcs)",
-          "opt3": null,
-          "price_eur": 152.99,
-          "compare_eur": 217.99
-        },
-        {
-          "title": "14 / 300g (3 pcs)",
-          "opt1": "14",
-          "opt2": "300g (3 pcs)",
-          "opt3": null,
-          "price_eur": 163.99,
-          "compare_eur": 228.99
-        },
-        {
-          "title": "16 / 300g (3 pcs)",
-          "opt1": "16",
-          "opt2": "300g (3 pcs)",
-          "opt3": null,
-          "price_eur": 176.99,
-          "compare_eur": 241.99
-        },
-        {
-          "title": "18 / 300g (3 pcs)",
-          "opt1": "18",
-          "opt2": "300g (3 pcs)",
-          "opt3": null,
-          "price_eur": 189.99,
-          "compare_eur": 254.99
-        },
-        {
-          "title": "20 / 300g (3 pcs)",
-          "opt1": "20",
-          "opt2": "300g (3 pcs)",
-          "opt3": null,
-          "price_eur": 202.99,
-          "compare_eur": 267.99
-        },
-        {
-          "title": "22 / 300g (3 pcs)",
-          "opt1": "22",
-          "opt2": "300g (3 pcs)",
-          "opt3": null,
-          "price_eur": 215.99,
-          "compare_eur": 280.99
-        },
-        {
-          "title": "24 / 300g (3 pcs)",
-          "opt1": "24",
-          "opt2": "300g (3 pcs)",
-          "opt3": null,
-          "price_eur": 231.99,
-          "compare_eur": 296.99
-        },
-        {
-          "title": "26 / 300g (3 pcs)",
-          "opt1": "26",
-          "opt2": "300g (3 pcs)",
-          "opt3": null,
-          "price_eur": 252.99,
-          "compare_eur": 317.99
-        },
-        {
-          "title": "28 / 300g (3 pcs)",
-          "opt1": "28",
-          "opt2": "300g (3 pcs)",
-          "opt3": null,
-          "price_eur": 265.99,
-          "compare_eur": 330.99
         }
       ]
     },
