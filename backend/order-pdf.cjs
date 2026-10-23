@@ -9,8 +9,8 @@ const font=name=>({name,encodeText:s=>Array.from(s).map(c=>glyph(c)[0]).join('')
 const staticObjects=template.objects.map(([id,b64])=>[id,Buffer.from(b64,'base64')]);
 function document(){
   const pages=[];let title='Asheerah Hair',author='Asheerah Hair';
-  function addPage(){const commands=[];const page={commands,drawText(text,opts){commands.push(`BT /${opts.font.name==='Helvetica'?'F1':'F2'} ${fmt(opts.size)} Tf ${opts.color.join(' ')} rg 1 0 0 1 ${fmt(opts.x)} ${fmt(opts.y)} Tm <${opts.font.encodeText(text)}> Tj ET\n`);}};pages.push(page);return page;}
-  const first=addPage();first.commands.push(`q ${fmt(template.logoWidth)} 0 0 ${fmt(template.logoHeight)} 44 ${fmt(790-template.logoHeight)} cm /Logo Do Q\n`);
+  function addPage(){const commands=[];const page={commands,drawRectangle(o){commands.push(`q ${o.color.join(' ')} rg ${fmt(o.x)} ${fmt(o.y)} ${fmt(o.width)} ${fmt(o.height)} re f Q\n`);},drawLogo(o){commands.push(`q ${fmt(o.width)} 0 0 ${fmt(o.width*template.logoHeight/template.logoWidth)} ${fmt(o.x)} ${fmt(o.y)} cm /Logo Do Q\n`);},drawText(text,opts){commands.push(`BT /${opts.font.name==='Helvetica'?'F1':'F2'} ${fmt(opts.size)} Tf ${opts.color.join(' ')} rg 1 0 0 1 ${fmt(opts.x)} ${fmt(opts.y)} Tm <${opts.font.encodeText(text)}> Tj ET\n`);}};pages.push(page);return page;}
+  addPage();
   return {embedFont:async name=>font(name),addPage,getPage:i=>pages[i],setTitle:t=>{title=t;},setAuthor:a=>{author=a;},setCreationDate(){},setModificationDate(){},async save(){
     const objects=new Map(staticObjects);let next=Math.max(...objects.keys())+1;
     const f1=next++,f2=next++,root=next++,tree=next++,info=next++;

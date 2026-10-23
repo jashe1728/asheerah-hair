@@ -29,11 +29,14 @@ Activation uses `ORDER_EMAIL_ENABLED = "1"` in the Worker and `orderRequestsEnab
 
 ## Verification
 
+- Revised design approved for implementation on 23 October: brown and cream email panels, centred PDF logo, warm greeting and closing, two-column customer/delivery details, item table and highlighted total. `order-email-design.cjs` owns presentation; payment and queue logic remain separate. The user's local invoice reference informed table hierarchy only; no reference customer data or tax/invoice claims were copied.
+- Live scheduled Worker fixture `f69d181e-e134-4530-bbf4-db86702fc69f` delivered to the same test inbox. Resend message `01a16707-bf22-78da-a459-933fcdd21837` reported **delivered**. One private fictional queue record was authorized; no charge, accounting order or schedule change. This test used the preceding template; revised HTML/PDF layout is separately rendered and checked locally.
+
 - Branded HTML preview and two PDF states generated under ignored `output/order-email/`; all customer details in previews are fictional.
 - PDF rendered and visually reviewed; mobile HTML checked at 390px without horizontal overflow.
 - Automated checks cover signed paid triggers, unpaid/manual wording, country restriction, Turnstile action, forged prices, escaping, retry failures, deduplication, stable payloads and multi-page PDF output.
 - Actual test sent to the user's chosen inbox `shelton.fenhane@gmail.com`, labelled `[TESTE — SEM COMPRA]`. Resend message `01a166f5-93cb-7f2b-a304-86101feecaff` reported **delivered**. No real purchase, charge or fulfillment was performed for this test. This proves sender delivery and attachment sending, not a real Stripe purchase.
-- New Chocolate/Ginger products, pricing and expanded photo drafts remain local and must not be staged with this release.
+- Shelton subsequently authorized publishing Chocolate/Ginger products with original photos. Expanded photo drafts remain local and are excluded from publication.
 
 ## Design and API references
 
