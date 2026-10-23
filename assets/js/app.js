@@ -46,7 +46,7 @@ const SEEDED_PRODUCT_REVIEWS = [
 ];
 async function loadCatalog(){
   if (CATALOG) return CATALOG;
-  const r = await fetch('catalog.json?v=20261023-burmese-media');
+  const r = await fetch('catalog.json?v=20261023-colored-densities');
   CATALOG = await r.json();
   refreshCartPrices();
   return CATALOG;
