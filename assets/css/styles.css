@@ -903,7 +903,6 @@ footer{padding-bottom:4rem}
 /* Show the full crochet hairstyle, including the sides, without hover cropping. */
 .product-card[data-category="crochet"] .img img{object-fit:contain;object-position:center}
 .product-card[data-category="crochet"]:hover .img img{transform:none}
-.promo-card[href="shop.html?cat=crochet"] .promo-media img{object-fit:contain;object-position:center}
 
 /* Compact product squares and readable campaign text on phones only. */
 @media(max-width:640px){
