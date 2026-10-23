@@ -42,6 +42,6 @@ test('shipping page has the supplied regional estimates and €7.99 Europe / €
   assert.match(shipping, /€7\.99/);
   assert.equal(c.I18N.shipping_select_country.en, 'Select your country to calculate shipping.');
   assert.match(c.I18N.shipping_europe.en, /6–10 business days/i);
-  assert.match(c.I18N.shipping_africa.en, /7–15 days/i);
-  assert.match(c.I18N.shipping_americas.en, /3–7 days/i);
+  assert.match(c.I18N.shipping_africa.en, /9–15 days/i);
+  assert.match(c.I18N.shipping_americas.en, /9–15 days/i);
 });

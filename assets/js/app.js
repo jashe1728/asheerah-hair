@@ -964,7 +964,7 @@ function renderCartPage(){
       <div class="row"><span>${uiTxt('subtotal')}</span><span>${money(t.subtotalOriginal,cur)}</span></div>
       ${t.itemDiscount>0?`<div class="row disc"><span>${uiTxt('discount_total')}</span><span>−${money(t.itemDiscount,cur)}</span></div>`:''}
       <div class="row"><span>${uiTxt('shipping')}</span><span>${t.shippingKnown?money(t.shipping,cur):uiTxt('shipping_calc_checkout')}</span></div>
-      <div class="shipping-eta">${uiTxt('shipping_eta')}: ${escapeHTML(CONFIG.shippingEta || '6–10 days')}</div>
+      <div class="shipping-eta">${escapeHTML(uiTxt('shipping_delivery_summary'))}</div>
       <div class="row total"><span>${uiTxt('total')}</span><span>${t.shippingKnown?money(t.totalFinal,cur):uiTxt('shipping_calc_checkout')}</span></div>
       <a href="checkout.html" class="btn-primary" style="width:100%;text-align:center;margin-top:1rem">${uiTxt('checkout')}</a>
     </div>
@@ -1217,7 +1217,7 @@ function renderCheckoutPage(){
           ${t.totalDiscount>0?`<div class="row disc"><span>${uiTxt('discount_total')}</span><span id="coDiscountTotal">−${money(t.totalDiscount,cur)}</span></div>`:''}
           <div class="row"><span>${uiTxt('merchandise_subtotal') || uiTxt('subtotal')}</span><span id="coMerchandiseSubtotal">${money(t.subtotalFinal,cur)}</span></div>
           <div class="row"><span>${uiTxt('shipping')}</span><span id="coShippingAmount">${t.shippingKnown?(t.shipping===0?(uiTxt('free')||'Grátis'):money(t.shipping,cur)):selectCountryPrompt}</span></div>
-      <div class="shipping-eta">${uiTxt('shipping_eta')}: ${escapeHTML(CONFIG.shippingEta || '6–10 days')}</div>
+      <div class="shipping-eta">${uiTxt('shipping_eta')}: ${escapeHTML(savedCountryCode ? (EUROPE_COUNTRY_CODES.includes(savedCountryCode) ? (CONFIG.shippingEta || '6–10 days') : uiTxt('shipping_eta_international')) : uiTxt('shipping_delivery_summary'))}</div>
           ${t.taxes>0?`<div class="row"><span>${uiTxt('taxes')}</span><span>${money(t.taxes,cur)}</span></div>`:''}
           <div class="row total"><span>${uiTxt('final_total')}</span><span id="coGrandTotal">${t.shippingKnown?money(t.totalFinal,cur):selectCountryPrompt}</span></div>
         </div>
@@ -1402,6 +1402,8 @@ function renderCheckoutPage(){
     const rawValue = countryInput.value.trim();
     const code = resolveCountryCode(rawValue);
     syncPaymentMethods(code);
+    const eta = form.querySelector('.shipping-eta');
+    if (eta) eta.textContent = code ? uiTxt('shipping_eta') + ': ' + (EUROPE_COUNTRY_CODES.includes(code) ? (CONFIG.shippingEta || '6–10 days') : uiTxt('shipping_eta_international')) : uiTxt('shipping_delivery_summary');
     const method = (code === 'PT') ? getFulfillmentMethod() : 'delivery';
     const sequence = ++quoteSequence;
     const currentRequestId = `${code}:${method}:${sequence}`;
