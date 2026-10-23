@@ -23,14 +23,22 @@ Use the **separate signed endpoint** option in the review runbook:
 4. Publish/wait for the cache-versioned GitHub Pages frontend, verify private newsletter access and public rejection/report paths, then update the old active deployments to the strict version so those URLs no longer accept unsigned writes. Do not archive original endpoints until in-flight/retry behavior has been accounted for.
 5. Verify accounting acknowledgements and any retained needs_review reconciliation separately from email delivery. No customer charge or fictional live accounting write is required for the configuration/signing probes.
 
-## Current production gate
+## Production approval and deployment
 
-Automatic approval review rejected a full-source save to the live private Apps Script project: the generic instruction “fix these” was not considered specific approval for replacing production accounting source. That mutation was not performed. The live Apps Script cutover, Worker deployment and frontend publication for this combined release remain pending explicit approval of that concrete action. Do not claim local tests as production verification.
+Automatic approval review initially required specific approval for the live Apps Script source save and Cloudflare changes. The owner subsequently approved the exact production cutover, including saving Code.gs, creating the signed-only deployment, switching the Worker, hardening both legacy URLs, publishing the newsletter editor and activating the edge rules. Those changes were then completed.
 
-It also rejected saving the prepared Cloudflare security-header rule pending specific approval of production settings. Its form has been prepared to exclude private routes, use DENY, start HSTS at one day, and omit CSP Report-Only until the collector is deployed. No rule save/activation occurred during preparation. The dashboard confirms the zone is on the Free plan.
+Apps Script version 20 is active on the new endpoint and both legacy accounting URLs. The non-writing configuration function confirmed signing-property presence without logging its value. Live authenticated Worker probes report compatible=true for Stripe and manual accounting. All three URLs independently rejected harmless unsigned diagnostic POSTs without creating orders or sending owner email.
+
+The public response-header rule is active: DENY, nosniff, the scoped referrer policy, restricted camera/microphone/geolocation permissions, one-day HSTS and CSP Report-Only. Private dashboard/API paths are excluded to preserve their existing enforced policies. A harmless local browser page generated a real CSP violation; the authenticated live readiness endpoint confirmed that its sanitized report reached private R2 storage.
+
+The Free-plan rate rule is active for exactly /create-checkout-session and /shipping-quote: 20 requests per 10 seconds per IP, Block for 10 seconds. No plan upgrade was used, and webhook paths are outside its expression. No live flood test was performed.
+
+Worker version: fada0937-00b1-420e-81c8-b64434ef6025. GitHub Pages successfully published the integrated release and later preview corrections. Antigravity's concurrent 176dbeb product-price update was fast-forwarded and preserved before publishing the preview changes. See the final deployment record below for source and smoke-check evidence.
 
 ## Review evidence
 
 Brodie independently inspected the new newsletter implementation read-only. Three queue/delivery blockers were fixed (pagination starvation, stranded queue marker, ambiguous network delivery). Brodie then independently reran all eight newsletter tests available at that point: 8 passed, 0 failed, with no remaining concrete blocker in that bounded re-review. Later tests add image-size/media checks and missing-key rejection. Provider and live deployment behavior remain distinct acceptance checks.
 
-Final local evidence: **183/183 tests passed**; Wrangler 4.152.0 build-only dry run passed (627.80 KiB / gzip 364.54 KiB); desktop and 390px phone browser inspection completed with no horizontal overflow. The isolated local preview binds only 127.0.0.1:8769, uses fictional subscribers and simulated provider responses, and sends no real emails. No real campaign or test message was sent by this implementation task.
+Final integrated local evidence: **185/185 tests passed**. Wrangler 4.152.0 built and deployed the Worker successfully (628.04 KiB / gzip 364.61 KiB). Local desktop/390px preview checks passed. The isolated local preview binds only 127.0.0.1:8769, uses fictional subscribers and simulated provider responses, and sends no real emails. No real campaign or test message was sent by this implementation task.
+
+Live smoke checks: public homepage/checkout headers present; private newsletter API returns 401 without a session; authorized editor loads and saves a legitimate starter draft; server-rendered email opens; in-page DOM preview renders logo and text without scripts; Portugal delivery quote returns 799 cents; unsigned Stripe webhook returns 400; public product-review GET returns 200 with its required product parameter. These do not substitute for a real paid-order test or an actual campaign-delivery test.

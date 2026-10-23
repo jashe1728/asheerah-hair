@@ -17,3 +17,5 @@ Codex addressed each issue and added regression coverage. Brodie's independent r
 > No remaining concrete blocker found in this bounded re-review. Production behavior remains unverified.
 
 The final full local suite subsequently passed 183 tests, including additional upload-limit/signature and missing-signing-key cases. This evidence does not claim Hermes acceptance, Antigravity re-execution, a live campaign send, or production deployment verification.
+
+The source-level frame correction was superseded by an in-page DOM preview after live browser framing remained blocked. Brodie separately reviewed d1a9bba and found no concrete security blocker: content uses textContent, authenticated image endpoints and server-validated button URLs; normal links use noopener noreferrer; authentication/CSP are unchanged. Final integrated tests then passed 185/185. Live rendering was verified separately by Codex.

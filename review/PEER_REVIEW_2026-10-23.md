@@ -1,5 +1,7 @@
 # Asheerah Hair security remediation peer review
 
+Historical review of b280c69. The findings below were subsequently corrected and the owner-approved release was deployed; see [the final deployment record](../docs/SECURITY_RELEASE_2026-10-23.md). This original verdict is retained as review evidence for the submitted revision.
+
 Date: 2026-10-23. Reviewer: Codex / Head 2.
 
 **Verdict: changes requested. Do not merge or deploy b280c69 as submitted.** No production code, rules, credentials, orders, or emails were changed by this review.
