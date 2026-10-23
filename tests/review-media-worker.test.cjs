@@ -60,3 +60,14 @@ test('review upload rejects unsupported media and missing anti-bot token',async(
     const noCaptcha=await handleRequest(new Request('https://worker.example/reviews',{method:'POST',headers:{Origin:'https://asheerahhair.com'},body:noToken}),env);assert.equal(noCaptcha.status,403);
   }finally{global.fetch=oldFetch;}
 });
+
+
+test('review uploads enforce count, individual and combined size limits before storage',async()=>{
+  for(const sizes of [[8*1024*1024+1],[8,8,8,8],[7*1024*1024,7*1024*1024,7*1024*1024]]){
+    const bucket=memoryBucket(),env=envFor(bucket),form=new FormData();
+    form.set('productHandle','straight-wig');form.set('name','Size test');form.set('rating','5');form.set('text','Limit check');form.set('turnstileToken','unused');
+    sizes.forEach((size,i)=>{const bytes=new Uint8Array(size);bytes.set([0x89,0x50,0x4e,0x47,0x0d,0x0a,0x1a,0x0a]);form.append('media',new File([bytes],`photo-${i}.png`,{type:'image/png'}));});
+    const response=await handleRequest(new Request('https://worker.example/reviews',{method:'POST',headers:{Origin:'https://asheerahhair.com'},body:form}),env);
+    assert.equal(response.status,413);assert.equal(bucket.objects.size,0);
+  }
+});

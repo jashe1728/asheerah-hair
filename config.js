@@ -51,6 +51,6 @@ window.CONFIG = {
   stripeCheckoutURL: 'https://asheerahhair.com/create-checkout-session', // Live Worker endpoint; never put a secret here.
   stripePublishable: '',
   // Public Worker endpoint/site key only; server-side secrets stay in Worker config.
-  reviewAPIURL: '',
-  reviewTurnstileSiteKey: '',
+  reviewAPIURL: 'https://asheerahhair.com',
+  reviewTurnstileSiteKey: '0x4AAAAAAFhy5-cPqvF8zxS4',
 };

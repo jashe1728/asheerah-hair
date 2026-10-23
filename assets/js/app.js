@@ -23,13 +23,14 @@ const CURRENCIES = {
 };
 
 if (typeof I18N === 'object') Object.assign(I18N, {
+  review_choose_product:{pt:'Escolhe o produto que queres avaliar',en:'Choose the product you want to review',es:'Elige el producto que quieres valorar',de:'Wähle das Produkt für deine Bewertung',fr:'Choisissez le produit à évaluer',it:'Scegli il prodotto da recensire'},
   review_media_label:{pt:'Adicionar fotos ou vídeo',en:'Add photos or video',es:'Añadir fotos o vídeo',de:'Fotos oder Video hinzufügen',fr:'Ajouter des photos ou une vidéo',it:'Aggiungi foto o video'},
   review_upload_setup:{pt:'O carregamento de imagens e vídeos está a ser configurado.',en:'Photo and video uploads are being set up.',es:'La carga de fotos y vídeos se está configurando.',de:'Der Foto- und Video-Upload wird eingerichtet.',fr:'Le téléversement des photos et vidéos est en cours de configuration.',it:'Il caricamento di foto e video è in configurazione.'},
   review_moderation_note:{pt:'As fotos e os vídeos serão revistos antes de aparecerem publicamente.',en:'Photos and videos are reviewed before appearing publicly.',es:'Las fotos y los vídeos se revisan antes de mostrarse públicamente.',de:'Fotos und Videos werden vor der öffentlichen Anzeige geprüft.',fr:'Les photos et vidéos sont vérifiées avant leur publication.',it:'Foto e video vengono controllati prima della pubblicazione.'},
   review_media_alt:{pt:'Imagem ou vídeo da avaliação',en:'Review photo or video',es:'Foto o vídeo de la opinión',de:'Bewertungsfoto oder -video',fr:'Photo ou vidéo de l’avis',it:'Foto o video della recensione'},
   review_submit_error:{pt:'Não foi possível enviar a avaliação. Tenta novamente mais tarde.',en:'Could not submit the review. Please try again later.',es:'No se pudo enviar la opinión. Inténtalo de nuevo más tarde.',de:'Die Bewertung konnte nicht gesendet werden. Bitte später erneut versuchen.',fr:'Impossible d’envoyer l’avis. Réessayez plus tard.',it:'Impossibile inviare la recensione. Riprova più tardi.'},
   review_pending:{pt:'Avaliação enviada. Será publicada após aprovação.',en:'Review submitted. It will appear after approval.',es:'Opinión enviada. Se publicará tras su aprobación.',de:'Bewertung gesendet. Sie erscheint nach der Freigabe.',fr:'Avis envoyé. Il sera publié après approbation.',it:'Recensione inviata. Sarà pubblicata dopo l’approvazione.'},
-  review_media_limit:{pt:'Escolhe até 3 ficheiros, com máximo de 8 MB cada.',en:'Choose up to 3 files, up to 8 MB each.',es:'Elige hasta 3 archivos, de un máximo de 8 MB cada uno.',de:'Wähle bis zu 3 Dateien mit jeweils maximal 8 MB.',fr:'Choisissez jusqu’à 3 fichiers de 8 Mo maximum chacun.',it:'Scegli fino a 3 file, massimo 8 MB ciascuno.'},
+  review_media_limit:{pt:'Até 3 ficheiros: máximo de 8 MB por ficheiro e 20 MB no total.',en:'Up to 3 files: maximum 8 MB per file and 20 MB total.',es:'Hasta 3 archivos: máximo 8 MB por archivo y 20 MB en total.',de:'Bis zu 3 Dateien: maximal 8 MB pro Datei und 20 MB insgesamt.',fr:'Jusqu’à 3 fichiers : 8 Mo maximum par fichier et 20 Mo au total.',it:'Fino a 3 file: massimo 8 MB per file e 20 MB in totale.'},
 });
 
 const REMOTE_PRODUCT_REVIEWS = Object.create(null);
@@ -592,6 +593,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   const page = document.body.dataset.page;
   if (page === 'home') renderFeatured();
   if (page === 'shop') renderShop();
+  if (page === 'reviews') renderReviewPage();
   if (page === 'product') renderProduct();
   if (page === 'cart') renderCartPage();
   if (page === 'checkout') renderCheckoutPage();
@@ -689,20 +691,21 @@ function productReviewsHTML(p){
   const reviews=productReviews(p);
   const list=productReviewListHTML(reviews);
   const mediaEnabled=Boolean(CONFIG.reviewAPIURL&&CONFIG.reviewTurnstileSiteKey);
-  return `<section class="product-reviews" aria-labelledby="productReviewsTitle">
+  return `<section id="productReviews" class="product-reviews" aria-labelledby="productReviewsTitle">
     <div class="section-head"><span class="eyebrow">${uiTxt('reviews_label')}</span><h2 id="productReviewsTitle">${uiTxt('product_reviews')}</h2></div>
-    <div class="product-review-list">${list}</div>
-    <form class="review-form" onsubmit="submitProductReview(event)">
+    <form id="reviewForm" class="review-form" onsubmit="submitProductReview(event)">
       <h3>${uiTxt('leave_review')}</h3>
-      <div class="review-form-grid"><input name="reviewName" maxlength="80" placeholder="${uiTxt('review_name_ph')}" required><select name="reviewRating" aria-label="${uiTxt('review_rating')}" required><option value="5">★★★★★</option><option value="4">★★★★☆</option><option value="3">★★★☆☆</option><option value="2">★★☆☆☆</option><option value="1">★☆☆☆☆</option></select></div>
-      <textarea name="reviewText" maxlength="500" rows="4" placeholder="${uiTxt('review_text_ph')}" required></textarea>
+      <div class="review-form-grid"><input aria-label="${uiTxt('review_name_ph')}" name="reviewName" maxlength="80" placeholder="${uiTxt('review_name_ph')}" required><select name="reviewRating" aria-label="${uiTxt('review_rating')}" required><option value="5">★★★★★</option><option value="4">★★★★☆</option><option value="3">★★★☆☆</option><option value="2">★★☆☆☆</option><option value="1">★☆☆☆☆</option></select></div>
+      <textarea aria-label="${uiTxt('review_text_ph')}" name="reviewText" maxlength="500" rows="4" placeholder="${uiTxt('review_text_ph')}" required></textarea>
       <label class="review-media-label" for="reviewMedia">${uiTxt('review_media_label')}</label>
-      <input id="reviewMedia" class="review-media-input" name="reviewMedia" type="file" accept="image/jpeg,image/png,image/webp,video/mp4,video/webm" multiple ${mediaEnabled?'':'disabled'}>
+      <p id="reviewMediaLimits" class="review-upload-note">${uiTxt('review_media_limit')} JPEG, PNG, WebP, MP4, WebM.</p>
+      <input aria-describedby="reviewMediaLimits" id="reviewMedia" class="review-media-input" name="reviewMedia" type="file" accept="image/jpeg,image/png,image/webp,video/mp4,video/webm" multiple ${mediaEnabled?'':'disabled'}>
       ${mediaEnabled?'<input type="hidden" name="turnstileToken" value=""><div class="review-turnstile" id="reviewTurnstile"></div>':`<p class="review-upload-note">${uiTxt('review_upload_setup')}</p>`}
       <button class="btn-primary review-submit" type="submit">${uiTxt('submit_review')}</button>
       <p class="review-note">${uiTxt(mediaEnabled?'review_moderation_note':'review_note')}</p>
       <p class="review-status" role="status" aria-live="polite"></p>
     </form>
+    <div class="product-review-list">${list}</div>
   </section>`;
 }
 function recommendedProducts(p){
@@ -771,8 +774,24 @@ window.submitProductReview = async event => {
   let saved=[];try{saved=JSON.parse(localStorage.getItem('ash_product_reviews')||'[]');}catch(e){saved=[];}
   saved.push({productHandle:window._product.handle,name,rating,text,createdAt:new Date().toISOString()});
   localStorage.setItem('ash_product_reviews',JSON.stringify(saved.slice(-50)));
-  renderProduct();
+  if(document.body.dataset.page==='reviews')renderReviewPage();else renderProduct();
 };
+
+
+function renderReviewPage(){
+  const select=document.getElementById('reviewProduct'),root=document.getElementById('reviewRoot');
+  if(!select||!root||!CATALOG)return;
+  const selected=select.value;
+  select.innerHTML='<option value="">'+uiTxt('review_choose_product')+'</option>'+CATALOG.products.map(p=>`<option value="${escapeHTML(p.handle)}">${escapeHTML(p.title)}</option>`).join('');
+  select.value=selected;
+  select.onchange=()=>{
+    if(window.turnstile&&REVIEW_TURNSTILE_WIDGET!==null){window.turnstile.remove(REVIEW_TURNSTILE_WIDGET);REVIEW_TURNSTILE_WIDGET=null;}
+    const p=findProduct(select.value);window._product=p;
+    root.innerHTML=p?productReviewsHTML(p):'';
+    if(p){mountReviewTurnstile();loadRemoteProductReviews(p.handle);}
+  };
+  select.onchange();
+}
 
 // ---------- Product page ----------
 function renderProduct(){
@@ -812,6 +831,7 @@ function renderProduct(){
           <div class="product-heading">
           <h1>${escapeHTML(p.title)}</h1>
           ${priceRow}
+          <a class="review-jump" href="#reviewForm">★ ${uiTxt('leave_review')}</a>
           </div>
           ${productOptionGroupsHTML(opts, sel, cur)}
           <div class="qty">
@@ -828,8 +848,8 @@ function renderProduct(){
         <span class="mobile-purchase-price">${pricing.found ? money(price,cur) : uiTxt('combo_unavailable')}</span>
         <button class="btn-primary" type="button" onclick="addCurrentToCart()" ${pricing.found?'':'disabled'}>${uiTxt('add_to_cart')}</button>
       </div>
-      ${recommendationsHTML(p)}
-      ${productReviewsHTML(p)}`;
+      ${productReviewsHTML(p)}
+      ${recommendationsHTML(p)}`;
     loadRemoteProductReviews(p.handle);
     mountReviewTurnstile();
     root.querySelectorAll('.thumbs button').forEach(thumb => {

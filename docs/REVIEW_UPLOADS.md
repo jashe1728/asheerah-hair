@@ -2,7 +2,9 @@
 
 ## Current state
 
-The storefront code and Worker endpoints are prepared locally. Uploads are not live until the R2 bucket, Turnstile, Worker deployment, and public `config.js` settings below are completed. The R2 bucket is private; files are served through the Worker. New reviews are hidden until manually approved.
+The review form is available at `reviews.html`, linked from the homepage, every footer, and each product heading. Review forms appear before product recommendations. Cloudflare R2 is private and configured, Turnstile is configured for the storefront domains, and the live Worker holds the protection and moderation secrets. New submissions require approval before appearing publicly.
+
+The moderation token is stored locally, encrypted with Windows DPAPI for the current Windows user, at `C:\Users\PC\.asheerah-private\review-admin.dpapi`. Do not commit or print the decrypted token. It is also stored as the live Worker's `REVIEW_ADMIN_TOKEN` secret.
 
 Limits: up to 3 attachments per review, JPEG/PNG/WebP images or MP4/WebM videos, 8 MiB per file and 20 MiB combined. The browser and Worker both enforce the limits; the Worker also checks file signatures and requires Turnstile verification.
 
@@ -62,5 +64,5 @@ Use `"decision":"reject"` to reject. Only approved reviews/media are public. Sto
 - Review text and the submitter-provided display name become public after approval. The site does not request an email address for reviews.
 - Rejected media is deleted by the Worker; rejected review metadata is currently retained in the private bucket. Confirm a retention policy before accepting real customer submissions.
 - The Worker requires anti-bot verification and strict allowed origins; this is not a substitute for monitoring R2 usage and reviewing suspicious submissions.
-- `config.js` currently leaves `reviewAPIURL` and `reviewTurnstileSiteKey` blank, so the upload control remains disabled until setup is complete.
+- `config.js` includes only the public review URL and Turnstile site key. Private credentials remain in Worker secrets.
 - A local test pass does not prove the bucket, Turnstile widget, secrets, Worker deployment, or public site have been configured. Verify each live component separately.

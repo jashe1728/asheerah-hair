@@ -934,3 +934,10 @@ footer{padding-bottom:4rem}
   .hero .container{width:calc(100% - 64px);max-width:1440px;margin:0 auto}
   .hero-img{border-radius:24px;overflow:hidden}
 }
+
+.review-jump{display:inline-block;margin:.4rem 0 .8rem;text-decoration:underline;text-underline-offset:3px}
+.review-home-action{text-align:center;margin:0 0 2rem}
+.review-home-action a{display:inline-block}
+.review-product-select{display:block;width:100%;max-width:640px;margin:.75rem 0 1.5rem;padding:.85rem;border:1px solid var(--border);border-radius:12px;background:var(--card);color:var(--ink);font:inherit}
+#reviewForm{scroll-margin-top:24px}
+body[data-page="reviews"] .product-reviews{padding-top:1rem}
