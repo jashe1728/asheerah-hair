@@ -7,6 +7,7 @@ workers_dev = false
 preview_urls = false
 
 routes = [
+  { pattern = "asheerahhair.com/request-orange-money", zone_name = "asheerahhair.com" },
   { pattern = "asheerahhair.com/create-checkout-session", zone_name = "asheerahhair.com" },
   { pattern = "asheerahhair.com/public/*", zone_name = "asheerahhair.com" },
   { pattern = "asheerahhair.com/review-media/*", zone_name = "asheerahhair.com" },
@@ -16,6 +17,8 @@ routes = [
 ]
 
 [vars]
+ORDER_EMAIL_ENABLED = "1"
+MANUAL_ORDER_GAS_URL = "https://script.google.com/macros/s/AKfycbzKCanbiHbmlJkhhjy77g2LyTGef6jqcOBNp-2LmUsw21eOCJfSiATnLrw3i2lXlnMP/exec"
 STRIPE_MODE = "live"
 CHECKOUT_DIAGNOSTIC = "0"
 SITE_ORIGIN = "https://asheerahhair.com"
@@ -27,3 +30,6 @@ GAS_WEBHOOK_URL = "https://script.google.com/macros/s/AKfycbwFhUUndMwUeXE58D2x9U
 [[r2_buckets]]
 binding = "REVIEW_MEDIA"
 bucket_name = "asheerah-hair-review-media"
+
+[triggers]
+crons = ["*/10 * * * *"]

@@ -1,0 +1,8 @@
+const fs=require('node:fs');
+const path=require('node:path');
+const {renderEmail,makePdf}=require('./order-email.cjs');
+const output=path.join(__dirname,'../output/order-email');
+const fixture={version:1,id:'00000000-0000-4000-8000-000000000001',createdAt:'2026-10-23T12:00:00.000Z',method:'stripe',status:'paid',customer:{name:'Cliente de demonstração',email:'cliente@example.com',phone:'+351 000 000 000'},items:[{title:'P6/27 Deep Wave Crochet',qty:1,unitCents:18199,variant:'16 polegadas · 200 g',image:'assets/img/p6-27-model-v3.jpg'}],subtotalCents:18199,discountCents:1500,shippingCents:799,totalCents:17498,couponCode:'ONIKAAH',fulfillmentMethod:'delivery',fulfillmentAddress:'Morada fictícia de demonstração, Lisboa, Portugal',shippingRegion:'EUROPE'};
+async function main(){fs.mkdirSync(output,{recursive:true});const logo=fs.readFileSync(path.join(__dirname,'../assets/logo-sm.png'));for(const state of ['paid','awaiting_payment']){const o={...fixture,status:state,method:state==='paid'?'stripe':'orange_money',...(state==='paid'?{}:{shippingCents:2000,totalCents:18799,shippingRegion:'INTL',fulfillmentAddress:'Morada fictícia de demonstração, Bissau, Guiné-Bissau'})};const email=renderEmail(o);fs.writeFileSync(path.join(output,state+'.html'),email.html);fs.writeFileSync(path.join(output,state+'.pdf'),await makePdf(o,logo));fs.writeFileSync(path.join(output,state+'.json'),JSON.stringify(o,null,2));}console.log('Generated two email/PDF previews with fictional customer data.');}
+if(require.main===module)main().catch(e=>{console.error(e);process.exitCode=1;});
+module.exports={fixture};

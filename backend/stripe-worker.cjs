@@ -1,4 +1,5 @@
 const nodeCrypto = require('node:crypto');
+const orderEmail = require('./order-email.cjs');
 const crypto = nodeCrypto;
 const MAX_BODY_BYTES = 24_000;
 const MAX_ITEMS = 20;
@@ -104,7 +105,7 @@ function normalizeCheckoutRequest(input, catalog, env) {
 
   const couponCode = input.couponCode == null ? '' : String(input.couponCode).trim().toUpperCase();
   if (couponCode && !Object.prototype.hasOwnProperty.call(AMBASSADOR_COUPONS,couponCode)) throw new Error('Invalid ambassador coupon');
-  if (Object.keys(customer).some(k => !['name','email','phone','country','address','city','postalCode'].includes(k))) throw new Error('Unexpected customer fields');
+  if (Object.keys(customer).some(k => !['name','email','phone','country','address','city','postalCode','notes'].includes(k))) throw new Error('Unexpected customer fields');
 
   const rawCountry = safeText(customer.country, 80, 'country');
   const shipping = shippingForCountry(rawCountry, fulfillmentMethod);
@@ -145,6 +146,7 @@ function normalizeCheckoutRequest(input, catalog, env) {
     fulfillmentAddress = `${cleanCustomer.address}, ${cleanCustomer.postalCode} ${cleanCustomer.city}, ${cleanCustomer.country}`;
   }
 
+  if(customer.notes !== undefined){if(typeof customer.notes!=='string'||customer.notes.length>1000)throw new Error('Invalid order notes');cleanCustomer.notes=customer.notes.trim();}
   if (!catalog || catalog.currency !== 'EUR' || !Array.isArray(catalog.products)) throw new Error('Catalog unavailable');
   const shippingCents = shipping.shippingCents;
   let subtotalCents = 0;
@@ -162,7 +164,7 @@ function normalizeCheckoutRequest(input, catalog, env) {
     if (!variant) throw new Error('Unknown product variant');
     const unitCents = cents(variant.price_eur);
     subtotalCents += unitCents * quantity;
-    orderItems.push({ title: product.title, qty: quantity, opts: options });
+    orderItems.push({ title: product.title, qty: quantity, opts: options, unitCents, variant: variant.title, image: product.images?.[0] || '', handle });
     return { price_data: { currency: 'eur', unit_amount: unitCents, product_data: { name: `${product.title} — ${variant.title}`.slice(0, 250) } }, quantity };
   });
   const discountCents = couponCode ? Math.min(AMBASSADOR_COUPONS[couponCode],subtotalCents) : 0;
@@ -269,14 +271,14 @@ function authMatches(request,token){
   const a=Buffer.from(String(token)),b=Buffer.from(supplied);
   return a.length===b.length&&crypto.timingSafeEqual(a,b);
 }
-async function verifyTurnstile(request,form,env,origin){
+async function verifyTurnstile(request,form,env,origin,expectedAction){
   const responseToken=String(form.get('turnstileToken')||'');
   if(!responseToken)return false;
   if(!env.TURNSTILE_SECRET)return null;
   const body=new URLSearchParams({secret:env.TURNSTILE_SECRET,response:responseToken});
   const ip=request.headers.get('CF-Connecting-IP');if(ip)body.set('remoteip',ip);
   const result=await fetch('https://challenges.cloudflare.com/turnstile/v0/siteverify',{method:'POST',headers:{'content-type':'application/x-www-form-urlencoded'},body:body.toString()}).then(r=>r.json()).catch(()=>null);
-  return !!(result&&result.success&&result.hostname===new URL(origin).hostname);
+  return !!(result&&result.success&&result.hostname===new URL(origin).hostname&&(!expectedAction||result.action===expectedAction));
 }
 async function handleReviewRequest(request,url,env,origin){
   const bucket=env.REVIEW_MEDIA;
@@ -371,7 +373,27 @@ async function handleRequest(request, env) {
     if (!['checkout.session.completed','checkout.session.expired','checkout.session.async_payment_succeeded','checkout.session.async_payment_failed'].includes(event.type)) return json({ received:true }, 200, '*');
     if (mode && (event.livemode !== (mode === 'live') || event.data?.object?.mode !== 'payment')) return json({ error:'Payment event mode is invalid' }, 400, '*');
     if (!env.GAS_WEBHOOK_URL || !env.WORKER_GAS_SECRET) return json({ error:'Webhook forwarder is not configured' }, 503, '*');
-    try { await forwardToGas(env, { action:'stripe_event', eventId:event.id, eventType:event.type, session:event.data?.object }); }
+    try {
+      const ack = await forwardToGas(env, { action:'stripe_event', eventId:event.id, eventType:event.type, session:event.data?.object });
+      const session = event.data?.object;
+      if (env.ORDER_EMAIL_ENABLED === '1' && ack.status === 'paid' && session?.payment_status === 'paid') {
+        const order = await orderEmail.readOrder(env, session.client_reference_id);
+        // Orders started before this feature have no immutable item snapshot.
+        if (order) {
+          if (order.totalCents !== session.amount_total || (order.sessionId && order.sessionId !== session.id)) throw new Error('Notification order mismatch');
+          if (order.status !== 'paid') {
+            order.status = 'paid';
+            const shipping = session.collected_information?.shipping_details || session.shipping_details;
+            if (order.fulfillmentMethod !== 'pickup' && shipping?.address) {
+              const a = shipping.address;
+              order.fulfillmentAddress = [a.line1,a.line2,a.city,a.state,a.postal_code,a.country].filter(Boolean).join(', ');
+            }
+            await orderEmail.writeOrder(env, order);
+          }
+          await orderEmail.deliver(env, order);
+        }
+      }
+    }
     catch { return json({ error:'Payment event could not be recorded' }, 502, '*'); }
     return json({ received:true }, 200, '*');
   }
@@ -405,6 +427,43 @@ async function handleRequest(request, env) {
     }
   }
   if (url.pathname === '/reviews' || url.pathname.startsWith('/reviews/') || url.pathname.startsWith('/review-media/')) return handleReviewRequest(request, url, env, allowedOrigin);
+  if (url.pathname === '/request-orange-money' && request.method === 'POST') {
+    if (env.ORDER_EMAIL_ENABLED !== '1' || !env.REVIEW_MEDIA || !env.RESEND_API_KEY || !env.MANUAL_ORDER_GAS_URL) return json({error:'Order requests are not configured'},503,allowedOrigin);
+    const raw = await request.text();
+    if (bodyExceedsLimit(request,raw,MAX_BODY_BYTES)) return json({error:'Request too large'},413,allowedOrigin);
+    let input;
+    try { input=JSON.parse(raw); } catch { return json({error:'Invalid request'},400,allowedOrigin); }
+    if(!input||typeof input!=='object'||Array.isArray(input))return json({error:'Invalid request'},400,allowedOrigin);
+    const id=input.requestId, token=input.turnstileToken;
+    if(!/^[a-f0-9-]{36}$/i.test(id||'') || typeof token!=='string') return json({error:'Invalid request'},400,allowedOrigin);
+    if(!await verifyTurnstile(request,new Map([['turnstileToken',token]]),env,allowedOrigin,'order_request'))return json({error:'Please complete the security check'},403,allowedOrigin);
+    delete input.requestId; delete input.turnstileToken;
+    try {
+      const catalogResponse=await fetch(env.CATALOG_URL);
+      if(!catalogResponse.ok)throw new Error('Catalog unavailable');
+      const checkout=normalizeCheckoutRequest(input,await catalogResponse.json(),env);
+      if(checkout.countryCode!=='GW')return json({error:'Orange Money is only available in Guinea-Bissau'},422,allowedOrigin);
+      const digest=crypto.createHash('sha256').update(JSON.stringify(checkout)).digest('hex');
+      let order=await orderEmail.readOrder(env,id);
+      if(order && (order.method!=='orange_money'||order.requestDigest!==digest))return json({error:'Request reference already used'},409,allowedOrigin);
+      if(!order){
+        order=orderEmail.snapshot(checkout,id,'orange_money');order.requestDigest=digest;
+        // The private snapshot preserves the request even if accounting is temporarily unavailable.
+        order.accountingStatus='attempted';order.status='recording_request';
+        if(!await orderEmail.createOrder(env,order))return json({error:'Request is already being processed. Please retry.'},409,allowedOrigin);
+        const mail=orderEmail.renderEmail(order);
+        const accounting={type:'order',method:'orange_money',orderId:id,text:mail.text,customer:{...checkout.customer,zip:checkout.customer.postalCode},items:checkout.orderItems.map(i=>({...i,priceEur:i.unitCents/100})),fulfillmentMethod:'delivery',subtotalEur:checkout.subtotalCents/100,shippingEur:checkout.shippingCents/100,totalEur:checkout.totalCents/100,totalDiscountEur:checkout.discountCents/100,coupon:checkout.couponCode,currency:'EUR'};
+        try {
+          const response=await fetch(env.MANUAL_ORDER_GAS_URL,{method:'POST',headers:{'content-type':'text/plain;charset=utf-8'},body:JSON.stringify(accounting)});
+          const ack=await response.json();order.accountingStatus=response.ok&&ack.ok?'recorded':'needs_review';
+        }catch{order.accountingStatus='needs_review';}
+        order.status='awaiting_payment';await orderEmail.writeOrder(env,order);
+      }
+      // Delivery failure must not tell a customer their already-persisted request was lost.
+      let emailSent=false;try{await orderEmail.deliver(env,order);emailSent=true;}catch{console.error('Manual order email queued: '+id);}
+      return json({ok:true,orderId:id,status:'awaiting_payment',emailSent},200,allowedOrigin);
+    }catch{return json({error:'Unable to record the request'},502,allowedOrigin);}
+  }
   if (url.pathname === '/shipping-quote') {
     if (request.method !== 'POST') return json({ error:'Method not allowed' }, 405, allowedOrigin);
     const raw = await request.text();
@@ -451,6 +510,10 @@ async function handleRequest(request, env) {
     stage = 'validate_cart';
     const checkout = normalizeCheckoutRequest(input, await catalogResponse.json(), env);
     orderId = crypto.randomUUID();
+    if (env.ORDER_EMAIL_ENABLED === '1') {
+      if (!env.REVIEW_MEDIA || !env.RESEND_API_KEY) throw new Error('Order notification setup incomplete');
+      await orderEmail.writeOrder(env, orderEmail.snapshot(checkout, orderId));
+    }
     const couponSummary = checkout.couponCode ? `Ambassador coupon: ${checkout.couponCode} | ` : '';
     const fulfillmentSummary = checkout.fulfillmentMethod === 'pickup'
       ? `Fulfillment: Pickup [${checkout.pickupLocationId}] ${checkout.pickupLocation}`
@@ -522,6 +585,11 @@ async function handleRequest(request, env) {
     });
     stage = 'create_stripe_session';
     const session = await stripePost('checkout/sessions', params, env.STRIPE_SECRET_KEY, `asheerah-${orderId}`);
+    if (env.ORDER_EMAIL_ENABLED === '1') {
+      const notification = await orderEmail.readOrder(env, orderId);
+      notification.sessionId = session.id;
+      await orderEmail.writeOrder(env, notification);
+    }
     stage = 'record_session';
     await forwardToGas(env, { action:'stripe_session_created', orderId, sessionId:session.id });
     return json({ checkoutUrl:session.url, orderId }, 200, allowedOrigin);

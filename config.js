@@ -52,5 +52,6 @@ window.CONFIG = {
   stripePublishable: '',
   // Public Worker endpoint/site key only; server-side secrets stay in Worker config.
   reviewAPIURL: 'https://asheerahhair.com',
+  orderRequestsEnabled: true, // Authenticated sender and server-side request validation are enabled.
   reviewTurnstileSiteKey: '0x4AAAAAAFhy5-cPqvF8zxS4',
 };

@@ -1,0 +1,12 @@
+const test=require('node:test');const assert=require('node:assert/strict');
+const {renderEmail,makePdf,imageUrl,deliver}=require('../backend/order-email.cjs');
+const {fixture}=require('../backend/preview-order-email.cjs');
+const {PDFDocument}=require('../backend/node_modules/pdf-lib');
+test('paid receipt includes branded image, selected items, coupon, delivery and support',()=>{const m=renderEmail(fixture);for(const s of ['logo-sm.png','p6-27-model-v3.jpg','ONIKAAH','Pagamento confirmado','Total pago','6–10 dias úteis'])assert.ok(m.html.includes(s),s);assert.ok(!m.html.includes('Ciara Ly'));});
+test('manual request never claims payment is confirmed',()=>{const m=renderEmail({...fixture,status:'awaiting_payment',method:'orange_money',shippingRegion:'INTL'});assert.match(m.html,/A aguardar confirmação/);assert.match(m.html,/Ciara Ly/);assert.match(m.html,/9–15 dias/);assert.ok(!m.html.includes('Total pago'));});
+test('customer text is escaped and image addresses cannot track customers externally',()=>{const m=renderEmail({...fixture,customer:{...fixture.customer,name:'<img src=x onerror=alert(1)>'}});assert.ok(!m.html.includes('<img src=x'));assert.ok(m.html.includes('&lt;img'));assert.equal(imageUrl('https://evil.example/tracker.png'),'https://asheerahhair.com/assets/logo-sm.png');assert.equal(imageUrl('javascript:alert(1)'),'https://asheerahhair.com/assets/logo-sm.png');});
+test('pickup receipt does not promise home delivery',()=>{const m=renderEmail({...fixture,fulfillmentMethod:'pickup',fulfillmentAddress:'Midana Beauty',shippingCents:0});assert.match(m.html,/Ponto de recolha/);assert.match(m.html,/Aguarde a nossa confirmação/);assert.ok(!m.html.includes('6–10 dias úteis'));});
+test('PDF handles twenty items over multiple pages',async()=>{const bytes=await makePdf({...fixture,items:Array.from({length:20},()=>fixture.items[0])});const p=await PDFDocument.load(bytes);assert.ok(p.getPageCount()>1);assert.match(p.getTitle(),/Asheerah Hair/);});
+test('unpaid Stripe checkout cannot trigger an email',async()=>{await assert.rejects(deliver({}, {...fixture,status:'pending_checkout'}),/not ready/);});
+test('completed delivery is persistently deduplicated without provider calls',async()=>{assert.deepEqual(await deliver({}, {...fixture,emailSentAt:'2026-10-23T12:00:00Z'}),{sent:true,duplicate:true});});
+test('ambiguous retries older than provider dedupe window require review',async()=>{await assert.rejects(deliver({RESEND_API_KEY:'test'}, {...fixture,emailAttemptAt:'2020-01-01T00:00:00Z'}),/manual delivery review/);});
