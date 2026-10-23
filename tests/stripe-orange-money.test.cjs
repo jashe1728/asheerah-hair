@@ -69,7 +69,7 @@ test('I18N has complete Stripe and Orange Money keys across all six languages', 
 test('checkout renders exactly stripe then orange_money, excluding paypal and mbway options', () => {
   assert.match(
     appSource,
-    /\['stripe',\s*'orange_money'\]\.map\(/,
+    /paymentMethodsForCountry\(savedCountryCode\)\.map\(/,
     'Expected checkout methods array to be exactly stripe then orange_money'
   );
   assert.doesNotMatch(
@@ -104,7 +104,7 @@ test('Orange Money instructions render selectable recipient details and exact wa
 test('placeOrder allows only stripe or orange_money and preserves Stripe flow', () => {
   assert.match(
     appSource,
-    /if\s*\(method\s*!==\s*'stripe'\s*&&\s*method\s*!==\s*'orange_money'\)/
+    /if\s*\(!paymentMethodsForCountry\(countryCode\)\.includes\(method\)\)/
   );
   assert.match(appSource, /invalid_payment_method/);
   assert.match(appSource, /if\s*\(method\s*===\s*'stripe'\)\s*\{\s*startStripeCheckout/);

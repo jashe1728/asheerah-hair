@@ -1089,7 +1089,7 @@ function renderCheckoutPage(){
 
   const draft = loadCheckoutDraft();
   let activePay = draft.pay;
-  if (!activePay || ['paypal', 'mbway'].includes(activePay) || !['stripe', 'orange_money'].includes(activePay)) {
+  if (!activePay || ['paypal', 'mbway'].includes(activePay) || !['stripe', 'orange_money'].includes(activePay) || (activePay === 'orange_money' && resolveCountryCode(draft.country) !== 'GW')) {
     activePay = 'stripe';
     if (draft.pay && draft.pay !== 'stripe') {
       saveCheckoutDraft({ pay: 'stripe' });
@@ -1188,7 +1188,7 @@ function renderCheckoutPage(){
         <legend>${uiTxt('payment_method')}</legend>
         <p class="payment-intro">${uiTxt('payment_choose')}</p>
         <div class="methods" id="payMethods">
-          ${['stripe','orange_money'].map((m,idx)=> paymentMethodHTML(m,idx,activePay)).join('')}
+          ${paymentMethodsForCountry(savedCountryCode).map((m,idx)=> paymentMethodHTML(m,idx,activePay)).join('')}
         </div>
         <div id="payArea" class="pay-area" aria-live="polite"></div>
       </fieldset>
@@ -1401,6 +1401,7 @@ function renderCheckoutPage(){
   async function refreshShippingQuote(){
     const rawValue = countryInput.value.trim();
     const code = resolveCountryCode(rawValue);
+    syncPaymentMethods(code);
     const method = (code === 'PT') ? getFulfillmentMethod() : 'delivery';
     const sequence = ++quoteSequence;
     const currentRequestId = `${code}:${method}:${sequence}`;
@@ -1682,35 +1683,30 @@ function renderCheckoutPage(){
     }, 250);
   });
 
-  // ---- Payment method toggle + real brand logos ----
-  const payMethods = document.getElementById('payMethods');
-  let currentPay = draft.pay;
-  if (!currentPay || ['paypal', 'mbway'].includes(currentPay) || !['stripe', 'orange_money'].includes(currentPay)) {
-    currentPay = 'stripe';
-    if (draft.pay && draft.pay !== 'stripe') {
-      saveCheckoutDraft({ pay: 'stripe' });
-    }
-  }
-  if (payMethods) {
-    const savedRadio = payMethods.querySelector(`input[name="pay"][value="${currentPay}"]`);
-    if (savedRadio) {
-      payMethods.querySelectorAll('input[name="pay"]').forEach(r => {
-        r.checked = (r === savedRadio);
-        r.closest('.method').classList.toggle('active', r === savedRadio);
+  // Rebuild choices when the destination changes; never retain an unavailable method.
+  function syncPaymentMethods(country){
+    const container = document.getElementById('payMethods');
+    if (!container) return;
+    const allowed = paymentMethodsForCountry(country);
+    const selected = container.querySelector('input[name=pay]:checked')?.value || loadCheckoutDraft().pay;
+    const method = allowed.includes(selected) ? selected : 'stripe';
+    const key = allowed.join(',');
+    if (container.dataset.methods !== key) {
+      container.innerHTML = allowed.map((m,idx)=>paymentMethodHTML(m,idx,method)).join('');
+      container.dataset.methods = key;
+      container.querySelectorAll('input[name=pay]').forEach(r => {
+        r.addEventListener('change', () => {
+          container.querySelectorAll('.method').forEach(el=>el.classList.remove('active'));
+          r.closest('.method').classList.add('active');
+          saveCheckoutDraft({pay:r.value});
+          updatePayArea(r.value);
+        });
       });
     }
-    payMethods.querySelectorAll('input[name=pay]').forEach(r => {
-      if (r.checked) r.closest('.method').classList.add('active');
-      r.addEventListener('change', () => {
-        payMethods.querySelectorAll('.method').forEach(m => m.classList.remove('active'));
-        r.closest('.method').classList.add('active');
-        saveCheckoutDraft({ pay: r.value });
-        updatePayArea(r.value);
-      });
-    });
+    saveCheckoutDraft({pay:method});
+    updatePayArea(method);
   }
-  const payDefault = (payMethods && payMethods.querySelector('input[name=pay]:checked')) || (payMethods && payMethods.querySelector('input[name=pay]'));
-  if (payDefault) updatePayArea(payDefault.value);
+  syncPaymentMethods(countryInput.value);
 
   function updatePayArea(method){
     const pa = document.getElementById('payArea');
@@ -1757,6 +1753,9 @@ function renderCheckoutPage(){
 
   // restore submitted state in case of re-render
   if (getAppliedCoupon()){ /* coupon UI already handled above */ }
+}
+function paymentMethodsForCountry(country){
+  return resolveCountryCode(country) === 'GW' ? ['stripe','orange_money'] : ['stripe'];
 }
 function paymentMethodHTML(m, idx, activeMethod){
   const cfg = CONFIG.payment && CONFIG.payment[m];
@@ -1886,7 +1885,7 @@ function placeOrder(btn){
   const note = document.getElementById('orderNote');
 
   // In placeOrder allow only stripe or orange_money.
-  if (method !== 'stripe' && method !== 'orange_money') {
+  if (!paymentMethodsForCountry(countryCode).includes(method)) {
     if (note) {
       note.textContent = uiTxt('invalid_payment_method');
       note.className = 'order-note error';
