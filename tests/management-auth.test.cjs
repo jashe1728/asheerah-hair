@@ -29,6 +29,42 @@ test('correct code creates an HttpOnly secure session; replay is rejected',async
  assert.equal((await auth.handle(req('auth/verify',{challenge,code}),env)).status,401);
  const token=cookie.split('=')[1].split(';')[0];assert.equal([...env.REVIEW_MEDIA.data.values()].some(v=>v.text.includes(token)),false);
 });
+
+test('idle sessions expire on the server even with background orders polling',async()=>{
+ const env=environment(),{challenge,code}=await login(env),signed=await auth.handle(req('auth/verify',{challenge,code}),env);
+ const cookie=signed.headers.get('set-cookie').split(';')[0],request=new Request('https://asheerahhair.com/management-api/orders',{headers:{Cookie:cookie}});
+ const key=[...env.REVIEW_MEDIA.data.keys()].find(k=>k.includes('/sessions/')),saved=env.REVIEW_MEDIA.data.get(key),session=JSON.parse(saved.text);
+ assert.equal(session.idleMinutes,15);
+ session.lastActiveAt=Date.now()-14*60000;env.REVIEW_MEDIA.data.set(key,{...saved,text:JSON.stringify(session)});
+ assert.equal(await auth.identity(request,env),'owner@example.com');
+ assert.equal(JSON.parse(env.REVIEW_MEDIA.data.get(key).text).lastActiveAt,session.lastActiveAt);
+ session.lastActiveAt=Date.now()-15*60000-1;env.REVIEW_MEDIA.data.set(key,{...saved,text:JSON.stringify(session)});
+ assert.equal(await auth.identity(request,env),null);
+ assert.equal((await auth.handle(req('auth/session',{active:true},{Cookie:cookie}),env)).status,401);
+ assert.equal((await dashboard.handle(request,env)).status,401);
+});
+
+test('human activity extends idle timeout; settings stay bounded and absolute expiry remains',async()=>{
+ const env=environment(),{challenge,code}=await login(env),signed=await auth.handle(req('auth/verify',{challenge,code}),env),cookie=signed.headers.get('set-cookie').split(';')[0];
+ const key=[...env.REVIEW_MEDIA.data.keys()].find(k=>k.includes('/sessions/')),saved=env.REVIEW_MEDIA.data.get(key),session=JSON.parse(saved.text);
+ session.lastActiveAt=Date.now()-10*60000;session.expiresAt=Date.now()+4*60000;env.REVIEW_MEDIA.data.set(key,{...saved,text:JSON.stringify(session)});
+ const passive=await auth.handle(req('auth/session',{}, {Cookie:cookie}),env);assert.equal(passive.status,200);
+ assert.equal(JSON.parse(env.REVIEW_MEDIA.data.get(key).text).lastActiveAt,session.lastActiveAt);
+ const heartbeat=await auth.handle(req('auth/session',{active:true,idleMinutes:30},{Cookie:cookie}),env),result=await heartbeat.json();
+ assert.equal(result.idleMinutes,30);assert.ok(result.remainingMs<=4*60000);assert.ok(result.remainingMs>3*60000);
+ const updated=JSON.parse(env.REVIEW_MEDIA.data.get(key).text);assert.ok(updated.lastActiveAt>session.lastActiveAt);assert.equal(updated.expiresAt,session.expiresAt);
+ for(const value of [0,1,60,'15',null])assert.equal((await auth.handle(req('auth/session',{idleMinutes:value},{Cookie:cookie}),env)).status,400);
+ assert.equal((await auth.handle(req('auth/session',{active:true},{Cookie:cookie,Origin:'https://evil.example'}),env)).status,403);
+ await auth.handle(req('auth/logout',{}, {Cookie:cookie}),env);
+ assert.equal((await auth.handle(req('auth/session',{active:true},{Cookie:cookie}),env)).status,401);
+});
+
+test('legacy sessions use creation time for the default idle deadline',async()=>{
+ const env=environment(),token='b'.repeat(64),key='management-auth/sessions/'+crypto.createHash('sha256').update(token).digest('hex')+'.json';
+ const request=new Request('https://asheerahhair.com/management-api/orders',{headers:{Cookie:auth.COOKIE+'='+token}});
+ env.REVIEW_MEDIA.data.set(key,{text:JSON.stringify({email:'owner@example.com',createdAt:Date.now()-16*60000,expiresAt:Date.now()+3600000}),etag:'legacy'});
+ assert.equal(await auth.identity(request,env),null);
+});
 test('wrong attempts exhaust a code without allowing a later correct attempt',async()=>{
  const env=environment(),{challenge,code}=await login(env),wrong=code==='123456'?'654321':'123456';
  for(let i=0;i<5;i++)assert.equal((await auth.handle(req('auth/verify',{challenge,code:wrong}),env)).status,401);

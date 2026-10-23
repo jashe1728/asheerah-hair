@@ -7,6 +7,12 @@ const allowed=env=>String(env.MANAGEMENT_ALLOWED_EMAILS||'').split(',').map(s=>s
 const headers={'content-type':'application/json; charset=utf-8','cache-control':'no-store, private','x-content-type-options':'nosniff','referrer-policy':'no-referrer'};
 const json=(data,status=200,extra={})=>new Response(JSON.stringify(data),{status,headers:{...headers,...extra}});
 const prefix='management-auth/';
+const IDLE_MINUTES=[5,15,30];
+function sessionDeadline(value){
+ const minutes=IDLE_MINUTES.includes(value.idleMinutes)?value.idleMinutes:15;
+ const last=value.lastActiveAt||value.createdAt||value.expiresAt-8*3600000;
+ return Math.min(value.expiresAt,last+minutes*60000);
+}
 async function read(env,key){const obj=await env.REVIEW_MEDIA.get(prefix+key);return obj?{value:JSON.parse(await obj.text()),etag:obj.etag}:null;}
 async function put(env,key,value,current){return env.REVIEW_MEDIA.put(prefix+key,JSON.stringify(value),{onlyIf:current?{etagMatches:current.etag}:{etagDoesNotMatch:'*'},httpMetadata:{contentType:'application/json'}});}
 function tokensFrom(request){
@@ -18,7 +24,7 @@ async function identity(request,env){
  // Preserve already-issued API-scoped sessions through the initial cookie transition.
  for(const token of tokensFrom(request)){
   const record=await read(env,'sessions/'+hash(token)+'.json');
-  if(record&&record.value.expiresAt>Date.now()&&allowed(env).includes(record.value.email))return record.value.email;
+  if(record&&sessionDeadline(record.value)>Date.now()&&allowed(env).includes(record.value.email))return record.value.email;
  }
  return null;
 }
@@ -42,6 +48,24 @@ async function handle(request,env){
   for(const token of tokensFrom(request))await env.REVIEW_MEDIA.delete(prefix+'sessions/'+hash(token)+'.json');
   const response=json({ok:true},200,{'set-cookie':COOKIE+'=; Path=/; HttpOnly; Secure; SameSite=Strict; Max-Age=0'});
   response.headers.append('set-cookie','__Secure-ah_management=; Path=/management-api/; HttpOnly; Secure; SameSite=Strict; Max-Age=0');return response;
+ }
+ if(url.pathname==='/management-api/auth/session'){
+  if(input.idleMinutes!==undefined&&!IDLE_MINUTES.includes(input.idleMinutes))return json({error:'Escolhe 5, 15 ou 30 minutos.'},400);
+  if(input.active!==undefined&&typeof input.active!=='boolean')return json({error:'Pedido inválido.'},400);
+  for(const token of tokensFrom(request)){
+   const key='sessions/'+hash(token)+'.json';
+   for(let attempt=0;attempt<5;attempt++){
+    const current=await read(env,key),value=current?.value,now=Date.now();
+    if(!value||sessionDeadline(value)<=now||!allowed(env).includes(value.email))break;
+    const next={...value,idleMinutes:input.idleMinutes??value.idleMinutes??15};
+    // Only an explicit human-activity heartbeat extends the idle deadline.
+    // Ordinary orders/newsletter polling never keeps a session alive.
+    if(input.active===true)next.lastActiveAt=now;
+    if(input.active===true||input.idleMinutes!==undefined){if(!await put(env,key,next,current))continue;}
+    return json({ok:true,idleMinutes:next.idleMinutes,remainingMs:Math.max(0,sessionDeadline(next)-now),absoluteRemainingMs:Math.max(0,next.expiresAt-now)});
+   }
+  }
+  return json({error:'A sessão terminou. Entra novamente com o teu e-mail.'},401);
  }
  const ip=request.headers.get('CF-Connecting-IP')||'unavailable';
  if(url.pathname==='/management-api/auth/start'){
@@ -72,7 +96,7 @@ async function handle(request,env){
    if(!await put(env,key,updated,current))continue;
    if(!valid)return json({error:'Código inválido ou expirado.'},401);
    const token=crypto.randomBytes(32).toString('hex');
-   await put(env,'sessions/'+hash(token)+'.json',{email:c.email,createdAt:Date.now(),expiresAt:Date.now()+8*3600000},null);
+   await put(env,'sessions/'+hash(token)+'.json',{email:c.email,createdAt:Date.now(),lastActiveAt:Date.now(),idleMinutes:15,expiresAt:Date.now()+8*3600000},null);
    return json({ok:true},200,{'set-cookie':COOKIE+'='+token+'; Path=/; HttpOnly; Secure; SameSite=Strict; Max-Age=28800'});
   }
   return json({error:'Não foi possível entrar. Tenta novamente.'},409);
