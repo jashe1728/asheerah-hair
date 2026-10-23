@@ -14655,8 +14655,9 @@
       "category": "crochet",
       "description": "Deep wave crochet hair in colour P6/27. Available in 100g, 200g or 300g and lengths 16, 18, 20 and 22 inches.",
       "images": [
-        "assets/img/col-crochet.jpg",
-        "assets/img/pixie-curly-bundles-2.webp"
+        "assets/img/p6-27-model-v3.jpg",
+        "assets/img/p6-27-detail-v3.jpg",
+        "assets/img/p6-27-detail2-v3.jpg"
       ],
       "type": "P6/27 Deep Wave Crochet",
       "options": [
@@ -14775,6 +14776,9 @@
           "price_eur": 293.99,
           "compare_eur": 338.99
         }
+      ],
+      "videos": [
+        "assets/video/p6-27-v3.mp4"
       ]
     }
   ]

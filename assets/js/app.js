@@ -625,7 +625,7 @@ const CROCHET_DESKTOP_IMAGES = Object.freeze({
   'water-wave-crochet-human-hair':'assets/img/water-wave-crochet-human-hair-desktop-v2.png',
   'water-curly-crochet-human-hair':'assets/img/water-curly-crochet-human-hair-desktop-v2.png',
   'burmese-curly-crochet-human-hair':'assets/img/burmese-curly-crochet-human-hair-desktop-v2.png',
-  'p6-27-deep-wave-crochet':'assets/img/p6-27-deep-wave-crochet-desktop-v2.png',
+
 });
 function shopCardImageHTML(p){
   const original=`<img src="${escapeHTML(p.images[0]||'')}" alt="${escapeHTML(p.title)}" loading="lazy">`;
@@ -834,9 +834,10 @@ function renderProduct(){
       : `<button class="btn-primary add-btn" disabled>${uiTxt('add_to_cart')}</button>`;
     root.innerHTML = `
       <div class="pd">
-        <div class="gallery">
+        <div class="gallery" data-category="${escapeHTML(p.category)}">
           <div class="main-img"><img id="mainImg" src="${p.images[0]||''}" alt="${escapeHTML(p.title)}"></div>
           <div class="thumbs" role="group" aria-label="Product images">${p.images.slice(0,6).map((im,i)=>`<button type="button" class="thumb ${i===0?'active':''}" data-src="${escapeHTML(im)}" data-alt="${escapeHTML(p.title)} image ${i+1}" aria-label="View ${escapeHTML(p.title)} image ${i+1}" aria-pressed="${i===0?'true':'false'}"><img src="${escapeHTML(im)}" alt="" loading="lazy"></button>`).join('')}</div>
+          ${(p.videos||[]).map(src=>`<video class="product-video" controls playsinline preload="none" poster="${escapeHTML(p.images[0]||'')}" aria-label="${escapeHTML(p.title)} video"><source src="${escapeHTML(src)}" type="video/mp4"></video>`).join('')}
         </div>
         <div class="buy">
           <div class="product-heading">
