@@ -620,6 +620,18 @@ function renderFeatured(){
     </a>`;
   }).join('');
 }
+const CROCHET_DESKTOP_IMAGES = Object.freeze({
+  'pixie-curly-crochet-human-hair':'assets/img/pixie-curly-crochet-human-hair-desktop-v2.png',
+  'water-wave-crochet-human-hair':'assets/img/water-wave-crochet-human-hair-desktop-v2.png',
+  'water-curly-crochet-human-hair':'assets/img/water-curly-crochet-human-hair-desktop-v2.png',
+  'burmese-curly-crochet-human-hair':'assets/img/burmese-curly-crochet-human-hair-desktop-v2.png',
+  'p6-27-deep-wave-crochet':'assets/img/p6-27-deep-wave-crochet-desktop-v2.png',
+});
+function shopCardImageHTML(p){
+  const original=`<img src="${escapeHTML(p.images[0]||'')}" alt="${escapeHTML(p.title)}" loading="lazy">`;
+  const desktop=CROCHET_DESKTOP_IMAGES[p.handle];
+  return desktop?`<picture><source media="(min-width: 641px)" srcset="${desktop}">${original}</picture>`:original;
+}
 function renderShop(){
   const grid = document.getElementById('shopGrid'); if (!grid) return;
   const cur = curCode();
@@ -630,7 +642,7 @@ function renderShop(){
     const pricing = variantPricing(p, defaultOpts(p));
     const priceHTMLstr = priceHTML(pricing.priceEur, pricing.hasPromo ? pricing.compareEur : null, cur);
     return `<a class="product-card shop-card" data-category="${escapeHTML(p.category)}" href="product.html?h=${p.handle}">
-      <div class="img"><img src="${p.images[0]||''}" alt="${escapeHTML(p.title)}" loading="lazy"></div>
+      <div class="img">${shopCardImageHTML(p)}</div>
       <div class="info">
         <h3>${escapeHTML(p.title)}</h3>
         <div class="price">${priceHTMLstr}</div>
