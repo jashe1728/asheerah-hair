@@ -30,7 +30,9 @@ Select the asheerahhair.com zone. DNS records serving the storefront must be pro
 Expression:
 
 ```text
-http.host in {"asheerahhair.com" "www.asheerahhair.com"}
+(http.host in {"asheerahhair.com" "www.asheerahhair.com"}
+ and not starts_with(http.request.uri.path, "/gestao")
+ and not starts_with(http.request.uri.path, "/management-api/"))
 ```
 
 For each row select Set static:
@@ -42,7 +44,7 @@ For each row select Set static:
 | Permissions-Policy | camera=(), microphone=(), geolocation=() |
 | Strict-Transport-Security | max-age=86400 |
 
-Deploy and verify actual responses. HSTS starts at one day; extend only after confirming HTTPS for the intended scope. Do not add includeSubDomains or preload without checking every affected subdomain. Do not disable the payment feature in Permissions-Policy: preserve wallet functionality. Do not modify Set-Cookie or Cache-Control in this rule.
+Deploy and verify actual responses. This public rule preserves private dashboard and newsletter-preview policies, including the same-origin preview iframe. HSTS starts at one day; extend only after confirming HTTPS for the intended scope. Do not add includeSubDomains or preload without checking every affected subdomain. Do not disable the payment feature in Permissions-Policy: preserve wallet functionality. Do not modify Set-Cookie or Cache-Control in this rule.
 
 ### Rule 2: AH public referrer and CSP observation
 

@@ -1,5 +1,7 @@
 const nodeCrypto = require('node:crypto');
 const orderEmail = require('./order-email.cjs');
+const publicSecurity = require('./public-security.cjs');
+const newsletter = require('./newsletter.cjs');
 const crypto = nodeCrypto;
 const MAX_BODY_BYTES = 24_000;
 const MAX_ITEMS = 20;
@@ -227,11 +229,9 @@ function verifyStripeSignature(body, signature, secret, now = Math.floor(Date.no
     return candidate.length === expected.length && crypto.timingSafeEqual(candidate, expected);
   });
 }
-async function forwardToGas(env, payload) {
-  const rawPayload = JSON.stringify(payload);
-  const secret = String(env.WORKER_GAS_SECRET || '').normalize('NFKC').trim().replace(/^(['"])([\s\S]*)\1$/, '$2').replace(/\s+/g, '').toLowerCase();
-  const signature = crypto.createHmac('sha256',secret).update(rawPayload).digest('hex');
-  const response = await fetch(env.GAS_WEBHOOK_URL,{method:'POST',headers:{'content-type':'text/plain;charset=utf-8'},body:JSON.stringify({payload:rawPayload,signature})});
+async function forwardToGas(env, payload, target=env.GAS_WEBHOOK_URL) {
+  if(!target)throw new Error('Apps Script is not configured');
+  const response = await fetch(target,{method:'POST',headers:{'content-type':'text/plain;charset=utf-8'},body:JSON.stringify(publicSecurity.envelope(env,payload))});
   let ack;
   try { ack = await response.json(); } catch { ack = null; }
   if (!response.ok || !ack || ack.ok !== true) {
@@ -366,6 +366,10 @@ async function stripePost(path, params, secret, idempotencyKey) {
 }
 async function handleRequest(request, env) {
   const url = new URL(request.url);
+  if(url.pathname==='/public/csp-report')return publicSecurity.csp(request,env);
+  if(url.pathname.startsWith('/public/newsletter/')||url.pathname.startsWith('/public/newsletter-media/')){
+    try{return await newsletter.publicHandle(request,env);}catch{return json({error:'Service temporarily unavailable'},503,'null');}
+  }
   if (url.pathname === '/gestao' || url.pathname.startsWith('/gestao/')) return require('./business-dashboard.cjs').handlePage(request);
   if (url.pathname.startsWith('/management-api/')) return require('./business-dashboard.cjs').handle(request, env);
   if (url.pathname === '/webhook' && request.method === 'POST') {
@@ -416,7 +420,6 @@ async function handleRequest(request, env) {
   if (request.method === 'OPTIONS') return new Response(null, { status:204, headers:{ 'access-control-allow-origin':allowedOrigin, 'access-control-allow-methods':'POST,GET,OPTIONS', 'access-control-allow-headers':'content-type,authorization', 'vary':'Origin' } });
   if (url.pathname.startsWith('/public/')) {
     if (request.method !== 'POST') return json({ error:'Method not allowed' }, 405, allowedOrigin);
-    if (url.pathname === '/public/csp-report') return new Response(null, { status: 204, headers: { 'access-control-allow-origin': allowedOrigin } });
     if (!env.GAS_WEBHOOK_URL || !env.WORKER_GAS_SECRET) return json({ error:'Public form service is not configured' }, 503, allowedOrigin);
     const raw = await request.text();
     if (bodyExceedsLimit(request, raw, 4_000)) return json({ error:'Request too large' }, 413, allowedOrigin);
@@ -424,8 +427,8 @@ async function handleRequest(request, env) {
     try { input = JSON.parse(raw); } catch { return json({ error:'Invalid request' }, 400, allowedOrigin); }
     let workerPayload;
         if (url.pathname === '/public/subscribe') {
-      if (!input || Object.keys(input).some(k => k !== 'email') || typeof input.email !== 'string' || input.email.length > 254 || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(input.email.trim())) return json({ error:'Invalid email' }, 400, allowedOrigin);
-      workerPayload = { action:'public_subscribe', email:input.email.trim() };
+      if (!input || Object.keys(input).some(k => !['email','language'].includes(k)) || typeof input.email !== 'string' || input.email.length > 254 || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(input.email.trim()) || input.language!==undefined&&!['pt','en','es','fr','de','it'].includes(input.language)) return json({ error:'Invalid email' }, 400, allowedOrigin);
+      workerPayload = { action:'public_subscribe', email:input.email.trim(), language:input.language||'pt' };
     } else if (url.pathname === '/public/chat-log') {
       const fields = ['sessionId','language','page','question','route','tier','reason','matchedId','transcript'];
       const stringFields = ['language','page','question','route','reason','matchedId','transcript'];
@@ -433,15 +436,20 @@ async function handleRequest(request, env) {
       workerPayload = { action:'public_chat_log', sessionId:input.sessionId, language:String(input.language || '').slice(0, 12), page:String(input.page || '').slice(0, 180), question:input.question.trim(), route:String(input.route || '').slice(0, 40), tier:input.tier, reason:String(input.reason || '').slice(0, 80), matchedId:String(input.matchedId || '').slice(0, 30), transcript:String(input.transcript || '').slice(0, 2500) };
     } else return json({ error:'Not found' }, 404, allowedOrigin);
     try {
+      await publicSecurity.admit(request,env,workerPayload.action);
+      if(workerPayload.action==='public_subscribe')return json(await newsletter.subscribe(env,workerPayload.email,workerPayload.language),200,allowedOrigin);
+      if(workerPayload.action==='public_chat_log')workerPayload.notifyOwner=await publicSecurity.ownerMailAllowed(env);
       const ack = await forwardToGas(env, workerPayload);
       return json({ ok:true, ...ack }, 200, allowedOrigin);
-    } catch {
+    } catch (error) {
+      if(error.status){const response=json({error:error.message},error.status,allowedOrigin);response.headers.set('retry-after',String(error.retryAfter||60));return response;}
       return json({ error:'Request could not be saved' }, 502, allowedOrigin);
     }
   }
   if (url.pathname === '/reviews' || url.pathname.startsWith('/reviews/') || url.pathname.startsWith('/review-media/')) return handleReviewRequest(request, url, env, allowedOrigin);
   if (url.pathname === '/request-orange-money' && request.method === 'POST') {
-    if (env.ORDER_EMAIL_ENABLED !== '1' || !env.REVIEW_MEDIA || !env.RESEND_API_KEY || !env.MANUAL_ORDER_GAS_URL) return json({error:'Order requests are not configured'},503,allowedOrigin);
+    const accountingTarget=env.MANUAL_ORDER_GAS_URL||env.GAS_WEBHOOK_URL;
+    if (env.ORDER_EMAIL_ENABLED !== '1' || !env.REVIEW_MEDIA || !env.RESEND_API_KEY || !accountingTarget || !publicSecurity.signingSecret(env)) return json({error:'Order requests are not configured'},503,allowedOrigin);
     const raw = await request.text();
     if (bodyExceedsLimit(request,raw,MAX_BODY_BYTES)) return json({error:'Request too large'},413,allowedOrigin);
     let input;
@@ -467,13 +475,7 @@ async function handleRequest(request, env) {
         const mail=orderEmail.renderEmail(order);
         const accounting={type:'order',method:'orange_money',orderId:id,text:mail.text,customer:{...checkout.customer,zip:checkout.customer.postalCode},items:checkout.orderItems.map(i=>({...i,priceEur:i.unitCents/100})),fulfillmentMethod:'delivery',subtotalEur:checkout.subtotalCents/100,shippingEur:checkout.shippingCents/100,totalEur:checkout.totalCents/100,totalDiscountEur:checkout.discountCents/100,coupon:checkout.couponCode,currency:'EUR'};
         try {
-          const rawAccounting = JSON.stringify(accounting);
-          const secret = String(env.WORKER_GAS_SECRET || '').normalize('NFKC').trim().replace(/^(['"])([\s\S]*)\1$/, '$2').replace(/\s+/g, '').toLowerCase();
-          const signature = secret ? crypto.createHmac('sha256', secret).update(rawAccounting).digest('hex') : '';
-          const targetUrl = env.MANUAL_ORDER_GAS_URL || env.GAS_WEBHOOK_URL;
-          const bodyPayload = JSON.stringify({ ...accounting, payload: rawAccounting, signature });
-          const response=await fetch(targetUrl,{method:'POST',headers:{'content-type':'text/plain;charset=utf-8'},body:bodyPayload});
-          const ack=await response.json();order.accountingStatus=response.ok&&ack.ok?'recorded':'needs_review';
+          await forwardToGas(env,accounting,accountingTarget);order.accountingStatus='recorded';
         }catch{order.accountingStatus='needs_review';}
         order.status='awaiting_payment';await orderEmail.writeOrder(env,order);
       }

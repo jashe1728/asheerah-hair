@@ -68,6 +68,14 @@ async function handle(request,env){
  if(!user)return response({error:'Área privada. Inicia sessão com uma conta autorizada.'},401);
  if(!env.REVIEW_MEDIA)return response({error:'Área de gestão ainda não configurada.'},503);
  const url=new URL(request.url),path=url.pathname;
+ if(request.method==='GET'&&path==='/management-api/security-status'){
+  const security=require('./public-security.cjs'),checks={};
+  for(const [name,target] of Object.entries({stripe:env.GAS_WEBHOOK_URL,manual:env.MANUAL_ORDER_GAS_URL||env.GAS_WEBHOOK_URL})){
+   try{const reply=await fetch(target,{method:'POST',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify(security.envelope(env,{action:'security_probe'}))});const result=await reply.json();checks[name]={compatible:reply.ok&&result.ok===true&&result.securityVersion===2&&result.manualOrderIdempotent===true};}catch{checks[name]={compatible:false};}
+  }
+  return response({checks,newsletterEnabled:env.NEWSLETTER_ENABLED==='1'});
+ }
+ if(path==='/management-api/newsletter'||path.startsWith('/management-api/newsletter/'))return require('./newsletter.cjs').handle(request,env,user);
  if(request.method==='GET'&&path==='/management-api/orders'){
   const cursor=url.searchParams.get('cursor')||undefined;
   if(cursor&&cursor.length>2048)return response({error:'Página inválida.'},400);

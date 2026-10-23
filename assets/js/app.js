@@ -22,6 +22,9 @@ const CURRENCIES = {
 };
 
 if (typeof I18N === 'object') Object.assign(I18N, {
+  nl_saving:{pt:'A guardar…',en:'Saving…',es:'Guardando…',fr:'Enregistrement…',de:'Wird gespeichert…',it:'Salvataggio…'},
+  nl_error:{pt:'Não foi possível guardar. Tenta novamente dentro de alguns minutos.',en:'Could not save. Please try again in a few minutes.',es:'No se pudo guardar. Inténtalo de nuevo en unos minutos.',fr:'Impossible d’enregistrer. Réessayez dans quelques minutes.',de:'Speichern fehlgeschlagen. Bitte versuche es in einigen Minuten erneut.',it:'Salvataggio non riuscito. Riprova tra qualche minuto.'},
+  nl_confirm:{pt:'Obrigada! Confirma a inscrição no email que te enviámos.',en:'Thank you! Confirm your subscription in the email we sent.',es:'¡Gracias! Confirma tu suscripción en el correo que te enviamos.',fr:'Merci ! Confirmez votre inscription dans notre email.',de:'Danke! Bestätige dein Abonnement in unserer E-Mail.',it:'Grazie! Conferma l’iscrizione nella nostra email.'},
   review_choose_product:{pt:'Escolhe o produto que queres avaliar',en:'Choose the product you want to review',es:'Elige el producto que quieres valorar',de:'Wähle das Produkt für deine Bewertung',fr:'Choisissez le produit à évaluer',it:'Scegli il prodotto da recensire'},
   review_media_label:{pt:'Adicionar fotos ou vídeo',en:'Add photos or video',es:'Añadir fotos o vídeo',de:'Fotos oder Video hinzufügen',fr:'Ajouter des photos ou une vidéo',it:'Aggiungi foto o video'},
   review_upload_setup:{pt:'O carregamento de imagens e vídeos está a ser configurado.',en:'Photo and video uploads are being set up.',es:'La carga de fotos y vídeos se está configurando.',de:'Der Foto- und Video-Upload wird eingerichtet.',fr:'Le téléversement des photos et vidéos est en cours de configuration.',it:'Il caricamento di foto e video è in configurazione.'},
@@ -559,31 +562,33 @@ function initReveal(){
 function initNewsletter(){
   const form = document.getElementById('nlForm');
   if (!form) return;
+  try{localStorage.removeItem('ash_subscribers');}catch{}
+  let sending=false;
   form.addEventListener('submit', async (e)=>{
     e.preventDefault();
+    if(sending)return;
     const email = (document.getElementById('nlEmail')?.value || '').trim();
     const msg = document.getElementById('nlMsg');
     if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)){
       if (msg){ msg.textContent = uiTxt('fld_email'); msg.style.display='block'; }
       return;
     }
+    sending=true;
+    const button=form.querySelector('button[type="submit"]');if(button)button.disabled=true;
+    if(msg){msg.textContent=uiTxt('nl_saving');msg.style.display='block';}
     try {
-      const list = JSON.parse(localStorage.getItem('ash_subscribers')||'[]');
-      if (!list.includes(email)) list.push(email);
-      localStorage.setItem('ash_subscribers', JSON.stringify(list));
-    } catch(err){}
-    const subscribeEndpoint = (CONFIG && CONFIG.subscribeURL) || (CONFIG && CONFIG.backendURL);
-    if (subscribeEndpoint){
-      const subUrl = subscribeEndpoint;
-      try {
-        await fetch(subUrl, {
+        const subUrl=CONFIG.subscribeURL;
+        if(!subUrl)throw Error('Not configured');
+        const response=await fetch(subUrl, {
           method:'POST', headers:{'Content-Type':'text/plain;charset=utf-8'},
-          body: JSON.stringify({ type:'subscribe', email })
+          body: JSON.stringify({ email, language:typeof LANG==='string'?LANG:'pt' })
         });
-      } catch(err){ /* offline/local — saved locally anyway */ }
-    }
-    if (msg){ msg.textContent = uiTxt('nl_ok'); msg.style.display = 'block'; }
-    if (form.querySelector('input')) form.querySelector('input').value = '';
+        if(!response.ok)throw Error('Not saved');
+        const ack=await response.json();if(ack.ok!==true)throw Error('Not saved');
+        if(msg)msg.textContent=uiTxt(ack.confirmationRequired?'nl_confirm':'nl_ok');
+        if(form.querySelector('input'))form.querySelector('input').value='';
+    }catch{if(msg)msg.textContent=uiTxt('nl_error');}
+    finally{sending=false;if(button)button.disabled=false;}
   });
 }
 
@@ -1997,7 +2002,7 @@ function placeOrder(btn){
   const shippingText = t.shippingKnown ? (t.shipping === 0 ? (uiTxt('free') || 'Grátis') : money(t.shipping,'EUR')) : (uiTxt('shipping_select_country') || uiTxt('shipping_calc_checkout'));
   const totalText = t.shippingKnown ? money(t.totalFinal,'EUR') : (uiTxt('shipping_select_country') || uiTxt('shipping_calc_checkout'));
   const methodLabel = method === 'orange_money' ? uiTxt('pay_orange_money') : uiTxt('pay_stripe');
-  const text = `NOVO PEDIDO DE PAGAMENTO (Asheerah Hair)\n${lines}${coupon?`\nCupom de embaixador: ${coupon.code}`:''}\n\nSubtotal original: ${money(t.subtotalOriginal,'EUR')}\nDesconto: −${money(t.totalDiscount,'EUR')}\nEnvio: ${shippingText}\nTOTAL ESTIMADO: ${totalText}\nMétodo de envio: ${fulfillmentLabel}${isPickup ? `\n${storeAddressLine}` : ''}\nMétodo preferido: ${methodLabel}\n\nCliente: ${customerData.name}\nEmail: ${customerData.email}\nTelefone: ${customerData.phone}\nLocalidade: ${isPickup ? storeAddressLine : ([customerData.city, customerData.country].filter(Boolean).join(', ') + ' (morada completa registada no pedido)')}${customerData.notes?'\nNotas: '+customerData.notes:''}`;
+  const text = `NOVO PEDIDO DE PAGAMENTO (Asheerah Hair)\n${lines}${coupon?`\nCupom de embaixador: ${coupon.code}`:''}\n\nSubtotal original: ${money(t.subtotalOriginal,'EUR')}\nDesconto: −${money(t.totalDiscount,'EUR')}\nEnvio: ${shippingText}\nTOTAL ESTIMADO: ${totalText}\nMétodo de envio: ${fulfillmentLabel}${isPickup ? `\n${storeAddressLine}` : ''}\nMétodo preferido: ${methodLabel}\n\nCliente: ${customerData.name}\nEmail: ${customerData.email}\nTelefone: ${customerData.phone}\nLocalidade: ${isPickup ? storeAddressLine : ([customerData.city, customerData.country].filter(Boolean).join(', '))}${customerData.notes?'\nNotas: '+customerData.notes:''}`;
 
   const payload = {
     type:'order',

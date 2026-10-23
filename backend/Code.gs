@@ -75,7 +75,7 @@ function buildOrderRow_(body) {
   var feeCell = (typeof fee === 'number' && !isNaN(fee)) ? r2(fee) : '';
   var profitCell = (typeof fee === 'number' && !isNaN(fee)) ? r2(totalEur - cogs - fee) : '';
   var cust = body.customer || {};
-  var orderNum = 'ASH-' + Utilities.formatDate(new Date(), Session.getScriptTimeZone(), 'yyyyMMdd-HHmmss');
+  var orderNum = /^[a-f0-9-]{36}$/i.test(body.orderId || '') ? 'ASH-' + body.orderId : 'ASH-' + Utilities.formatDate(new Date(), Session.getScriptTimeZone(), 'yyyyMMdd-HHmmss');
   var itemText = (body.items||[]).map(function(it){
     var title = safeCell_(it.title, 120);
     var qty = Number(it.qty) || 1;
@@ -306,6 +306,8 @@ function getSheet_(name, header) {
 function verifyWorkerPayload_(wrapper) {
   try {
     var secret = PropertiesService.getScriptProperties().getProperty('WORKER_GAS_SECRET');
+    // Preserve the live deployment's exact Worker canonicalization, not legacy alternate keys.
+    secret = String(secret || '').normalize('NFKC').trim().replace(/^(['"])([\s\S]*)\1$/, '$2').replace(/\s+/g, '').toLowerCase();
     if (!secret || !wrapper || typeof wrapper.payload !== 'string' || !/^[a-f0-9]{64}$/i.test(wrapper.signature)) return null;
     var bytes = Utilities.computeHmacSha256Signature(wrapper.payload, secret);
     var expected = bytes.map(function(b){ return ('0' + ((b + 256) % 256).toString(16)).slice(-2); }).join('');
@@ -321,6 +323,8 @@ function processWorkerPayload_(payload) {
   if (!payload) return { ok: false, error: 'Invalid worker payload' };
   var action = payload.action || payload.type;
   if (!action) return { ok: false, error: 'Invalid worker action' };
+  // Signed, non-writing deployment probe; safe to verify key and executable compatibility.
+  if (action === 'security_probe') return { ok: true, securityVersion: 2, manualOrderIdempotent: true };
 
   if (action === 'stripe_pending') return recordStripePending_(payload);
   if (action === 'stripe_session_created') return recordStripeSession_(payload);
@@ -337,26 +341,41 @@ function processStripeWorkerPayload_(payload) {
   return processWorkerPayload_(payload);
 }
 
+function verifySecurityConfiguration() {
+  var secret = PropertiesService.getScriptProperties().getProperty('WORKER_GAS_SECRET');
+  if (!secret || !String(secret).trim()) throw new Error('WORKER_GAS_SECRET is missing');
+  console.log('Security configuration: signing property present. No secret value logged.');
+}
+
 function recordWorkerOrder_(body) {
+  var lock = LockService.getScriptLock();
+  lock.waitLock(5000);
+  try {
   var row = buildOrderRow_(body);
-  getSheet_(SHEET_NAME, ORDERS_HEADER).appendRow(row);
+  var sheet = getSheet_(SHEET_NAME, ORDERS_HEADER);
+  if (/^[a-f0-9-]{36}$/i.test(body.orderId || '')) {
+    var rows = sheet.getDataRange().getValues();
+    if (rows.some(function(r) { return String(r[1]) === 'ASH-' + body.orderId; })) return { ok:true, saved:true, duplicate:true };
+  }
+  sheet.appendRow(row);
   try {
     MailApp.sendEmail({
       to: OWNER_EMAIL,
       subject: 'New Asheerah Hair Order ' + Utilities.formatDate(new Date(), Session.getScriptTimeZone(), 'yyyy-MM-dd HH:mm'),
-      body: safeCell_(body.text, 4000) || 'Order received.'
+      body: String(body.text || 'Order received.').slice(0, 10000)
     });
   } catch (mailErr) { /* mail optional */ }
   return { ok: true, saved: true, emailed: true, cogs: row[10], fee: row[11], profit: row[12] };
+  } finally { lock.releaseLock(); }
 }
 
 function recordWorkerSubscribe_(body) {
-  var email = safeCell_(body.email, 254);
+  var email = String(body.email || '').trim();
   if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) return { ok: false, error: 'Invalid email' };
   var nl = getSheet_('Subscribers', ['Timestamp', 'Email']);
   var existing = nl.getDataRange().getValues();
   var dup = existing.some(function(r) { return String(r[1]).trim().toLowerCase() === email.toLowerCase(); });
-  if (!dup) nl.appendRow([new Date(), email]);
+  if (!dup) nl.appendRow([new Date(), safeCell_(email,254)]);
   return { ok: true, saved: true, new: !dup };
 }
 
@@ -381,7 +400,7 @@ function recordWorkerChatLog_(body) {
   var cache = CacheService.getScriptCache();
   var mailKey = 'chat-mail-' + digestKey_(sessionId);
   var alerted = cache.get(mailKey);
-  if (!alerted) {
+  if (!alerted && body.notifyOwner === true) {
     cache.put(mailKey, '1', 21600);
     try {
       MailApp.sendEmail({
