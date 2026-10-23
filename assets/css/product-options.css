@@ -1,0 +1,6 @@
+.model-option{font-size:.75em;font-weight:500}
+.gallery:has(+.buy .model-option) .main-img{position:relative}
+.gallery:has(+.buy .model-option) .main-img img{position:absolute;inset:0;object-fit:contain;height:100%;width:100%}
+
+.pd .pill:has(.model-option){display:inline-flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;line-height:1.2;min-height:48px}
+.pd .model-option{display:block;white-space:nowrap;font-size:11px;line-height:1.2}

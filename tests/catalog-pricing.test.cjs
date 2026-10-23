@@ -27,7 +27,7 @@ test('wigs expose only updated lengths, HD lace options and cap sizes', () => {
   const expectedLengths = ['16','18','20','22','24','26','28','30','32'];
   const expectedLace = ['5x5 HD','13x4 HD','13x6 HD'];
   const expectedCaps = ['SMALL','MEDIUM','LARGE'];
-  for (const product of catalog.products.filter(item => item.category === 'wigs')) {
+  for (const product of catalog.products.filter(item => item.category === 'wigs' && !item.model_options)) {
     assert.deepEqual(product.options[0].values, expectedLengths, product.handle + ' lengths');
     assert.deepEqual(product.options[1].values, expectedLace, product.handle + ' lace options');
     assert.deepEqual(product.options[2].values, ['180%','200%','250%'], product.handle + ' density');

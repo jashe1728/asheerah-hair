@@ -27,6 +27,7 @@ test('hair-length choices form a compact grid and selected options use the warm 
   const context = {
     escapeHTML: String,
     optionDisplayLabel: String,
+    modelOptionLabel: () => '',
     isLaceOption: () => false,
     hasLaceTypes: () => false,
     escapeAttr: String,

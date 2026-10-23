@@ -835,7 +835,7 @@ function renderProduct(){
     root.innerHTML = `
       <div class="pd">
         <div class="gallery" data-category="${escapeHTML(p.category)}">
-          <div class="main-img"><img id="mainImg" src="${p.images[0]||''}" alt="${escapeHTML(p.title)}"></div>
+          <div class="main-img"><img id="mainImg" src="${escapeHTML(p.images[0]||'')}" alt="${escapeHTML(p.title)}"></div>
           <div class="thumbs" role="group" aria-label="Product images">${p.images.slice(0,6).map((im,i)=>`<button type="button" class="thumb ${i===0?'active':''}" data-src="${escapeHTML(im)}" data-alt="${escapeHTML(p.title)} image ${i+1}" aria-label="View ${escapeHTML(p.title)} image ${i+1}" aria-pressed="${i===0?'true':'false'}"><img src="${escapeHTML(im)}" alt="" loading="lazy"></button>`).join('')}</div>
           ${(p.videos||[]).map(src=>`<video class="product-video" controls playsinline preload="none" poster="${escapeHTML(p.images[0]||'')}" aria-label="${escapeHTML(p.title)} video"><source src="${escapeHTML(src)}" type="video/mp4"></video>`).join('')}
         </div>
@@ -901,6 +901,11 @@ function productOptionGroupsHTML(opts, sel, cur){
   const groups = (opts || []).map((o,i)=>optionGroupHTML(o,sel,i,cur)).join('');
   return `<div class="pd-option-groups">${groups}</div>`;
 }
+function modelOptionLabel(name, value){
+  if (window._product?.model_options?.[name] !== value) return '';
+  const labels={pt:'modelo',en:'model',es:'modelo',de:'Model',fr:'modèle',it:'modella'};
+  return ` <small class="model-option">(${labels[document.documentElement.lang.slice(0,2)]||'modelo'})</small>`;
+}
 function cartOpts(sel, opts){
   return {
     opt1: sel[opts[0]?.name||'']||'',
@@ -952,7 +957,7 @@ function optionGroupHTML(o, sel, idx, cur){
   return `<div class="option-group option-group--${kind}">
     <label>${label}</label>
     <div class="pills">
-      ${o.values.map(vl=>`<button type="button" class="pill ${sel[o.name]===vl?'active':''}" onclick="selectOpt(${idx},'${escapeAttr(vl)}')" aria-pressed="${sel[o.name]===vl}">${escapeHTML(optionDisplayLabel(vl))}${kind==='length' && /^\d+$/.test(vl) ? '″' : ''}</button>`).join('')}
+      ${o.values.map(vl=>`<button type="button" class="pill ${sel[o.name]===vl?'active':''}" onclick="selectOpt(${idx},'${escapeAttr(vl)}')" aria-pressed="${sel[o.name]===vl}">${escapeHTML(optionDisplayLabel(vl))}${kind==='length' && /^\d+$/.test(vl) ? '″' : ''}${modelOptionLabel(o.name,vl)}</button>`).join('')}
     </div>
   </div>`;
 }
