@@ -43,9 +43,21 @@ const SEEDED_PRODUCT_REVIEWS = [
 ];
 async function loadCatalog(){
   if (CATALOG) return CATALOG;
-  const r = await fetch('catalog.json');
+  const r = await fetch('catalog.json?v=20261023-colored-promotions');
   CATALOG = await r.json();
+  refreshCartPrices();
   return CATALOG;
+}
+function refreshCartPrices(){
+  const cart=getCart();let changed=false;
+  for(const item of cart){
+    const product=findProduct(item.handle);if(!product)continue;
+    const pricing=variantPricing(product,item.opts);if(!pricing.found)continue;
+    if(item.priceEur!==pricing.priceEur||item.compareEur!==pricing.compareEur){
+      item.priceEur=pricing.priceEur;item.compareEur=pricing.compareEur;changed=true;
+    }
+  }
+  if(changed)saveCart(cart);
 }
 function findProduct(handle){
   if (!CATALOG) return null;
