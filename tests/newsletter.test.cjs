@@ -32,7 +32,7 @@ test('private newsletter APIs require the existing session and reject cross-orig
  assert.throws(()=>newsletter.validate({...input,buttonUrl:'javascript:alert(1)'}));assert.throws(()=>newsletter.validate({...input,buttonUrl:'https://evil.invalid'}));
  const saved=await (await call(env,'/draft',input,token)).json();assert.equal(saved.campaign.status,'draft');
  const preview=await call(env,'/preview/'+saved.campaign.id,null,token);const html=await preview.text();assert.match(html,/&lt;script&gt;/);assert.doesNotMatch(html,/<script>/);assert.match(preview.headers.get('content-security-policy'),/default-src 'none'/);
- const page=fs.readFileSync('gestao/newsletter.html','utf8');const sandbox=page.match(/<iframe[^>]+sandbox="([^"]*)"/)[1].split(/\s+/);assert.ok(sandbox.includes('allow-same-origin'),'authenticated preview retains the same-origin cookie context');assert.ok(!sandbox.includes('allow-scripts'),'email preview can never execute scripts');
+ const page=fs.readFileSync('gestao/newsletter.html','utf8');assert.doesNotMatch(page,/<iframe/);assert.match(page,/id="openExactPreview"/);
 });
 test('campaign queue sends only confirmed members, suppresses cancellations and resumes without duplicate emails',async t=>{
  const env=environment(),token=await session(env),original=global.fetch,sent=[];global.fetch=async(url,opts)=>{const payload=JSON.parse(opts.body);sent.push({payload,key:opts.headers['Idempotency-Key']});return new Response(JSON.stringify({id:'mock-'+sent.length}));};t.after(()=>global.fetch=original);
@@ -76,4 +76,11 @@ test('ambiguous network delivery retries the identical payload and idempotency k
  global.fetch=async(url,opts)=>{attempts.push({key:opts.headers['Idempotency-Key'],body:opts.body});if(attempts.length===1)throw Error('connection lost after possible provider acceptance');return new Response(JSON.stringify({id:'same-provider-id'}));};
  await newsletter.processQueue(env);let saved=JSON.parse(await(await env.REVIEW_MEDIA.get('newsletter-campaigns/'+c.id+'.json')).text());assert.equal(saved.cursor,0);assert.equal(saved.failed,0);
  await newsletter.processQueue(env);saved=JSON.parse(await(await env.REVIEW_MEDIA.get('newsletter-campaigns/'+c.id+'.json')).text());assert.equal(saved.sent,1);assert.equal(saved.status,'completed');assert.deepEqual(attempts[0],attempts[1]);
+});
+test('in-page preview renders hostile campaign text as text nodes without HTML or script execution',()=>{
+ const created=[];function element(tag){const node={tag,children:[],append(...children){this.children.push(...children);},replaceChildren(...children){this.children=children;}};Object.defineProperty(node,'innerHTML',{set(){throw Error('Preview must not parse campaign HTML');}});created.push(node);return node;}
+ const preview=element('div'),exact=element('a');
+ const context={document:{createElement:element},$:id=>id==='emailPreview'?preview:exact,current:{id:crypto.randomUUID(),version:2,title:'<img onerror=alert(1)>',text:'<script>alert(1)</script>\n\nA real paragraph',images:[]}};
+ const source=fs.readFileSync('gestao/newsletter.js','utf8');vm.createContext(context);vm.runInContext(source.slice(source.indexOf('function renderPreview(){'),source.indexOf("$('previewButton').addEventListener")),context);context.renderPreview();
+ assert.equal(created.find(node=>node.tag==='h3').textContent,context.current.title);assert.ok(created.some(node=>node.tag==='p'&&node.textContent==='<script>alert(1)</script>'));assert.equal(created.some(node=>node.tag==='script'||node.tag==='iframe'),false);assert.match(exact.href,/^\/management-api\/newsletter\/preview\//);
 });
