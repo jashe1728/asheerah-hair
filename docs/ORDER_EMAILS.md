@@ -3,7 +3,11 @@
 ## Customer experience
 
 Sender: `Asheerah Hair <noreply@asheerahhair.com>`. Replies go to `asheerahhair@gmail.com`.
-Portuguese HTML and plain-text messages contain the actual brand logo, canonical catalog product photos/options, quantities, unit prices, coupon discount, shipping, total, fulfillment address and next steps. The attached PDF includes customer name/email/phone, order reference/date, item details, totals, payment status, address and notes. It is an order summary, not a fiscal invoice. There is no invented tracking/status URL.
+Localized HTML and plain-text messages contain the actual brand logo, canonical catalog product photos/options, quantities, unit prices, coupon discount, shipping, total, fulfillment address and next steps. The attached PDF includes customer name/email/phone, order reference/date, item details, totals, payment status, address and notes. It is an order summary, not a fiscal invoice. There is no invented tracking/status URL.
+
+Both checkout paths capture the selected document language at submission. The server allowlists `pt`, `en`, `es`, `fr`, `de`, `it`, normalizes regional tags, and saves `language` on the private order snapshot. Missing/unsupported languages fall back to Portuguese for backward compatibility. Subject, HTML, plain text and PDF copy use `order-email-i18n.cjs`; currency formatting follows the language while settlement remains EUR. Product identities, canonical option values, addresses and customer notes are not translated. The brand's English tagline is retained. Stripe Checkout also receives the selected locale and `order_language` metadata. Webhook delivery and retries use the saved snapshot, never the later browser language; prepared payloads remain byte-identical.
+
+Language verification covers six locales, both payment states, pickup/delivery, delayed signed Stripe webhooks, Orange Money requests, immutable retry payloads and actual frontend request construction. Twelve PDF previews were rendered and reviewed; German mobile HTML fits without horizontal overflow. No new real transaction or customer email was sent during this localization change.
 
 Stripe emails require both a verified Stripe signature and the accounting backend's `paid` acknowledgement. Starting checkout, unpaid completion, failure, expiration and visiting a success URL cannot send a paid confirmation. Legacy orders without an item snapshot are skipped rather than reconstructed with current prices.
 

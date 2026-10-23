@@ -23,7 +23,7 @@
     if(!validateCheckout(event.target)){focusFirstError(event.target);return;}
     if(!token){show(msg(0));return;}
     const val=id=>document.getElementById(id).value.trim();
-    const request={customer:{name:val('coFirst')+' '+val('coLast'),email:val('coEmail'),phone:val('coPhone'),country:resolveCountryCode(val('coCountry'))||val('coCountry'),address:[val('coAddr'),val('coApt')].filter(Boolean).join(', '),city:[val('coCity'),val('coDistrict')].filter(Boolean).join(', '),postalCode:val('coZip'),notes:val('coNotes')},items:getCart().map(i=>({handle:i.handle,options:i.opts,quantity:i.qty})),couponCode:getAppliedCoupon()?.code||'',fulfillmentMethod:'delivery'};
+    const request={language:language()||'pt',customer:{name:val('coFirst')+' '+val('coLast'),email:val('coEmail'),phone:val('coPhone'),country:resolveCountryCode(val('coCountry'))||val('coCountry'),address:[val('coAddr'),val('coApt')].filter(Boolean).join(', '),city:[val('coCity'),val('coDistrict')].filter(Boolean).join(', '),postalCode:val('coZip'),notes:val('coNotes')},items:getCart().map(i=>({handle:i.handle,options:i.opts,quantity:i.qty})),couponCode:getAppliedCoupon()?.code||'',fulfillmentMethod:'delivery'};
     // Reuse the reference after a network error, but never for a changed request.
     const fingerprint=JSON.stringify(request);let previous;try{previous=JSON.parse(sessionStorage.getItem('ah-order-request')||'null');}catch{}
     const requestId=previous?.fingerprint===fingerprint?previous.id:crypto.randomUUID();

@@ -259,9 +259,10 @@ test('checkout handler creates Stripe Session with server-priced line items, sep
   };
   const env={SITE_ORIGIN:'https://jashe1728.github.io',SITE_BASE_URL:'https://jashe1728.github.io/asheerah-hair',CATALOG_URL:'https://catalog.example/catalog.json',STRIPE_SECRET_KEY:'sk_test_fake',STRIPE_WEBHOOK_SECRET:'whsec_test',WORKER_GAS_SECRET:'gas_test',GAS_WEBHOOK_URL:'https://gas.example/exec'};
   try{
-    const response=await handleRequest(new Request('https://worker.example/create-checkout-session',{method:'POST',headers:{Origin:env.SITE_ORIGIN,'Content-Type':'text/plain'},body:JSON.stringify(request('Mozambique'))}),env);
+    const response=await handleRequest(new Request('https://worker.example/create-checkout-session',{method:'POST',headers:{Origin:env.SITE_ORIGIN,'Content-Type':'text/plain'},body:JSON.stringify({...request('Mozambique'),language:'de-DE'})}),env);
     const result=await response.json();
     const params=new URLSearchParams(stripeBody);
+    assert.equal(params.get('locale'),'de');assert.equal(params.get('metadata[order_language]'),'de');
     const pending=JSON.parse(gasForwards[0].payload);
     assert.equal(response.status,200);
     assert.equal(stripeAuthOk,true);

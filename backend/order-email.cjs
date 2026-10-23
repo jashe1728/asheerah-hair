@@ -3,20 +3,19 @@ const SITE = 'https://asheerahhair.com';
 const FROM = 'Asheerah Hair <noreply@asheerahhair.com>';
 const REPLY = 'asheerahhair@gmail.com';
 const esc = value => String(value ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
-const euroFormat = new Intl.NumberFormat('pt-PT', {style:'currency', currency:'EUR'});
-const money = n => euroFormat.format(n / 100);
+const {normalizeLanguage,translator,formatter}=require('./order-email-i18n.cjs');
 function imageUrl(path) {
   const url = new URL(String(path || ''), SITE + '/');
   return url.origin === SITE && /^\/assets\/(?:img\/)?[a-zA-Z0-9_. -]+\.(?:png|jpe?g|webp)$/.test(decodeURIComponent(url.pathname)) ? url.href : SITE + '/assets/logo-sm.png';
 }
 function snapshot(checkout, id, method = 'stripe') {
   if (!/^[a-f0-9-]{36}$/i.test(id)) throw new Error('Invalid order reference');
-  return {version:1,id,createdAt:new Date().toISOString(),method,status:method==='stripe'?'pending_checkout':'awaiting_payment',customer:checkout.customer,items:checkout.orderItems,subtotalCents:checkout.subtotalCents,discountCents:checkout.discountCents,shippingCents:checkout.shippingCents,totalCents:checkout.totalCents,couponCode:checkout.couponCode,fulfillmentMethod:checkout.fulfillmentMethod,fulfillmentAddress:checkout.fulfillmentAddress,shippingRegion:checkout.shippingRegion};
+  return {version:1,id,language:normalizeLanguage(checkout.language),createdAt:new Date().toISOString(),method,status:method==='stripe'?'pending_checkout':'awaiting_payment',customer:checkout.customer,items:checkout.orderItems,subtotalCents:checkout.subtotalCents,discountCents:checkout.discountCents,shippingCents:checkout.shippingCents,totalCents:checkout.totalCents,couponCode:checkout.couponCode,fulfillmentMethod:checkout.fulfillmentMethod,fulfillmentAddress:checkout.fulfillmentAddress,shippingRegion:checkout.shippingRegion};
 }
 function content(order) {
   const paid = order.status === 'paid';
   const pickup = order.fulfillmentMethod === 'pickup';
-  return {
+  const copy = {
     title:paid?'Obrigada pela sua compra!':'Recebemos o seu pedido!',
     status:paid?'Pagamento confirmado':'A aguardar confirmação do pagamento',
     intro:paid?'Obrigada por escolher a Asheerah Hair. É um prazer fazer parte da sua história e ajudá-la a sentir-se ainda mais confiante.':'Obrigada por escolher a Asheerah Hair. Guardámos o seu pedido com carinho. A encomenda será confirmada após a receção do pagamento.',
@@ -24,10 +23,13 @@ function content(order) {
     eta:pickup?'Recolha após aviso da equipa':order.shippingRegion==='EUROPE'?'Prazo de entrega estimado: 6–10 dias úteis':'Prazo de entrega estimado: 9–15 dias',
     total:paid?'Total pago':'Total a pagar',
   };
+  const t=translator(order.language);
+  return Object.fromEntries(Object.entries(copy).map(([key,value])=>[key,t(value)]));
 }
 const design=require('./order-email-design.cjs');
-function renderEmail(order){return design.email(order,{content,money,esc,imageUrl,SITE,REPLY});}
-function makePdf(order){return design.pdf(order,{content,money,REPLY});}
+function presentation(order){const language=normalizeLanguage(order.language),format=formatter(language);return {content,money:n=>format.format(n/100),esc,imageUrl,SITE,REPLY,language,t:translator(language)};}
+function renderEmail(order){return design.email(order,presentation(order));}
+function makePdf(order){return design.pdf(order,presentation(order));}
 const key=id=>'order-notifications/'+id+'.json';
 async function readOrder(env,id){if(!/^[a-f0-9-]{36}$/i.test(id||''))return null;const obj=await env.REVIEW_MEDIA.get(key(id));return obj?JSON.parse(await obj.text()):null;}
 async function writeOrder(env,order){
@@ -35,7 +37,7 @@ async function writeOrder(env,order){
     const existing=await env.REVIEW_MEDIA.get(key(order.id));
     const current=existing?JSON.parse(await existing.text()):{};
     const merged={...current,...order};
-    for(const field of ['emailAttemptAt','emailSentAt','emailProviderId'])if(current[field])merged[field]=current[field];
+    for(const field of ['language','emailAttemptAt','emailSentAt','emailProviderId'])if(current[field])merged[field]=current[field];
     if(current.status==='paid')merged.status='paid';
     const onlyIf=existing?(existing.etag?{etagMatches:existing.etag}:null):{etagDoesNotMatch:'*'};
     const saved=await env.REVIEW_MEDIA.put(key(order.id),JSON.stringify(merged),{...(onlyIf?{onlyIf}:{}),httpMetadata:{contentType:'application/json'}});

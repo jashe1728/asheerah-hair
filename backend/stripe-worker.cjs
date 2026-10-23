@@ -95,7 +95,9 @@ function normalizeCheckoutRequest(input, catalog, env) {
   const customer = input.customer;
   const items = input.items;
   if (!customer || !Array.isArray(items) || !items.length || items.length > MAX_ITEMS) throw new Error('Invalid cart or customer');
-  if (Object.keys(input).some(k => !['customer','items','couponCode','fulfillmentMethod'].includes(k))) throw new Error('Unexpected request fields');
+  if (Object.keys(input).some(k => !['customer','items','couponCode','fulfillmentMethod','language'].includes(k))) throw new Error('Unexpected request fields');
+  if (input.language !== undefined && typeof input.language !== 'string') throw new Error('Invalid order language');
+  const language = require('./order-email-i18n.cjs').normalizeLanguage(input.language);
 
   const rawMethod = input.fulfillmentMethod == null ? 'delivery' : input.fulfillmentMethod;
   if (typeof rawMethod !== 'string') throw new Error('Invalid fulfillment method');
@@ -173,6 +175,7 @@ function normalizeCheckoutRequest(input, catalog, env) {
   if (shippingCents > 0) lineItems.push({ price_data: { currency: 'eur', unit_amount: shippingCents, product_data: { name: 'Shipping' } }, quantity: 1 });
   return {
     customer: cleanCustomer,
+    language,
     currency: 'eur',
     countryCode: shipping.countryCode,
     shippingRegion: shipping.region,
@@ -540,6 +543,8 @@ async function handleRequest(request, env) {
     });
     const params = new URLSearchParams();
     params.set('mode', 'payment');
+    params.set('locale', checkout.language);
+    params.set('metadata[order_language]', checkout.language);
     params.set('success_url', `${env.SITE_BASE_URL}/checkout.html?payment=success&order_id=${orderId}&session_id={CHECKOUT_SESSION_ID}`);
     params.set('cancel_url', `${env.SITE_BASE_URL}/checkout.html?payment=cancelled&order_id=${orderId}`);
     params.set('customer_email', checkout.customer.email);

@@ -1885,6 +1885,7 @@ async function startStripeCheckout(customer, cart, note, btn, fulfillmentMethod 
   const customerZip = isPickup ? PICKUP_LOCATION.zip : customer.zip;
 
   const requestBody = {
+    language: document.documentElement.lang || 'pt',
     customer: {
       name:customer.name, email:customer.email, phone:customer.phone,
       country:countryCode, address:customerAddress,
