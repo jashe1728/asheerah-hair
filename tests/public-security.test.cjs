@@ -45,3 +45,11 @@ test('Orange Money refuses missing signing credentials before accepting an order
  const env={...environment(),ORDER_EMAIL_ENABLED:'1',RESEND_API_KEY:'mock'};delete env.WORKER_GAS_SECRET;
  const response=await handleRequest(new Request(origin+'/request-orange-money',{method:'POST',headers:{Origin:origin},body:'{}'}),env);assert.equal(response.status,503);assert.equal(env.REVIEW_MEDIA.data.size,0);
 });
+test('private readiness probe verifies both signed targets without exposing secrets or writing orders',async t=>{
+ const env={...environment(),MANAGEMENT_ALLOWED_EMAILS:'owner@example.invalid'},token='e'.repeat(64),digest=crypto.createHash('sha256').update(token).digest('hex');
+ await env.REVIEW_MEDIA.put('management-auth/sessions/'+digest+'.json',JSON.stringify({email:'owner@example.invalid',expiresAt:Date.now()+60000}));
+ const {context,sheets}=gasHarness('test-secret'),original=global.fetch;let probes=0;
+ global.fetch=async(url,opts)=>{probes++;const payload=JSON.parse(JSON.parse(opts.body).payload);assert.equal(payload.action,'security_probe');return new Response(JSON.stringify(context.doPost({postData:{contents:opts.body}})));};t.after(()=>global.fetch=original);
+ const response=await handleRequest(new Request(origin+'/management-api/security-status',{headers:{Cookie:'__Host-ah_management='+token}}),env),text=await response.text();
+ const status=JSON.parse(text);assert.equal(status.checks.stripe.compatible,true);assert.equal(status.checks.manual.compatible,true);assert.equal(status.cspReportsToday,0);assert.equal(probes,2);assert.equal(sheets.Orders.length,1);assert.doesNotMatch(text,/test-secret|gas.example/);
+});

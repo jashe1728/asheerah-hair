@@ -25,14 +25,14 @@ ORDER_EMAIL_ENABLED = "1"
 NEWSLETTER_ENABLED = "1"
 # Conservative campaign allowance, independent of transactional receipts. Review provider capacity before raising.
 NEWSLETTER_DAILY_LIMIT = "20"
-MANUAL_ORDER_GAS_URL = "https://script.google.com/macros/s/AKfycbzKCanbiHbmlJkhhjy77g2LyTGef6jqcOBNp-2LmUsw21eOCJfSiATnLrw3i2lXlnMP/exec"
+MANUAL_ORDER_GAS_URL = "https://script.google.com/macros/s/AKfycbwD6-Ml0fpD23-t_Am1_Oehim0zfts_YOTgu8mF-Pk7OFyxTOjFMTyU2DxcrNuMRPTf/exec"
 STRIPE_MODE = "live"
 CHECKOUT_DIAGNOSTIC = "0"
 SITE_ORIGIN = "https://asheerahhair.com"
 SITE_ORIGINS = "https://jashe1728.github.io,https://asheerahhair.com,https://www.asheerahhair.com"
 SITE_BASE_URL = "https://asheerahhair.com"
 CATALOG_URL = "https://jashe1728.github.io/asheerah-hair/catalog.json"
-GAS_WEBHOOK_URL = "https://script.google.com/macros/s/AKfycbwFhUUndMwUeXE58D2x9UtPJv00ZfM0QUsdrwgcxU0YQxzBazYKiVbEvkm_OnWCxND7/exec"
+GAS_WEBHOOK_URL = "https://script.google.com/macros/s/AKfycbwD6-Ml0fpD23-t_Am1_Oehim0zfts_YOTgu8mF-Pk7OFyxTOjFMTyU2DxcrNuMRPTf/exec"
 
 [[r2_buckets]]
 binding = "REVIEW_MEDIA"

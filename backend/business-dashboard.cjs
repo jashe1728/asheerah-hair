@@ -73,7 +73,8 @@ async function handle(request,env){
   for(const [name,target] of Object.entries({stripe:env.GAS_WEBHOOK_URL,manual:env.MANUAL_ORDER_GAS_URL||env.GAS_WEBHOOK_URL})){
    try{const reply=await fetch(target,{method:'POST',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify(security.envelope(env,{action:'security_probe'}))});const result=await reply.json();checks[name]={compatible:reply.ok&&result.ok===true&&result.securityVersion===2&&result.manualOrderIdempotent===true};}catch{checks[name]={compatible:false};}
   }
-  return response({checks,newsletterEnabled:env.NEWSLETTER_ENABLED==='1'});
+  const reports=await env.REVIEW_MEDIA.list({prefix:'security-reports/'+new Date().toISOString().slice(0,10)+'/',limit:100});
+  return response({checks,newsletterEnabled:env.NEWSLETTER_ENABLED==='1',cspReportsToday:reports.objects.length,cspReportsTruncated:!!reports.truncated});
  }
  if(path==='/management-api/newsletter'||path.startsWith('/management-api/newsletter/'))return require('./newsletter.cjs').handle(request,env,user);
  if(request.method==='GET'&&path==='/management-api/orders'){
