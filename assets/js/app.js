@@ -43,7 +43,7 @@ const SEEDED_PRODUCT_REVIEWS = [
 ];
 async function loadCatalog(){
   if (CATALOG) return CATALOG;
-  const r = await fetch('catalog.json?v=20261023-colored-promotions');
+  const r = await fetch('catalog.json?v=20261023-onika-first');
   CATALOG = await r.json();
   refreshCartPrices();
   return CATALOG;
@@ -616,9 +616,11 @@ function renderFeatured(){
   const cur = curCode();
   const preferred = ['wigs','bundles','crochet'];
   const pools = Object.fromEntries(preferred.map(cat => [cat, CATALOG.products.filter(p => p.category === cat && p.images && p.images[0])]));
-  // Keep the homepage as a four-card static edit: one item from each category,
-  // then a second wig, with the full catalogue one click away below.
-  const list = preferred.map(cat => pools[cat][0]).filter(Boolean);
+  // Lead with Onika and Chocolate, followed by bundles and crochet.
+  const list = ['x-onika-ginger-bombshell','chocolate-caramel-highlight-wig'].map(handle => CATALOG.products.find(p => p.handle === handle)).filter(Boolean);
+  for (const cat of ['bundles','crochet']){
+    if (pools[cat][0]) list.push(pools[cat][0]);
+  }
   for (const cat of preferred){
     if (list.length >= 4) break;
     if (pools[cat][1]) list.push(pools[cat][1]);

@@ -2,6 +2,1203 @@
   "currency": "EUR",
   "products": [
     {
+      "id": 2026102302,
+      "handle": "x-onika-ginger-bombshell",
+      "title": "X_Onika Ginger Bombshell",
+      "category": "wigs",
+      "description": "X_Onika Ginger Bombshell. Lace HD 5x5 ou 13x4, densidade 200%. Modelo da fotografia: 26 polegadas, lace 13x4 HD.",
+      "images": [
+        "assets/img/x-onika-ginger-bombshell-1.png",
+        "assets/img/x-onika-ginger-bombshell-2.png",
+        "assets/img/x-onika-ginger-bombshell-3.png"
+      ],
+      "type": "X_Onika Ginger Bombshell",
+      "model_options": {
+        "Hair Length": "26",
+        "Lace": "13x4 HD"
+      },
+      "options": [
+        {
+          "name": "Hair Length",
+          "values": [
+            "16",
+            "18",
+            "20",
+            "22",
+            "24",
+            "26",
+            "28",
+            "30",
+            "32",
+            "34",
+            "36",
+            "38",
+            "40"
+          ]
+        },
+        {
+          "name": "Lace",
+          "values": [
+            "5x5 HD",
+            "13x4 HD"
+          ]
+        },
+        {
+          "name": "Hair Density",
+          "values": [
+            "200%"
+          ]
+        },
+        {
+          "name": "Cap Size",
+          "values": [
+            "SMALL",
+            "MEDIUM",
+            "LARGE"
+          ]
+        }
+      ],
+      "variants": [
+        {
+          "title": "16 / 5x5 HD / 200% / SMALL",
+          "opt1": "16",
+          "opt2": "5x5 HD",
+          "opt3": "200%",
+          "opt4": "SMALL",
+          "price_eur": 219.99,
+          "compare_eur": 269.99
+        },
+        {
+          "title": "16 / 5x5 HD / 200% / MEDIUM",
+          "opt1": "16",
+          "opt2": "5x5 HD",
+          "opt3": "200%",
+          "opt4": "MEDIUM",
+          "price_eur": 219.99,
+          "compare_eur": 269.99
+        },
+        {
+          "title": "16 / 5x5 HD / 200% / LARGE",
+          "opt1": "16",
+          "opt2": "5x5 HD",
+          "opt3": "200%",
+          "opt4": "LARGE",
+          "price_eur": 219.99,
+          "compare_eur": 269.99
+        },
+        {
+          "title": "16 / 13x4 HD / 200% / SMALL",
+          "opt1": "16",
+          "opt2": "13x4 HD",
+          "opt3": "200%",
+          "opt4": "SMALL",
+          "price_eur": 228.99,
+          "compare_eur": 281.99
+        },
+        {
+          "title": "16 / 13x4 HD / 200% / MEDIUM",
+          "opt1": "16",
+          "opt2": "13x4 HD",
+          "opt3": "200%",
+          "opt4": "MEDIUM",
+          "price_eur": 228.99,
+          "compare_eur": 281.99
+        },
+        {
+          "title": "16 / 13x4 HD / 200% / LARGE",
+          "opt1": "16",
+          "opt2": "13x4 HD",
+          "opt3": "200%",
+          "opt4": "LARGE",
+          "price_eur": 228.99,
+          "compare_eur": 281.99
+        },
+        {
+          "title": "18 / 5x5 HD / 200% / SMALL",
+          "opt1": "18",
+          "opt2": "5x5 HD",
+          "opt3": "200%",
+          "opt4": "SMALL",
+          "price_eur": 229.99,
+          "compare_eur": 282.99
+        },
+        {
+          "title": "18 / 5x5 HD / 200% / MEDIUM",
+          "opt1": "18",
+          "opt2": "5x5 HD",
+          "opt3": "200%",
+          "opt4": "MEDIUM",
+          "price_eur": 229.99,
+          "compare_eur": 282.99
+        },
+        {
+          "title": "18 / 5x5 HD / 200% / LARGE",
+          "opt1": "18",
+          "opt2": "5x5 HD",
+          "opt3": "200%",
+          "opt4": "LARGE",
+          "price_eur": 229.99,
+          "compare_eur": 282.99
+        },
+        {
+          "title": "18 / 13x4 HD / 200% / SMALL",
+          "opt1": "18",
+          "opt2": "13x4 HD",
+          "opt3": "200%",
+          "opt4": "SMALL",
+          "price_eur": 243.99,
+          "compare_eur": 300.99
+        },
+        {
+          "title": "18 / 13x4 HD / 200% / MEDIUM",
+          "opt1": "18",
+          "opt2": "13x4 HD",
+          "opt3": "200%",
+          "opt4": "MEDIUM",
+          "price_eur": 243.99,
+          "compare_eur": 300.99
+        },
+        {
+          "title": "18 / 13x4 HD / 200% / LARGE",
+          "opt1": "18",
+          "opt2": "13x4 HD",
+          "opt3": "200%",
+          "opt4": "LARGE",
+          "price_eur": 243.99,
+          "compare_eur": 300.99
+        },
+        {
+          "title": "20 / 5x5 HD / 200% / SMALL",
+          "opt1": "20",
+          "opt2": "5x5 HD",
+          "opt3": "200%",
+          "opt4": "SMALL",
+          "price_eur": 247.99,
+          "compare_eur": 304.99
+        },
+        {
+          "title": "20 / 5x5 HD / 200% / MEDIUM",
+          "opt1": "20",
+          "opt2": "5x5 HD",
+          "opt3": "200%",
+          "opt4": "MEDIUM",
+          "price_eur": 247.99,
+          "compare_eur": 304.99
+        },
+        {
+          "title": "20 / 5x5 HD / 200% / LARGE",
+          "opt1": "20",
+          "opt2": "5x5 HD",
+          "opt3": "200%",
+          "opt4": "LARGE",
+          "price_eur": 247.99,
+          "compare_eur": 304.99
+        },
+        {
+          "title": "20 / 13x4 HD / 200% / SMALL",
+          "opt1": "20",
+          "opt2": "13x4 HD",
+          "opt3": "200%",
+          "opt4": "SMALL",
+          "price_eur": 261.99,
+          "compare_eur": 322.99
+        },
+        {
+          "title": "20 / 13x4 HD / 200% / MEDIUM",
+          "opt1": "20",
+          "opt2": "13x4 HD",
+          "opt3": "200%",
+          "opt4": "MEDIUM",
+          "price_eur": 261.99,
+          "compare_eur": 322.99
+        },
+        {
+          "title": "20 / 13x4 HD / 200% / LARGE",
+          "opt1": "20",
+          "opt2": "13x4 HD",
+          "opt3": "200%",
+          "opt4": "LARGE",
+          "price_eur": 261.99,
+          "compare_eur": 322.99
+        },
+        {
+          "title": "22 / 5x5 HD / 200% / SMALL",
+          "opt1": "22",
+          "opt2": "5x5 HD",
+          "opt3": "200%",
+          "opt4": "SMALL",
+          "price_eur": 261.99,
+          "compare_eur": 322.99
+        },
+        {
+          "title": "22 / 5x5 HD / 200% / MEDIUM",
+          "opt1": "22",
+          "opt2": "5x5 HD",
+          "opt3": "200%",
+          "opt4": "MEDIUM",
+          "price_eur": 261.99,
+          "compare_eur": 322.99
+        },
+        {
+          "title": "22 / 5x5 HD / 200% / LARGE",
+          "opt1": "22",
+          "opt2": "5x5 HD",
+          "opt3": "200%",
+          "opt4": "LARGE",
+          "price_eur": 261.99,
+          "compare_eur": 322.99
+        },
+        {
+          "title": "22 / 13x4 HD / 200% / SMALL",
+          "opt1": "22",
+          "opt2": "13x4 HD",
+          "opt3": "200%",
+          "opt4": "SMALL",
+          "price_eur": 276.99,
+          "compare_eur": 341.99
+        },
+        {
+          "title": "22 / 13x4 HD / 200% / MEDIUM",
+          "opt1": "22",
+          "opt2": "13x4 HD",
+          "opt3": "200%",
+          "opt4": "MEDIUM",
+          "price_eur": 276.99,
+          "compare_eur": 341.99
+        },
+        {
+          "title": "22 / 13x4 HD / 200% / LARGE",
+          "opt1": "22",
+          "opt2": "13x4 HD",
+          "opt3": "200%",
+          "opt4": "LARGE",
+          "price_eur": 276.99,
+          "compare_eur": 341.99
+        },
+        {
+          "title": "24 / 5x5 HD / 200% / SMALL",
+          "opt1": "24",
+          "opt2": "5x5 HD",
+          "opt3": "200%",
+          "opt4": "SMALL",
+          "price_eur": 271.99,
+          "compare_eur": 334.99
+        },
+        {
+          "title": "24 / 5x5 HD / 200% / MEDIUM",
+          "opt1": "24",
+          "opt2": "5x5 HD",
+          "opt3": "200%",
+          "opt4": "MEDIUM",
+          "price_eur": 271.99,
+          "compare_eur": 334.99
+        },
+        {
+          "title": "24 / 5x5 HD / 200% / LARGE",
+          "opt1": "24",
+          "opt2": "5x5 HD",
+          "opt3": "200%",
+          "opt4": "LARGE",
+          "price_eur": 271.99,
+          "compare_eur": 334.99
+        },
+        {
+          "title": "24 / 13x4 HD / 200% / SMALL",
+          "opt1": "24",
+          "opt2": "13x4 HD",
+          "opt3": "200%",
+          "opt4": "SMALL",
+          "price_eur": 287.99,
+          "compare_eur": 354.99
+        },
+        {
+          "title": "24 / 13x4 HD / 200% / MEDIUM",
+          "opt1": "24",
+          "opt2": "13x4 HD",
+          "opt3": "200%",
+          "opt4": "MEDIUM",
+          "price_eur": 287.99,
+          "compare_eur": 354.99
+        },
+        {
+          "title": "24 / 13x4 HD / 200% / LARGE",
+          "opt1": "24",
+          "opt2": "13x4 HD",
+          "opt3": "200%",
+          "opt4": "LARGE",
+          "price_eur": 287.99,
+          "compare_eur": 354.99
+        },
+        {
+          "title": "26 / 5x5 HD / 200% / SMALL",
+          "opt1": "26",
+          "opt2": "5x5 HD",
+          "opt3": "200%",
+          "opt4": "SMALL",
+          "price_eur": 287.99,
+          "compare_eur": 355.99
+        },
+        {
+          "title": "26 / 5x5 HD / 200% / MEDIUM",
+          "opt1": "26",
+          "opt2": "5x5 HD",
+          "opt3": "200%",
+          "opt4": "MEDIUM",
+          "price_eur": 287.99,
+          "compare_eur": 355.99
+        },
+        {
+          "title": "26 / 5x5 HD / 200% / LARGE",
+          "opt1": "26",
+          "opt2": "5x5 HD",
+          "opt3": "200%",
+          "opt4": "LARGE",
+          "price_eur": 287.99,
+          "compare_eur": 355.99
+        },
+        {
+          "title": "26 / 13x4 HD / 200% / SMALL",
+          "opt1": "26",
+          "opt2": "13x4 HD",
+          "opt3": "200%",
+          "opt4": "SMALL",
+          "price_eur": 299.99,
+          "compare_eur": 370.99
+        },
+        {
+          "title": "26 / 13x4 HD / 200% / MEDIUM",
+          "opt1": "26",
+          "opt2": "13x4 HD",
+          "opt3": "200%",
+          "opt4": "MEDIUM",
+          "price_eur": 299.99,
+          "compare_eur": 370.99
+        },
+        {
+          "title": "26 / 13x4 HD / 200% / LARGE",
+          "opt1": "26",
+          "opt2": "13x4 HD",
+          "opt3": "200%",
+          "opt4": "LARGE",
+          "price_eur": 299.99,
+          "compare_eur": 370.99
+        },
+        {
+          "title": "28 / 5x5 HD / 200% / SMALL",
+          "opt1": "28",
+          "opt2": "5x5 HD",
+          "opt3": "200%",
+          "opt4": "SMALL",
+          "price_eur": 305.99,
+          "compare_eur": 377.99
+        },
+        {
+          "title": "28 / 5x5 HD / 200% / MEDIUM",
+          "opt1": "28",
+          "opt2": "5x5 HD",
+          "opt3": "200%",
+          "opt4": "MEDIUM",
+          "price_eur": 305.99,
+          "compare_eur": 377.99
+        },
+        {
+          "title": "28 / 5x5 HD / 200% / LARGE",
+          "opt1": "28",
+          "opt2": "5x5 HD",
+          "opt3": "200%",
+          "opt4": "LARGE",
+          "price_eur": 305.99,
+          "compare_eur": 377.99
+        },
+        {
+          "title": "28 / 13x4 HD / 200% / SMALL",
+          "opt1": "28",
+          "opt2": "13x4 HD",
+          "opt3": "200%",
+          "opt4": "SMALL",
+          "price_eur": 314.99,
+          "compare_eur": 388.99
+        },
+        {
+          "title": "28 / 13x4 HD / 200% / MEDIUM",
+          "opt1": "28",
+          "opt2": "13x4 HD",
+          "opt3": "200%",
+          "opt4": "MEDIUM",
+          "price_eur": 314.99,
+          "compare_eur": 388.99
+        },
+        {
+          "title": "28 / 13x4 HD / 200% / LARGE",
+          "opt1": "28",
+          "opt2": "13x4 HD",
+          "opt3": "200%",
+          "opt4": "LARGE",
+          "price_eur": 314.99,
+          "compare_eur": 388.99
+        },
+        {
+          "title": "30 / 5x5 HD / 200% / SMALL",
+          "opt1": "30",
+          "opt2": "5x5 HD",
+          "opt3": "200%",
+          "opt4": "SMALL",
+          "price_eur": 327.99,
+          "compare_eur": 405.99
+        },
+        {
+          "title": "30 / 5x5 HD / 200% / MEDIUM",
+          "opt1": "30",
+          "opt2": "5x5 HD",
+          "opt3": "200%",
+          "opt4": "MEDIUM",
+          "price_eur": 327.99,
+          "compare_eur": 405.99
+        },
+        {
+          "title": "30 / 5x5 HD / 200% / LARGE",
+          "opt1": "30",
+          "opt2": "5x5 HD",
+          "opt3": "200%",
+          "opt4": "LARGE",
+          "price_eur": 327.99,
+          "compare_eur": 405.99
+        },
+        {
+          "title": "30 / 13x4 HD / 200% / SMALL",
+          "opt1": "30",
+          "opt2": "13x4 HD",
+          "opt3": "200%",
+          "opt4": "SMALL",
+          "price_eur": 339.99,
+          "compare_eur": 419.99
+        },
+        {
+          "title": "30 / 13x4 HD / 200% / MEDIUM",
+          "opt1": "30",
+          "opt2": "13x4 HD",
+          "opt3": "200%",
+          "opt4": "MEDIUM",
+          "price_eur": 339.99,
+          "compare_eur": 419.99
+        },
+        {
+          "title": "30 / 13x4 HD / 200% / LARGE",
+          "opt1": "30",
+          "opt2": "13x4 HD",
+          "opt3": "200%",
+          "opt4": "LARGE",
+          "price_eur": 339.99,
+          "compare_eur": 419.99
+        },
+        {
+          "title": "32 / 5x5 HD / 200% / SMALL",
+          "opt1": "32",
+          "opt2": "5x5 HD",
+          "opt3": "200%",
+          "opt4": "SMALL",
+          "price_eur": 359.99,
+          "compare_eur": 444.99
+        },
+        {
+          "title": "32 / 5x5 HD / 200% / MEDIUM",
+          "opt1": "32",
+          "opt2": "5x5 HD",
+          "opt3": "200%",
+          "opt4": "MEDIUM",
+          "price_eur": 359.99,
+          "compare_eur": 444.99
+        },
+        {
+          "title": "32 / 5x5 HD / 200% / LARGE",
+          "opt1": "32",
+          "opt2": "5x5 HD",
+          "opt3": "200%",
+          "opt4": "LARGE",
+          "price_eur": 359.99,
+          "compare_eur": 444.99
+        },
+        {
+          "title": "32 / 13x4 HD / 200% / SMALL",
+          "opt1": "32",
+          "opt2": "13x4 HD",
+          "opt3": "200%",
+          "opt4": "SMALL",
+          "price_eur": 371.99,
+          "compare_eur": 459.99
+        },
+        {
+          "title": "32 / 13x4 HD / 200% / MEDIUM",
+          "opt1": "32",
+          "opt2": "13x4 HD",
+          "opt3": "200%",
+          "opt4": "MEDIUM",
+          "price_eur": 371.99,
+          "compare_eur": 459.99
+        },
+        {
+          "title": "32 / 13x4 HD / 200% / LARGE",
+          "opt1": "32",
+          "opt2": "13x4 HD",
+          "opt3": "200%",
+          "opt4": "LARGE",
+          "price_eur": 371.99,
+          "compare_eur": 459.99
+        },
+        {
+          "title": "34 / 5x5 HD / 200% / SMALL",
+          "opt1": "34",
+          "opt2": "5x5 HD",
+          "opt3": "200%",
+          "opt4": "SMALL",
+          "price_eur": 367.99,
+          "compare_eur": 455.99
+        },
+        {
+          "title": "34 / 5x5 HD / 200% / MEDIUM",
+          "opt1": "34",
+          "opt2": "5x5 HD",
+          "opt3": "200%",
+          "opt4": "MEDIUM",
+          "price_eur": 367.99,
+          "compare_eur": 455.99
+        },
+        {
+          "title": "34 / 5x5 HD / 200% / LARGE",
+          "opt1": "34",
+          "opt2": "5x5 HD",
+          "opt3": "200%",
+          "opt4": "LARGE",
+          "price_eur": 367.99,
+          "compare_eur": 455.99
+        },
+        {
+          "title": "34 / 13x4 HD / 200% / SMALL",
+          "opt1": "34",
+          "opt2": "13x4 HD",
+          "opt3": "200%",
+          "opt4": "SMALL",
+          "price_eur": 379.99,
+          "compare_eur": 470.99
+        },
+        {
+          "title": "34 / 13x4 HD / 200% / MEDIUM",
+          "opt1": "34",
+          "opt2": "13x4 HD",
+          "opt3": "200%",
+          "opt4": "MEDIUM",
+          "price_eur": 379.99,
+          "compare_eur": 470.99
+        },
+        {
+          "title": "34 / 13x4 HD / 200% / LARGE",
+          "opt1": "34",
+          "opt2": "13x4 HD",
+          "opt3": "200%",
+          "opt4": "LARGE",
+          "price_eur": 379.99,
+          "compare_eur": 470.99
+        },
+        {
+          "title": "36 / 5x5 HD / 200% / SMALL",
+          "opt1": "36",
+          "opt2": "5x5 HD",
+          "opt3": "200%",
+          "opt4": "SMALL",
+          "price_eur": 377.99,
+          "compare_eur": 467.99
+        },
+        {
+          "title": "36 / 5x5 HD / 200% / MEDIUM",
+          "opt1": "36",
+          "opt2": "5x5 HD",
+          "opt3": "200%",
+          "opt4": "MEDIUM",
+          "price_eur": 377.99,
+          "compare_eur": 467.99
+        },
+        {
+          "title": "36 / 5x5 HD / 200% / LARGE",
+          "opt1": "36",
+          "opt2": "5x5 HD",
+          "opt3": "200%",
+          "opt4": "LARGE",
+          "price_eur": 377.99,
+          "compare_eur": 467.99
+        },
+        {
+          "title": "36 / 13x4 HD / 200% / SMALL",
+          "opt1": "36",
+          "opt2": "13x4 HD",
+          "opt3": "200%",
+          "opt4": "SMALL",
+          "price_eur": 388.99,
+          "compare_eur": 481.99
+        },
+        {
+          "title": "36 / 13x4 HD / 200% / MEDIUM",
+          "opt1": "36",
+          "opt2": "13x4 HD",
+          "opt3": "200%",
+          "opt4": "MEDIUM",
+          "price_eur": 388.99,
+          "compare_eur": 481.99
+        },
+        {
+          "title": "36 / 13x4 HD / 200% / LARGE",
+          "opt1": "36",
+          "opt2": "13x4 HD",
+          "opt3": "200%",
+          "opt4": "LARGE",
+          "price_eur": 388.99,
+          "compare_eur": 481.99
+        },
+        {
+          "title": "38 / 5x5 HD / 200% / SMALL",
+          "opt1": "38",
+          "opt2": "5x5 HD",
+          "opt3": "200%",
+          "opt4": "SMALL",
+          "price_eur": 451.99,
+          "compare_eur": 560.99
+        },
+        {
+          "title": "38 / 5x5 HD / 200% / MEDIUM",
+          "opt1": "38",
+          "opt2": "5x5 HD",
+          "opt3": "200%",
+          "opt4": "MEDIUM",
+          "price_eur": 451.99,
+          "compare_eur": 560.99
+        },
+        {
+          "title": "38 / 5x5 HD / 200% / LARGE",
+          "opt1": "38",
+          "opt2": "5x5 HD",
+          "opt3": "200%",
+          "opt4": "LARGE",
+          "price_eur": 451.99,
+          "compare_eur": 560.99
+        },
+        {
+          "title": "38 / 13x4 HD / 200% / SMALL",
+          "opt1": "38",
+          "opt2": "13x4 HD",
+          "opt3": "200%",
+          "opt4": "SMALL",
+          "price_eur": 464.99,
+          "compare_eur": 576.99
+        },
+        {
+          "title": "38 / 13x4 HD / 200% / MEDIUM",
+          "opt1": "38",
+          "opt2": "13x4 HD",
+          "opt3": "200%",
+          "opt4": "MEDIUM",
+          "price_eur": 464.99,
+          "compare_eur": 576.99
+        },
+        {
+          "title": "38 / 13x4 HD / 200% / LARGE",
+          "opt1": "38",
+          "opt2": "13x4 HD",
+          "opt3": "200%",
+          "opt4": "LARGE",
+          "price_eur": 464.99,
+          "compare_eur": 576.99
+        },
+        {
+          "title": "40 / 5x5 HD / 200% / SMALL",
+          "opt1": "40",
+          "opt2": "5x5 HD",
+          "opt3": "200%",
+          "opt4": "SMALL",
+          "price_eur": 496.99,
+          "compare_eur": 616.99
+        },
+        {
+          "title": "40 / 5x5 HD / 200% / MEDIUM",
+          "opt1": "40",
+          "opt2": "5x5 HD",
+          "opt3": "200%",
+          "opt4": "MEDIUM",
+          "price_eur": 496.99,
+          "compare_eur": 616.99
+        },
+        {
+          "title": "40 / 5x5 HD / 200% / LARGE",
+          "opt1": "40",
+          "opt2": "5x5 HD",
+          "opt3": "200%",
+          "opt4": "LARGE",
+          "price_eur": 496.99,
+          "compare_eur": 616.99
+        },
+        {
+          "title": "40 / 13x4 HD / 200% / SMALL",
+          "opt1": "40",
+          "opt2": "13x4 HD",
+          "opt3": "200%",
+          "opt4": "SMALL",
+          "price_eur": 507.99,
+          "compare_eur": 629.99
+        },
+        {
+          "title": "40 / 13x4 HD / 200% / MEDIUM",
+          "opt1": "40",
+          "opt2": "13x4 HD",
+          "opt3": "200%",
+          "opt4": "MEDIUM",
+          "price_eur": 507.99,
+          "compare_eur": 629.99
+        },
+        {
+          "title": "40 / 13x4 HD / 200% / LARGE",
+          "opt1": "40",
+          "opt2": "13x4 HD",
+          "opt3": "200%",
+          "opt4": "LARGE",
+          "price_eur": 507.99,
+          "compare_eur": 629.99
+        }
+      ]
+    },
+    {
+      "id": 2026102301,
+      "handle": "chocolate-caramel-highlight-wig",
+      "title": "Chocolate Caramel Highlight Wig",
+      "category": "wigs",
+      "description": "Chocolate Caramel Highlight Wig. Lace HD 5x5 ou 13x4, densidade 200%. Modelo da fotografia: 20 polegadas, lace 5x5 HD.",
+      "images": [
+        "assets/img/chocolate-caramel-highlight-wig-1.jpeg",
+        "assets/img/chocolate-caramel-highlight-wig-2.png",
+        "assets/img/chocolate-caramel-highlight-wig-3.png"
+      ],
+      "type": "Chocolate Caramel Highlight Wig",
+      "model_options": {
+        "Hair Length": "20",
+        "Lace": "5x5 HD"
+      },
+      "options": [
+        {
+          "name": "Hair Length",
+          "values": [
+            "16",
+            "18",
+            "20",
+            "22",
+            "24",
+            "26",
+            "28"
+          ]
+        },
+        {
+          "name": "Lace",
+          "values": [
+            "5x5 HD",
+            "13x4 HD"
+          ]
+        },
+        {
+          "name": "Hair Density",
+          "values": [
+            "200%"
+          ]
+        },
+        {
+          "name": "Cap Size",
+          "values": [
+            "SMALL",
+            "MEDIUM",
+            "LARGE"
+          ]
+        }
+      ],
+      "variants": [
+        {
+          "title": "16 / 5x5 HD / 200% / SMALL",
+          "opt1": "16",
+          "opt2": "5x5 HD",
+          "opt3": "200%",
+          "opt4": "SMALL",
+          "price_eur": 222.99,
+          "compare_eur": 278.99
+        },
+        {
+          "title": "16 / 5x5 HD / 200% / MEDIUM",
+          "opt1": "16",
+          "opt2": "5x5 HD",
+          "opt3": "200%",
+          "opt4": "MEDIUM",
+          "price_eur": 222.99,
+          "compare_eur": 278.99
+        },
+        {
+          "title": "16 / 5x5 HD / 200% / LARGE",
+          "opt1": "16",
+          "opt2": "5x5 HD",
+          "opt3": "200%",
+          "opt4": "LARGE",
+          "price_eur": 222.99,
+          "compare_eur": 278.99
+        },
+        {
+          "title": "16 / 13x4 HD / 200% / SMALL",
+          "opt1": "16",
+          "opt2": "13x4 HD",
+          "opt3": "200%",
+          "opt4": "SMALL",
+          "price_eur": 231.99,
+          "compare_eur": 289.99
+        },
+        {
+          "title": "16 / 13x4 HD / 200% / MEDIUM",
+          "opt1": "16",
+          "opt2": "13x4 HD",
+          "opt3": "200%",
+          "opt4": "MEDIUM",
+          "price_eur": 231.99,
+          "compare_eur": 289.99
+        },
+        {
+          "title": "16 / 13x4 HD / 200% / LARGE",
+          "opt1": "16",
+          "opt2": "13x4 HD",
+          "opt3": "200%",
+          "opt4": "LARGE",
+          "price_eur": 231.99,
+          "compare_eur": 289.99
+        },
+        {
+          "title": "18 / 5x5 HD / 200% / SMALL",
+          "opt1": "18",
+          "opt2": "5x5 HD",
+          "opt3": "200%",
+          "opt4": "SMALL",
+          "price_eur": 239.99,
+          "compare_eur": 300.99
+        },
+        {
+          "title": "18 / 5x5 HD / 200% / MEDIUM",
+          "opt1": "18",
+          "opt2": "5x5 HD",
+          "opt3": "200%",
+          "opt4": "MEDIUM",
+          "price_eur": 239.99,
+          "compare_eur": 300.99
+        },
+        {
+          "title": "18 / 5x5 HD / 200% / LARGE",
+          "opt1": "18",
+          "opt2": "5x5 HD",
+          "opt3": "200%",
+          "opt4": "LARGE",
+          "price_eur": 239.99,
+          "compare_eur": 300.99
+        },
+        {
+          "title": "18 / 13x4 HD / 200% / SMALL",
+          "opt1": "18",
+          "opt2": "13x4 HD",
+          "opt3": "200%",
+          "opt4": "SMALL",
+          "price_eur": 248.99,
+          "compare_eur": 311.99
+        },
+        {
+          "title": "18 / 13x4 HD / 200% / MEDIUM",
+          "opt1": "18",
+          "opt2": "13x4 HD",
+          "opt3": "200%",
+          "opt4": "MEDIUM",
+          "price_eur": 248.99,
+          "compare_eur": 311.99
+        },
+        {
+          "title": "18 / 13x4 HD / 200% / LARGE",
+          "opt1": "18",
+          "opt2": "13x4 HD",
+          "opt3": "200%",
+          "opt4": "LARGE",
+          "price_eur": 248.99,
+          "compare_eur": 311.99
+        },
+        {
+          "title": "20 / 5x5 HD / 200% / SMALL",
+          "opt1": "20",
+          "opt2": "5x5 HD",
+          "opt3": "200%",
+          "opt4": "SMALL",
+          "price_eur": 255.99,
+          "compare_eur": 320.99
+        },
+        {
+          "title": "20 / 5x5 HD / 200% / MEDIUM",
+          "opt1": "20",
+          "opt2": "5x5 HD",
+          "opt3": "200%",
+          "opt4": "MEDIUM",
+          "price_eur": 255.99,
+          "compare_eur": 320.99
+        },
+        {
+          "title": "20 / 5x5 HD / 200% / LARGE",
+          "opt1": "20",
+          "opt2": "5x5 HD",
+          "opt3": "200%",
+          "opt4": "LARGE",
+          "price_eur": 255.99,
+          "compare_eur": 320.99
+        },
+        {
+          "title": "20 / 13x4 HD / 200% / SMALL",
+          "opt1": "20",
+          "opt2": "13x4 HD",
+          "opt3": "200%",
+          "opt4": "SMALL",
+          "price_eur": 256.99,
+          "compare_eur": 321.99
+        },
+        {
+          "title": "20 / 13x4 HD / 200% / MEDIUM",
+          "opt1": "20",
+          "opt2": "13x4 HD",
+          "opt3": "200%",
+          "opt4": "MEDIUM",
+          "price_eur": 256.99,
+          "compare_eur": 321.99
+        },
+        {
+          "title": "20 / 13x4 HD / 200% / LARGE",
+          "opt1": "20",
+          "opt2": "13x4 HD",
+          "opt3": "200%",
+          "opt4": "LARGE",
+          "price_eur": 256.99,
+          "compare_eur": 321.99
+        },
+        {
+          "title": "22 / 5x5 HD / 200% / SMALL",
+          "opt1": "22",
+          "opt2": "5x5 HD",
+          "opt3": "200%",
+          "opt4": "SMALL",
+          "price_eur": 259.99,
+          "compare_eur": 325.99
+        },
+        {
+          "title": "22 / 5x5 HD / 200% / MEDIUM",
+          "opt1": "22",
+          "opt2": "5x5 HD",
+          "opt3": "200%",
+          "opt4": "MEDIUM",
+          "price_eur": 259.99,
+          "compare_eur": 325.99
+        },
+        {
+          "title": "22 / 5x5 HD / 200% / LARGE",
+          "opt1": "22",
+          "opt2": "5x5 HD",
+          "opt3": "200%",
+          "opt4": "LARGE",
+          "price_eur": 259.99,
+          "compare_eur": 325.99
+        },
+        {
+          "title": "22 / 13x4 HD / 200% / SMALL",
+          "opt1": "22",
+          "opt2": "13x4 HD",
+          "opt3": "200%",
+          "opt4": "SMALL",
+          "price_eur": 268.99,
+          "compare_eur": 336.99
+        },
+        {
+          "title": "22 / 13x4 HD / 200% / MEDIUM",
+          "opt1": "22",
+          "opt2": "13x4 HD",
+          "opt3": "200%",
+          "opt4": "MEDIUM",
+          "price_eur": 268.99,
+          "compare_eur": 336.99
+        },
+        {
+          "title": "22 / 13x4 HD / 200% / LARGE",
+          "opt1": "22",
+          "opt2": "13x4 HD",
+          "opt3": "200%",
+          "opt4": "LARGE",
+          "price_eur": 268.99,
+          "compare_eur": 336.99
+        },
+        {
+          "title": "24 / 5x5 HD / 200% / SMALL",
+          "opt1": "24",
+          "opt2": "5x5 HD",
+          "opt3": "200%",
+          "opt4": "SMALL",
+          "price_eur": 287.99,
+          "compare_eur": 359.99
+        },
+        {
+          "title": "24 / 5x5 HD / 200% / MEDIUM",
+          "opt1": "24",
+          "opt2": "5x5 HD",
+          "opt3": "200%",
+          "opt4": "MEDIUM",
+          "price_eur": 287.99,
+          "compare_eur": 359.99
+        },
+        {
+          "title": "24 / 5x5 HD / 200% / LARGE",
+          "opt1": "24",
+          "opt2": "5x5 HD",
+          "opt3": "200%",
+          "opt4": "LARGE",
+          "price_eur": 287.99,
+          "compare_eur": 359.99
+        },
+        {
+          "title": "24 / 13x4 HD / 200% / SMALL",
+          "opt1": "24",
+          "opt2": "13x4 HD",
+          "opt3": "200%",
+          "opt4": "SMALL",
+          "price_eur": 294.99,
+          "compare_eur": 368.99
+        },
+        {
+          "title": "24 / 13x4 HD / 200% / MEDIUM",
+          "opt1": "24",
+          "opt2": "13x4 HD",
+          "opt3": "200%",
+          "opt4": "MEDIUM",
+          "price_eur": 294.99,
+          "compare_eur": 368.99
+        },
+        {
+          "title": "24 / 13x4 HD / 200% / LARGE",
+          "opt1": "24",
+          "opt2": "13x4 HD",
+          "opt3": "200%",
+          "opt4": "LARGE",
+          "price_eur": 294.99,
+          "compare_eur": 368.99
+        },
+        {
+          "title": "26 / 5x5 HD / 200% / SMALL",
+          "opt1": "26",
+          "opt2": "5x5 HD",
+          "opt3": "200%",
+          "opt4": "SMALL",
+          "price_eur": 315.99,
+          "compare_eur": 394.99
+        },
+        {
+          "title": "26 / 5x5 HD / 200% / MEDIUM",
+          "opt1": "26",
+          "opt2": "5x5 HD",
+          "opt3": "200%",
+          "opt4": "MEDIUM",
+          "price_eur": 315.99,
+          "compare_eur": 394.99
+        },
+        {
+          "title": "26 / 5x5 HD / 200% / LARGE",
+          "opt1": "26",
+          "opt2": "5x5 HD",
+          "opt3": "200%",
+          "opt4": "LARGE",
+          "price_eur": 315.99,
+          "compare_eur": 394.99
+        },
+        {
+          "title": "26 / 13x4 HD / 200% / SMALL",
+          "opt1": "26",
+          "opt2": "13x4 HD",
+          "opt3": "200%",
+          "opt4": "SMALL",
+          "price_eur": 320.99,
+          "compare_eur": 401.99
+        },
+        {
+          "title": "26 / 13x4 HD / 200% / MEDIUM",
+          "opt1": "26",
+          "opt2": "13x4 HD",
+          "opt3": "200%",
+          "opt4": "MEDIUM",
+          "price_eur": 320.99,
+          "compare_eur": 401.99
+        },
+        {
+          "title": "26 / 13x4 HD / 200% / LARGE",
+          "opt1": "26",
+          "opt2": "13x4 HD",
+          "opt3": "200%",
+          "opt4": "LARGE",
+          "price_eur": 320.99,
+          "compare_eur": 401.99
+        },
+        {
+          "title": "28 / 5x5 HD / 200% / SMALL",
+          "opt1": "28",
+          "opt2": "5x5 HD",
+          "opt3": "200%",
+          "opt4": "SMALL",
+          "price_eur": 332.99,
+          "compare_eur": 416.99
+        },
+        {
+          "title": "28 / 5x5 HD / 200% / MEDIUM",
+          "opt1": "28",
+          "opt2": "5x5 HD",
+          "opt3": "200%",
+          "opt4": "MEDIUM",
+          "price_eur": 332.99,
+          "compare_eur": 416.99
+        },
+        {
+          "title": "28 / 5x5 HD / 200% / LARGE",
+          "opt1": "28",
+          "opt2": "5x5 HD",
+          "opt3": "200%",
+          "opt4": "LARGE",
+          "price_eur": 332.99,
+          "compare_eur": 416.99
+        },
+        {
+          "title": "28 / 13x4 HD / 200% / SMALL",
+          "opt1": "28",
+          "opt2": "13x4 HD",
+          "opt3": "200%",
+          "opt4": "SMALL",
+          "price_eur": 337.99,
+          "compare_eur": 422.99
+        },
+        {
+          "title": "28 / 13x4 HD / 200% / MEDIUM",
+          "opt1": "28",
+          "opt2": "13x4 HD",
+          "opt3": "200%",
+          "opt4": "MEDIUM",
+          "price_eur": 337.99,
+          "compare_eur": 422.99
+        },
+        {
+          "title": "28 / 13x4 HD / 200% / LARGE",
+          "opt1": "28",
+          "opt2": "13x4 HD",
+          "opt3": "200%",
+          "opt4": "LARGE",
+          "price_eur": 337.99,
+          "compare_eur": 422.99
+        }
+      ],
+      "videos": [
+        "assets/video/chocolate-caramel.mp4"
+      ]
+    },
+    {
       "id": 15615480201593,
       "handle": "pixie-curly-crochet-human-hair",
       "title": "Pixie Curly Crochet human hair",
@@ -14779,1203 +15976,6 @@
       ],
       "videos": [
         "assets/video/p6-27-v3.mp4"
-      ]
-    },
-    {
-      "id": 2026102301,
-      "handle": "chocolate-caramel-highlight-wig",
-      "title": "Chocolate Caramel Highlight Wig",
-      "category": "wigs",
-      "description": "Chocolate Caramel Highlight Wig. Lace HD 5x5 ou 13x4, densidade 200%. Modelo da fotografia: 20 polegadas, lace 5x5 HD.",
-      "images": [
-        "assets/img/chocolate-caramel-highlight-wig-1.jpeg",
-        "assets/img/chocolate-caramel-highlight-wig-2.png",
-        "assets/img/chocolate-caramel-highlight-wig-3.png"
-      ],
-      "type": "Chocolate Caramel Highlight Wig",
-      "model_options": {
-        "Hair Length": "20",
-        "Lace": "5x5 HD"
-      },
-      "options": [
-        {
-          "name": "Hair Length",
-          "values": [
-            "16",
-            "18",
-            "20",
-            "22",
-            "24",
-            "26",
-            "28"
-          ]
-        },
-        {
-          "name": "Lace",
-          "values": [
-            "5x5 HD",
-            "13x4 HD"
-          ]
-        },
-        {
-          "name": "Hair Density",
-          "values": [
-            "200%"
-          ]
-        },
-        {
-          "name": "Cap Size",
-          "values": [
-            "SMALL",
-            "MEDIUM",
-            "LARGE"
-          ]
-        }
-      ],
-      "variants": [
-        {
-          "title": "16 / 5x5 HD / 200% / SMALL",
-          "opt1": "16",
-          "opt2": "5x5 HD",
-          "opt3": "200%",
-          "opt4": "SMALL",
-          "price_eur": 222.99,
-          "compare_eur": 278.99
-        },
-        {
-          "title": "16 / 5x5 HD / 200% / MEDIUM",
-          "opt1": "16",
-          "opt2": "5x5 HD",
-          "opt3": "200%",
-          "opt4": "MEDIUM",
-          "price_eur": 222.99,
-          "compare_eur": 278.99
-        },
-        {
-          "title": "16 / 5x5 HD / 200% / LARGE",
-          "opt1": "16",
-          "opt2": "5x5 HD",
-          "opt3": "200%",
-          "opt4": "LARGE",
-          "price_eur": 222.99,
-          "compare_eur": 278.99
-        },
-        {
-          "title": "16 / 13x4 HD / 200% / SMALL",
-          "opt1": "16",
-          "opt2": "13x4 HD",
-          "opt3": "200%",
-          "opt4": "SMALL",
-          "price_eur": 231.99,
-          "compare_eur": 289.99
-        },
-        {
-          "title": "16 / 13x4 HD / 200% / MEDIUM",
-          "opt1": "16",
-          "opt2": "13x4 HD",
-          "opt3": "200%",
-          "opt4": "MEDIUM",
-          "price_eur": 231.99,
-          "compare_eur": 289.99
-        },
-        {
-          "title": "16 / 13x4 HD / 200% / LARGE",
-          "opt1": "16",
-          "opt2": "13x4 HD",
-          "opt3": "200%",
-          "opt4": "LARGE",
-          "price_eur": 231.99,
-          "compare_eur": 289.99
-        },
-        {
-          "title": "18 / 5x5 HD / 200% / SMALL",
-          "opt1": "18",
-          "opt2": "5x5 HD",
-          "opt3": "200%",
-          "opt4": "SMALL",
-          "price_eur": 239.99,
-          "compare_eur": 300.99
-        },
-        {
-          "title": "18 / 5x5 HD / 200% / MEDIUM",
-          "opt1": "18",
-          "opt2": "5x5 HD",
-          "opt3": "200%",
-          "opt4": "MEDIUM",
-          "price_eur": 239.99,
-          "compare_eur": 300.99
-        },
-        {
-          "title": "18 / 5x5 HD / 200% / LARGE",
-          "opt1": "18",
-          "opt2": "5x5 HD",
-          "opt3": "200%",
-          "opt4": "LARGE",
-          "price_eur": 239.99,
-          "compare_eur": 300.99
-        },
-        {
-          "title": "18 / 13x4 HD / 200% / SMALL",
-          "opt1": "18",
-          "opt2": "13x4 HD",
-          "opt3": "200%",
-          "opt4": "SMALL",
-          "price_eur": 248.99,
-          "compare_eur": 311.99
-        },
-        {
-          "title": "18 / 13x4 HD / 200% / MEDIUM",
-          "opt1": "18",
-          "opt2": "13x4 HD",
-          "opt3": "200%",
-          "opt4": "MEDIUM",
-          "price_eur": 248.99,
-          "compare_eur": 311.99
-        },
-        {
-          "title": "18 / 13x4 HD / 200% / LARGE",
-          "opt1": "18",
-          "opt2": "13x4 HD",
-          "opt3": "200%",
-          "opt4": "LARGE",
-          "price_eur": 248.99,
-          "compare_eur": 311.99
-        },
-        {
-          "title": "20 / 5x5 HD / 200% / SMALL",
-          "opt1": "20",
-          "opt2": "5x5 HD",
-          "opt3": "200%",
-          "opt4": "SMALL",
-          "price_eur": 255.99,
-          "compare_eur": 320.99
-        },
-        {
-          "title": "20 / 5x5 HD / 200% / MEDIUM",
-          "opt1": "20",
-          "opt2": "5x5 HD",
-          "opt3": "200%",
-          "opt4": "MEDIUM",
-          "price_eur": 255.99,
-          "compare_eur": 320.99
-        },
-        {
-          "title": "20 / 5x5 HD / 200% / LARGE",
-          "opt1": "20",
-          "opt2": "5x5 HD",
-          "opt3": "200%",
-          "opt4": "LARGE",
-          "price_eur": 255.99,
-          "compare_eur": 320.99
-        },
-        {
-          "title": "20 / 13x4 HD / 200% / SMALL",
-          "opt1": "20",
-          "opt2": "13x4 HD",
-          "opt3": "200%",
-          "opt4": "SMALL",
-          "price_eur": 256.99,
-          "compare_eur": 321.99
-        },
-        {
-          "title": "20 / 13x4 HD / 200% / MEDIUM",
-          "opt1": "20",
-          "opt2": "13x4 HD",
-          "opt3": "200%",
-          "opt4": "MEDIUM",
-          "price_eur": 256.99,
-          "compare_eur": 321.99
-        },
-        {
-          "title": "20 / 13x4 HD / 200% / LARGE",
-          "opt1": "20",
-          "opt2": "13x4 HD",
-          "opt3": "200%",
-          "opt4": "LARGE",
-          "price_eur": 256.99,
-          "compare_eur": 321.99
-        },
-        {
-          "title": "22 / 5x5 HD / 200% / SMALL",
-          "opt1": "22",
-          "opt2": "5x5 HD",
-          "opt3": "200%",
-          "opt4": "SMALL",
-          "price_eur": 259.99,
-          "compare_eur": 325.99
-        },
-        {
-          "title": "22 / 5x5 HD / 200% / MEDIUM",
-          "opt1": "22",
-          "opt2": "5x5 HD",
-          "opt3": "200%",
-          "opt4": "MEDIUM",
-          "price_eur": 259.99,
-          "compare_eur": 325.99
-        },
-        {
-          "title": "22 / 5x5 HD / 200% / LARGE",
-          "opt1": "22",
-          "opt2": "5x5 HD",
-          "opt3": "200%",
-          "opt4": "LARGE",
-          "price_eur": 259.99,
-          "compare_eur": 325.99
-        },
-        {
-          "title": "22 / 13x4 HD / 200% / SMALL",
-          "opt1": "22",
-          "opt2": "13x4 HD",
-          "opt3": "200%",
-          "opt4": "SMALL",
-          "price_eur": 268.99,
-          "compare_eur": 336.99
-        },
-        {
-          "title": "22 / 13x4 HD / 200% / MEDIUM",
-          "opt1": "22",
-          "opt2": "13x4 HD",
-          "opt3": "200%",
-          "opt4": "MEDIUM",
-          "price_eur": 268.99,
-          "compare_eur": 336.99
-        },
-        {
-          "title": "22 / 13x4 HD / 200% / LARGE",
-          "opt1": "22",
-          "opt2": "13x4 HD",
-          "opt3": "200%",
-          "opt4": "LARGE",
-          "price_eur": 268.99,
-          "compare_eur": 336.99
-        },
-        {
-          "title": "24 / 5x5 HD / 200% / SMALL",
-          "opt1": "24",
-          "opt2": "5x5 HD",
-          "opt3": "200%",
-          "opt4": "SMALL",
-          "price_eur": 287.99,
-          "compare_eur": 359.99
-        },
-        {
-          "title": "24 / 5x5 HD / 200% / MEDIUM",
-          "opt1": "24",
-          "opt2": "5x5 HD",
-          "opt3": "200%",
-          "opt4": "MEDIUM",
-          "price_eur": 287.99,
-          "compare_eur": 359.99
-        },
-        {
-          "title": "24 / 5x5 HD / 200% / LARGE",
-          "opt1": "24",
-          "opt2": "5x5 HD",
-          "opt3": "200%",
-          "opt4": "LARGE",
-          "price_eur": 287.99,
-          "compare_eur": 359.99
-        },
-        {
-          "title": "24 / 13x4 HD / 200% / SMALL",
-          "opt1": "24",
-          "opt2": "13x4 HD",
-          "opt3": "200%",
-          "opt4": "SMALL",
-          "price_eur": 294.99,
-          "compare_eur": 368.99
-        },
-        {
-          "title": "24 / 13x4 HD / 200% / MEDIUM",
-          "opt1": "24",
-          "opt2": "13x4 HD",
-          "opt3": "200%",
-          "opt4": "MEDIUM",
-          "price_eur": 294.99,
-          "compare_eur": 368.99
-        },
-        {
-          "title": "24 / 13x4 HD / 200% / LARGE",
-          "opt1": "24",
-          "opt2": "13x4 HD",
-          "opt3": "200%",
-          "opt4": "LARGE",
-          "price_eur": 294.99,
-          "compare_eur": 368.99
-        },
-        {
-          "title": "26 / 5x5 HD / 200% / SMALL",
-          "opt1": "26",
-          "opt2": "5x5 HD",
-          "opt3": "200%",
-          "opt4": "SMALL",
-          "price_eur": 315.99,
-          "compare_eur": 394.99
-        },
-        {
-          "title": "26 / 5x5 HD / 200% / MEDIUM",
-          "opt1": "26",
-          "opt2": "5x5 HD",
-          "opt3": "200%",
-          "opt4": "MEDIUM",
-          "price_eur": 315.99,
-          "compare_eur": 394.99
-        },
-        {
-          "title": "26 / 5x5 HD / 200% / LARGE",
-          "opt1": "26",
-          "opt2": "5x5 HD",
-          "opt3": "200%",
-          "opt4": "LARGE",
-          "price_eur": 315.99,
-          "compare_eur": 394.99
-        },
-        {
-          "title": "26 / 13x4 HD / 200% / SMALL",
-          "opt1": "26",
-          "opt2": "13x4 HD",
-          "opt3": "200%",
-          "opt4": "SMALL",
-          "price_eur": 320.99,
-          "compare_eur": 401.99
-        },
-        {
-          "title": "26 / 13x4 HD / 200% / MEDIUM",
-          "opt1": "26",
-          "opt2": "13x4 HD",
-          "opt3": "200%",
-          "opt4": "MEDIUM",
-          "price_eur": 320.99,
-          "compare_eur": 401.99
-        },
-        {
-          "title": "26 / 13x4 HD / 200% / LARGE",
-          "opt1": "26",
-          "opt2": "13x4 HD",
-          "opt3": "200%",
-          "opt4": "LARGE",
-          "price_eur": 320.99,
-          "compare_eur": 401.99
-        },
-        {
-          "title": "28 / 5x5 HD / 200% / SMALL",
-          "opt1": "28",
-          "opt2": "5x5 HD",
-          "opt3": "200%",
-          "opt4": "SMALL",
-          "price_eur": 332.99,
-          "compare_eur": 416.99
-        },
-        {
-          "title": "28 / 5x5 HD / 200% / MEDIUM",
-          "opt1": "28",
-          "opt2": "5x5 HD",
-          "opt3": "200%",
-          "opt4": "MEDIUM",
-          "price_eur": 332.99,
-          "compare_eur": 416.99
-        },
-        {
-          "title": "28 / 5x5 HD / 200% / LARGE",
-          "opt1": "28",
-          "opt2": "5x5 HD",
-          "opt3": "200%",
-          "opt4": "LARGE",
-          "price_eur": 332.99,
-          "compare_eur": 416.99
-        },
-        {
-          "title": "28 / 13x4 HD / 200% / SMALL",
-          "opt1": "28",
-          "opt2": "13x4 HD",
-          "opt3": "200%",
-          "opt4": "SMALL",
-          "price_eur": 337.99,
-          "compare_eur": 422.99
-        },
-        {
-          "title": "28 / 13x4 HD / 200% / MEDIUM",
-          "opt1": "28",
-          "opt2": "13x4 HD",
-          "opt3": "200%",
-          "opt4": "MEDIUM",
-          "price_eur": 337.99,
-          "compare_eur": 422.99
-        },
-        {
-          "title": "28 / 13x4 HD / 200% / LARGE",
-          "opt1": "28",
-          "opt2": "13x4 HD",
-          "opt3": "200%",
-          "opt4": "LARGE",
-          "price_eur": 337.99,
-          "compare_eur": 422.99
-        }
-      ],
-      "videos": [
-        "assets/video/chocolate-caramel.mp4"
-      ]
-    },
-    {
-      "id": 2026102302,
-      "handle": "x-onika-ginger-bombshell",
-      "title": "X_Onika Ginger Bombshell",
-      "category": "wigs",
-      "description": "X_Onika Ginger Bombshell. Lace HD 5x5 ou 13x4, densidade 200%. Modelo da fotografia: 26 polegadas, lace 13x4 HD.",
-      "images": [
-        "assets/img/x-onika-ginger-bombshell-1.png",
-        "assets/img/x-onika-ginger-bombshell-2.png",
-        "assets/img/x-onika-ginger-bombshell-3.png"
-      ],
-      "type": "X_Onika Ginger Bombshell",
-      "model_options": {
-        "Hair Length": "26",
-        "Lace": "13x4 HD"
-      },
-      "options": [
-        {
-          "name": "Hair Length",
-          "values": [
-            "16",
-            "18",
-            "20",
-            "22",
-            "24",
-            "26",
-            "28",
-            "30",
-            "32",
-            "34",
-            "36",
-            "38",
-            "40"
-          ]
-        },
-        {
-          "name": "Lace",
-          "values": [
-            "5x5 HD",
-            "13x4 HD"
-          ]
-        },
-        {
-          "name": "Hair Density",
-          "values": [
-            "200%"
-          ]
-        },
-        {
-          "name": "Cap Size",
-          "values": [
-            "SMALL",
-            "MEDIUM",
-            "LARGE"
-          ]
-        }
-      ],
-      "variants": [
-        {
-          "title": "16 / 5x5 HD / 200% / SMALL",
-          "opt1": "16",
-          "opt2": "5x5 HD",
-          "opt3": "200%",
-          "opt4": "SMALL",
-          "price_eur": 219.99,
-          "compare_eur": 269.99
-        },
-        {
-          "title": "16 / 5x5 HD / 200% / MEDIUM",
-          "opt1": "16",
-          "opt2": "5x5 HD",
-          "opt3": "200%",
-          "opt4": "MEDIUM",
-          "price_eur": 219.99,
-          "compare_eur": 269.99
-        },
-        {
-          "title": "16 / 5x5 HD / 200% / LARGE",
-          "opt1": "16",
-          "opt2": "5x5 HD",
-          "opt3": "200%",
-          "opt4": "LARGE",
-          "price_eur": 219.99,
-          "compare_eur": 269.99
-        },
-        {
-          "title": "16 / 13x4 HD / 200% / SMALL",
-          "opt1": "16",
-          "opt2": "13x4 HD",
-          "opt3": "200%",
-          "opt4": "SMALL",
-          "price_eur": 228.99,
-          "compare_eur": 281.99
-        },
-        {
-          "title": "16 / 13x4 HD / 200% / MEDIUM",
-          "opt1": "16",
-          "opt2": "13x4 HD",
-          "opt3": "200%",
-          "opt4": "MEDIUM",
-          "price_eur": 228.99,
-          "compare_eur": 281.99
-        },
-        {
-          "title": "16 / 13x4 HD / 200% / LARGE",
-          "opt1": "16",
-          "opt2": "13x4 HD",
-          "opt3": "200%",
-          "opt4": "LARGE",
-          "price_eur": 228.99,
-          "compare_eur": 281.99
-        },
-        {
-          "title": "18 / 5x5 HD / 200% / SMALL",
-          "opt1": "18",
-          "opt2": "5x5 HD",
-          "opt3": "200%",
-          "opt4": "SMALL",
-          "price_eur": 229.99,
-          "compare_eur": 282.99
-        },
-        {
-          "title": "18 / 5x5 HD / 200% / MEDIUM",
-          "opt1": "18",
-          "opt2": "5x5 HD",
-          "opt3": "200%",
-          "opt4": "MEDIUM",
-          "price_eur": 229.99,
-          "compare_eur": 282.99
-        },
-        {
-          "title": "18 / 5x5 HD / 200% / LARGE",
-          "opt1": "18",
-          "opt2": "5x5 HD",
-          "opt3": "200%",
-          "opt4": "LARGE",
-          "price_eur": 229.99,
-          "compare_eur": 282.99
-        },
-        {
-          "title": "18 / 13x4 HD / 200% / SMALL",
-          "opt1": "18",
-          "opt2": "13x4 HD",
-          "opt3": "200%",
-          "opt4": "SMALL",
-          "price_eur": 243.99,
-          "compare_eur": 300.99
-        },
-        {
-          "title": "18 / 13x4 HD / 200% / MEDIUM",
-          "opt1": "18",
-          "opt2": "13x4 HD",
-          "opt3": "200%",
-          "opt4": "MEDIUM",
-          "price_eur": 243.99,
-          "compare_eur": 300.99
-        },
-        {
-          "title": "18 / 13x4 HD / 200% / LARGE",
-          "opt1": "18",
-          "opt2": "13x4 HD",
-          "opt3": "200%",
-          "opt4": "LARGE",
-          "price_eur": 243.99,
-          "compare_eur": 300.99
-        },
-        {
-          "title": "20 / 5x5 HD / 200% / SMALL",
-          "opt1": "20",
-          "opt2": "5x5 HD",
-          "opt3": "200%",
-          "opt4": "SMALL",
-          "price_eur": 247.99,
-          "compare_eur": 304.99
-        },
-        {
-          "title": "20 / 5x5 HD / 200% / MEDIUM",
-          "opt1": "20",
-          "opt2": "5x5 HD",
-          "opt3": "200%",
-          "opt4": "MEDIUM",
-          "price_eur": 247.99,
-          "compare_eur": 304.99
-        },
-        {
-          "title": "20 / 5x5 HD / 200% / LARGE",
-          "opt1": "20",
-          "opt2": "5x5 HD",
-          "opt3": "200%",
-          "opt4": "LARGE",
-          "price_eur": 247.99,
-          "compare_eur": 304.99
-        },
-        {
-          "title": "20 / 13x4 HD / 200% / SMALL",
-          "opt1": "20",
-          "opt2": "13x4 HD",
-          "opt3": "200%",
-          "opt4": "SMALL",
-          "price_eur": 261.99,
-          "compare_eur": 322.99
-        },
-        {
-          "title": "20 / 13x4 HD / 200% / MEDIUM",
-          "opt1": "20",
-          "opt2": "13x4 HD",
-          "opt3": "200%",
-          "opt4": "MEDIUM",
-          "price_eur": 261.99,
-          "compare_eur": 322.99
-        },
-        {
-          "title": "20 / 13x4 HD / 200% / LARGE",
-          "opt1": "20",
-          "opt2": "13x4 HD",
-          "opt3": "200%",
-          "opt4": "LARGE",
-          "price_eur": 261.99,
-          "compare_eur": 322.99
-        },
-        {
-          "title": "22 / 5x5 HD / 200% / SMALL",
-          "opt1": "22",
-          "opt2": "5x5 HD",
-          "opt3": "200%",
-          "opt4": "SMALL",
-          "price_eur": 261.99,
-          "compare_eur": 322.99
-        },
-        {
-          "title": "22 / 5x5 HD / 200% / MEDIUM",
-          "opt1": "22",
-          "opt2": "5x5 HD",
-          "opt3": "200%",
-          "opt4": "MEDIUM",
-          "price_eur": 261.99,
-          "compare_eur": 322.99
-        },
-        {
-          "title": "22 / 5x5 HD / 200% / LARGE",
-          "opt1": "22",
-          "opt2": "5x5 HD",
-          "opt3": "200%",
-          "opt4": "LARGE",
-          "price_eur": 261.99,
-          "compare_eur": 322.99
-        },
-        {
-          "title": "22 / 13x4 HD / 200% / SMALL",
-          "opt1": "22",
-          "opt2": "13x4 HD",
-          "opt3": "200%",
-          "opt4": "SMALL",
-          "price_eur": 276.99,
-          "compare_eur": 341.99
-        },
-        {
-          "title": "22 / 13x4 HD / 200% / MEDIUM",
-          "opt1": "22",
-          "opt2": "13x4 HD",
-          "opt3": "200%",
-          "opt4": "MEDIUM",
-          "price_eur": 276.99,
-          "compare_eur": 341.99
-        },
-        {
-          "title": "22 / 13x4 HD / 200% / LARGE",
-          "opt1": "22",
-          "opt2": "13x4 HD",
-          "opt3": "200%",
-          "opt4": "LARGE",
-          "price_eur": 276.99,
-          "compare_eur": 341.99
-        },
-        {
-          "title": "24 / 5x5 HD / 200% / SMALL",
-          "opt1": "24",
-          "opt2": "5x5 HD",
-          "opt3": "200%",
-          "opt4": "SMALL",
-          "price_eur": 271.99,
-          "compare_eur": 334.99
-        },
-        {
-          "title": "24 / 5x5 HD / 200% / MEDIUM",
-          "opt1": "24",
-          "opt2": "5x5 HD",
-          "opt3": "200%",
-          "opt4": "MEDIUM",
-          "price_eur": 271.99,
-          "compare_eur": 334.99
-        },
-        {
-          "title": "24 / 5x5 HD / 200% / LARGE",
-          "opt1": "24",
-          "opt2": "5x5 HD",
-          "opt3": "200%",
-          "opt4": "LARGE",
-          "price_eur": 271.99,
-          "compare_eur": 334.99
-        },
-        {
-          "title": "24 / 13x4 HD / 200% / SMALL",
-          "opt1": "24",
-          "opt2": "13x4 HD",
-          "opt3": "200%",
-          "opt4": "SMALL",
-          "price_eur": 287.99,
-          "compare_eur": 354.99
-        },
-        {
-          "title": "24 / 13x4 HD / 200% / MEDIUM",
-          "opt1": "24",
-          "opt2": "13x4 HD",
-          "opt3": "200%",
-          "opt4": "MEDIUM",
-          "price_eur": 287.99,
-          "compare_eur": 354.99
-        },
-        {
-          "title": "24 / 13x4 HD / 200% / LARGE",
-          "opt1": "24",
-          "opt2": "13x4 HD",
-          "opt3": "200%",
-          "opt4": "LARGE",
-          "price_eur": 287.99,
-          "compare_eur": 354.99
-        },
-        {
-          "title": "26 / 5x5 HD / 200% / SMALL",
-          "opt1": "26",
-          "opt2": "5x5 HD",
-          "opt3": "200%",
-          "opt4": "SMALL",
-          "price_eur": 287.99,
-          "compare_eur": 355.99
-        },
-        {
-          "title": "26 / 5x5 HD / 200% / MEDIUM",
-          "opt1": "26",
-          "opt2": "5x5 HD",
-          "opt3": "200%",
-          "opt4": "MEDIUM",
-          "price_eur": 287.99,
-          "compare_eur": 355.99
-        },
-        {
-          "title": "26 / 5x5 HD / 200% / LARGE",
-          "opt1": "26",
-          "opt2": "5x5 HD",
-          "opt3": "200%",
-          "opt4": "LARGE",
-          "price_eur": 287.99,
-          "compare_eur": 355.99
-        },
-        {
-          "title": "26 / 13x4 HD / 200% / SMALL",
-          "opt1": "26",
-          "opt2": "13x4 HD",
-          "opt3": "200%",
-          "opt4": "SMALL",
-          "price_eur": 299.99,
-          "compare_eur": 370.99
-        },
-        {
-          "title": "26 / 13x4 HD / 200% / MEDIUM",
-          "opt1": "26",
-          "opt2": "13x4 HD",
-          "opt3": "200%",
-          "opt4": "MEDIUM",
-          "price_eur": 299.99,
-          "compare_eur": 370.99
-        },
-        {
-          "title": "26 / 13x4 HD / 200% / LARGE",
-          "opt1": "26",
-          "opt2": "13x4 HD",
-          "opt3": "200%",
-          "opt4": "LARGE",
-          "price_eur": 299.99,
-          "compare_eur": 370.99
-        },
-        {
-          "title": "28 / 5x5 HD / 200% / SMALL",
-          "opt1": "28",
-          "opt2": "5x5 HD",
-          "opt3": "200%",
-          "opt4": "SMALL",
-          "price_eur": 305.99,
-          "compare_eur": 377.99
-        },
-        {
-          "title": "28 / 5x5 HD / 200% / MEDIUM",
-          "opt1": "28",
-          "opt2": "5x5 HD",
-          "opt3": "200%",
-          "opt4": "MEDIUM",
-          "price_eur": 305.99,
-          "compare_eur": 377.99
-        },
-        {
-          "title": "28 / 5x5 HD / 200% / LARGE",
-          "opt1": "28",
-          "opt2": "5x5 HD",
-          "opt3": "200%",
-          "opt4": "LARGE",
-          "price_eur": 305.99,
-          "compare_eur": 377.99
-        },
-        {
-          "title": "28 / 13x4 HD / 200% / SMALL",
-          "opt1": "28",
-          "opt2": "13x4 HD",
-          "opt3": "200%",
-          "opt4": "SMALL",
-          "price_eur": 314.99,
-          "compare_eur": 388.99
-        },
-        {
-          "title": "28 / 13x4 HD / 200% / MEDIUM",
-          "opt1": "28",
-          "opt2": "13x4 HD",
-          "opt3": "200%",
-          "opt4": "MEDIUM",
-          "price_eur": 314.99,
-          "compare_eur": 388.99
-        },
-        {
-          "title": "28 / 13x4 HD / 200% / LARGE",
-          "opt1": "28",
-          "opt2": "13x4 HD",
-          "opt3": "200%",
-          "opt4": "LARGE",
-          "price_eur": 314.99,
-          "compare_eur": 388.99
-        },
-        {
-          "title": "30 / 5x5 HD / 200% / SMALL",
-          "opt1": "30",
-          "opt2": "5x5 HD",
-          "opt3": "200%",
-          "opt4": "SMALL",
-          "price_eur": 327.99,
-          "compare_eur": 405.99
-        },
-        {
-          "title": "30 / 5x5 HD / 200% / MEDIUM",
-          "opt1": "30",
-          "opt2": "5x5 HD",
-          "opt3": "200%",
-          "opt4": "MEDIUM",
-          "price_eur": 327.99,
-          "compare_eur": 405.99
-        },
-        {
-          "title": "30 / 5x5 HD / 200% / LARGE",
-          "opt1": "30",
-          "opt2": "5x5 HD",
-          "opt3": "200%",
-          "opt4": "LARGE",
-          "price_eur": 327.99,
-          "compare_eur": 405.99
-        },
-        {
-          "title": "30 / 13x4 HD / 200% / SMALL",
-          "opt1": "30",
-          "opt2": "13x4 HD",
-          "opt3": "200%",
-          "opt4": "SMALL",
-          "price_eur": 339.99,
-          "compare_eur": 419.99
-        },
-        {
-          "title": "30 / 13x4 HD / 200% / MEDIUM",
-          "opt1": "30",
-          "opt2": "13x4 HD",
-          "opt3": "200%",
-          "opt4": "MEDIUM",
-          "price_eur": 339.99,
-          "compare_eur": 419.99
-        },
-        {
-          "title": "30 / 13x4 HD / 200% / LARGE",
-          "opt1": "30",
-          "opt2": "13x4 HD",
-          "opt3": "200%",
-          "opt4": "LARGE",
-          "price_eur": 339.99,
-          "compare_eur": 419.99
-        },
-        {
-          "title": "32 / 5x5 HD / 200% / SMALL",
-          "opt1": "32",
-          "opt2": "5x5 HD",
-          "opt3": "200%",
-          "opt4": "SMALL",
-          "price_eur": 359.99,
-          "compare_eur": 444.99
-        },
-        {
-          "title": "32 / 5x5 HD / 200% / MEDIUM",
-          "opt1": "32",
-          "opt2": "5x5 HD",
-          "opt3": "200%",
-          "opt4": "MEDIUM",
-          "price_eur": 359.99,
-          "compare_eur": 444.99
-        },
-        {
-          "title": "32 / 5x5 HD / 200% / LARGE",
-          "opt1": "32",
-          "opt2": "5x5 HD",
-          "opt3": "200%",
-          "opt4": "LARGE",
-          "price_eur": 359.99,
-          "compare_eur": 444.99
-        },
-        {
-          "title": "32 / 13x4 HD / 200% / SMALL",
-          "opt1": "32",
-          "opt2": "13x4 HD",
-          "opt3": "200%",
-          "opt4": "SMALL",
-          "price_eur": 371.99,
-          "compare_eur": 459.99
-        },
-        {
-          "title": "32 / 13x4 HD / 200% / MEDIUM",
-          "opt1": "32",
-          "opt2": "13x4 HD",
-          "opt3": "200%",
-          "opt4": "MEDIUM",
-          "price_eur": 371.99,
-          "compare_eur": 459.99
-        },
-        {
-          "title": "32 / 13x4 HD / 200% / LARGE",
-          "opt1": "32",
-          "opt2": "13x4 HD",
-          "opt3": "200%",
-          "opt4": "LARGE",
-          "price_eur": 371.99,
-          "compare_eur": 459.99
-        },
-        {
-          "title": "34 / 5x5 HD / 200% / SMALL",
-          "opt1": "34",
-          "opt2": "5x5 HD",
-          "opt3": "200%",
-          "opt4": "SMALL",
-          "price_eur": 367.99,
-          "compare_eur": 455.99
-        },
-        {
-          "title": "34 / 5x5 HD / 200% / MEDIUM",
-          "opt1": "34",
-          "opt2": "5x5 HD",
-          "opt3": "200%",
-          "opt4": "MEDIUM",
-          "price_eur": 367.99,
-          "compare_eur": 455.99
-        },
-        {
-          "title": "34 / 5x5 HD / 200% / LARGE",
-          "opt1": "34",
-          "opt2": "5x5 HD",
-          "opt3": "200%",
-          "opt4": "LARGE",
-          "price_eur": 367.99,
-          "compare_eur": 455.99
-        },
-        {
-          "title": "34 / 13x4 HD / 200% / SMALL",
-          "opt1": "34",
-          "opt2": "13x4 HD",
-          "opt3": "200%",
-          "opt4": "SMALL",
-          "price_eur": 379.99,
-          "compare_eur": 470.99
-        },
-        {
-          "title": "34 / 13x4 HD / 200% / MEDIUM",
-          "opt1": "34",
-          "opt2": "13x4 HD",
-          "opt3": "200%",
-          "opt4": "MEDIUM",
-          "price_eur": 379.99,
-          "compare_eur": 470.99
-        },
-        {
-          "title": "34 / 13x4 HD / 200% / LARGE",
-          "opt1": "34",
-          "opt2": "13x4 HD",
-          "opt3": "200%",
-          "opt4": "LARGE",
-          "price_eur": 379.99,
-          "compare_eur": 470.99
-        },
-        {
-          "title": "36 / 5x5 HD / 200% / SMALL",
-          "opt1": "36",
-          "opt2": "5x5 HD",
-          "opt3": "200%",
-          "opt4": "SMALL",
-          "price_eur": 377.99,
-          "compare_eur": 467.99
-        },
-        {
-          "title": "36 / 5x5 HD / 200% / MEDIUM",
-          "opt1": "36",
-          "opt2": "5x5 HD",
-          "opt3": "200%",
-          "opt4": "MEDIUM",
-          "price_eur": 377.99,
-          "compare_eur": 467.99
-        },
-        {
-          "title": "36 / 5x5 HD / 200% / LARGE",
-          "opt1": "36",
-          "opt2": "5x5 HD",
-          "opt3": "200%",
-          "opt4": "LARGE",
-          "price_eur": 377.99,
-          "compare_eur": 467.99
-        },
-        {
-          "title": "36 / 13x4 HD / 200% / SMALL",
-          "opt1": "36",
-          "opt2": "13x4 HD",
-          "opt3": "200%",
-          "opt4": "SMALL",
-          "price_eur": 388.99,
-          "compare_eur": 481.99
-        },
-        {
-          "title": "36 / 13x4 HD / 200% / MEDIUM",
-          "opt1": "36",
-          "opt2": "13x4 HD",
-          "opt3": "200%",
-          "opt4": "MEDIUM",
-          "price_eur": 388.99,
-          "compare_eur": 481.99
-        },
-        {
-          "title": "36 / 13x4 HD / 200% / LARGE",
-          "opt1": "36",
-          "opt2": "13x4 HD",
-          "opt3": "200%",
-          "opt4": "LARGE",
-          "price_eur": 388.99,
-          "compare_eur": 481.99
-        },
-        {
-          "title": "38 / 5x5 HD / 200% / SMALL",
-          "opt1": "38",
-          "opt2": "5x5 HD",
-          "opt3": "200%",
-          "opt4": "SMALL",
-          "price_eur": 451.99,
-          "compare_eur": 560.99
-        },
-        {
-          "title": "38 / 5x5 HD / 200% / MEDIUM",
-          "opt1": "38",
-          "opt2": "5x5 HD",
-          "opt3": "200%",
-          "opt4": "MEDIUM",
-          "price_eur": 451.99,
-          "compare_eur": 560.99
-        },
-        {
-          "title": "38 / 5x5 HD / 200% / LARGE",
-          "opt1": "38",
-          "opt2": "5x5 HD",
-          "opt3": "200%",
-          "opt4": "LARGE",
-          "price_eur": 451.99,
-          "compare_eur": 560.99
-        },
-        {
-          "title": "38 / 13x4 HD / 200% / SMALL",
-          "opt1": "38",
-          "opt2": "13x4 HD",
-          "opt3": "200%",
-          "opt4": "SMALL",
-          "price_eur": 464.99,
-          "compare_eur": 576.99
-        },
-        {
-          "title": "38 / 13x4 HD / 200% / MEDIUM",
-          "opt1": "38",
-          "opt2": "13x4 HD",
-          "opt3": "200%",
-          "opt4": "MEDIUM",
-          "price_eur": 464.99,
-          "compare_eur": 576.99
-        },
-        {
-          "title": "38 / 13x4 HD / 200% / LARGE",
-          "opt1": "38",
-          "opt2": "13x4 HD",
-          "opt3": "200%",
-          "opt4": "LARGE",
-          "price_eur": 464.99,
-          "compare_eur": 576.99
-        },
-        {
-          "title": "40 / 5x5 HD / 200% / SMALL",
-          "opt1": "40",
-          "opt2": "5x5 HD",
-          "opt3": "200%",
-          "opt4": "SMALL",
-          "price_eur": 496.99,
-          "compare_eur": 616.99
-        },
-        {
-          "title": "40 / 5x5 HD / 200% / MEDIUM",
-          "opt1": "40",
-          "opt2": "5x5 HD",
-          "opt3": "200%",
-          "opt4": "MEDIUM",
-          "price_eur": 496.99,
-          "compare_eur": 616.99
-        },
-        {
-          "title": "40 / 5x5 HD / 200% / LARGE",
-          "opt1": "40",
-          "opt2": "5x5 HD",
-          "opt3": "200%",
-          "opt4": "LARGE",
-          "price_eur": 496.99,
-          "compare_eur": 616.99
-        },
-        {
-          "title": "40 / 13x4 HD / 200% / SMALL",
-          "opt1": "40",
-          "opt2": "13x4 HD",
-          "opt3": "200%",
-          "opt4": "SMALL",
-          "price_eur": 507.99,
-          "compare_eur": 629.99
-        },
-        {
-          "title": "40 / 13x4 HD / 200% / MEDIUM",
-          "opt1": "40",
-          "opt2": "13x4 HD",
-          "opt3": "200%",
-          "opt4": "MEDIUM",
-          "price_eur": 507.99,
-          "compare_eur": 629.99
-        },
-        {
-          "title": "40 / 13x4 HD / 200% / LARGE",
-          "opt1": "40",
-          "opt2": "13x4 HD",
-          "opt3": "200%",
-          "opt4": "LARGE",
-          "price_eur": 507.99,
-          "compare_eur": 629.99
-        }
       ]
     }
   ]
