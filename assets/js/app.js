@@ -613,7 +613,7 @@ function renderFeatured(){
   grid.innerHTML = list.slice(0,4).map(p => {
     const pricing = variantPricing(p, defaultOpts(p));
     const price = priceHTML(pricing.priceEur, pricing.hasPromo ? pricing.compareEur : null, cur);
-    return `<a class="product-card featured-card" href="product.html?h=${encodeURIComponent(p.handle)}">
+    return `<a class="product-card featured-card" data-category="${escapeHTML(p.category)}" href="product.html?h=${encodeURIComponent(p.handle)}">
       <div class="img"><img src="${p.images[0]}" alt="${escapeHTML(p.title)}" loading="lazy"></div>
       <div class="info"><span class="featured-category">${escapeHTML(p.category)}</span><h3>${escapeHTML(p.title)}</h3><div class="price">${price}</div><span class="buy-btn">${uiTxt('view_product')}</span></div>
     </a>`;
@@ -628,7 +628,7 @@ function renderShop(){
   grid.innerHTML = list.map(p => {
     const pricing = variantPricing(p, defaultOpts(p));
     const priceHTMLstr = priceHTML(pricing.priceEur, pricing.hasPromo ? pricing.compareEur : null, cur);
-    return `<a class="product-card shop-card" href="product.html?h=${p.handle}">
+    return `<a class="product-card shop-card" data-category="${escapeHTML(p.category)}" href="product.html?h=${p.handle}">
       <div class="img"><img src="${p.images[0]||''}" alt="${escapeHTML(p.title)}" loading="lazy"></div>
       <div class="info">
         <h3>${escapeHTML(p.title)}</h3>
@@ -714,7 +714,7 @@ function recommendedProducts(p){
 function recommendationsHTML(p){
   const list=recommendedProducts(p);
   if(!list.length)return '';
-  return `<section class="product-recommendations" aria-labelledby="recommendedTitle"><div class="section-head"><span class="eyebrow">${uiTxt('you_may_also_like')}</span><h2 id="recommendedTitle">${uiTxt('recommended_hair')}</h2></div><div class="recommended-grid">${list.map(x=>{const pricing=variantPricing(x,defaultOpts(x));const price=priceHTML(pricing.priceEur,pricing.hasPromo?pricing.compareEur:null,curCode());return `<a class="product-card shop-card recommended-card" href="product.html?h=${encodeURIComponent(x.handle)}"><div class="img"><img src="${x.images[0]}" alt="${escapeHTML(x.title)}" loading="lazy"></div><div class="info"><h3>${escapeHTML(x.title)}</h3><div class="price">${price}</div><span class="buy-btn">${uiTxt('btn_shop')}</span></div></a>`;}).join('')}</div></section>`;
+  return `<section class="product-recommendations" aria-labelledby="recommendedTitle"><div class="section-head"><span class="eyebrow">${uiTxt('you_may_also_like')}</span><h2 id="recommendedTitle">${uiTxt('recommended_hair')}</h2></div><div class="recommended-grid">${list.map(x=>{const pricing=variantPricing(x,defaultOpts(x));const price=priceHTML(pricing.priceEur,pricing.hasPromo?pricing.compareEur:null,curCode());return `<a class="product-card shop-card recommended-card" data-category="${escapeHTML(x.category)}" href="product.html?h=${encodeURIComponent(x.handle)}"><div class="img"><img src="${x.images[0]}" alt="${escapeHTML(x.title)}" loading="lazy"></div><div class="info"><h3>${escapeHTML(x.title)}</h3><div class="price">${price}</div><span class="buy-btn">${uiTxt('btn_shop')}</span></div></a>`;}).join('')}</div></section>`;
 }
 function reviewAPIEndpoint(path){
   try{const url=new URL(CONFIG.reviewAPIURL);if(url.protocol!=='https:')return null;url.pathname=path;url.search='';return url;}

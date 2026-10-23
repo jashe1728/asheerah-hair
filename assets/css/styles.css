@@ -899,3 +899,31 @@ footer{padding-bottom:4rem}
 .om-notice{color:#92400e;font-size:.88rem;margin:0;line-height:1.35}
 .om-desc{font-size:.84rem;color:var(--muted);line-height:1.4;margin:0}
 .om-wa-btn{display:inline-block;margin-top:.6rem;text-decoration:none}
+
+/* Show the full crochet hairstyle, including the sides, without hover cropping. */
+.product-card[data-category="crochet"] .img img{object-fit:contain;object-position:center}
+.product-card[data-category="crochet"]:hover .img img{transform:none}
+.promo-card[href="shop.html?cat=crochet"] .promo-media img{object-fit:contain;object-position:center}
+
+/* Compact product squares and readable campaign text on phones only. */
+@media(max-width:640px){
+  #shopGrid,.featured-grid,.recommended-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:.65rem}
+  .product-card{min-width:0;border-radius:16px}
+  .product-card .img,.featured-card .img{aspect-ratio:1/1}
+  .product-card .info{padding:.65rem .7rem .8rem}
+  .product-card .info h3{font-size:1.05rem;line-height:1.2}
+  .product-card .price{gap:.25rem;margin:.35rem 0 .55rem;flex-wrap:wrap}
+  .product-card .price .now{font-size:1rem}
+  .product-card .price .was{font-size:.8rem}
+  .product-card .buy-btn{padding:.6rem .3rem;font-size:.72rem;min-height:40px;letter-spacing:0}
+  .featured-category{font-size:.6rem}
+  .hero-img::after{content:"";position:absolute;inset:0;pointer-events:none;background:linear-gradient(90deg,rgba(255,248,237,.96),rgba(255,248,237,.85) 38%,rgba(255,248,237,.25) 53%,transparent 69%);z-index:1}
+  .mobile-hero-brand{left:5%;top:7%;width:46%}
+  .mobile-hero-brand strong{font-size:clamp(1.5rem,7.3vw,2.9rem)}
+  .mobile-hero-brand span{font-size:clamp(.9rem,4.5vw,1.7rem)}
+  .mobile-hero-message{left:6%;top:25%;width:42%}
+  .mobile-hero-message p{font-size:clamp(1.15rem,5.3vw,2rem);line-height:1.15;letter-spacing:.06em;white-space:normal}
+  .mobile-hero-message em{margin-top:.8rem;font-size:clamp(.9rem,4vw,1.5rem);line-height:1.3;white-space:normal}
+  .mobile-hero-actions{left:6%;top:56%;width:42%;gap:.65rem}
+  .mobile-hero-btn{min-height:44px;padding:.65rem .5rem;border-width:2px;font-size:clamp(.85rem,3.7vw,1.35rem)}
+}
