@@ -41,11 +41,11 @@ async function writeOrder(env,order){
     if(current.status==='paid')merged.status='paid';
     const onlyIf=existing?(existing.etag?{etagMatches:existing.etag}:null):{etagDoesNotMatch:'*'};
     const saved=await env.REVIEW_MEDIA.put(key(order.id),JSON.stringify(merged),{...(onlyIf?{onlyIf}:{}),httpMetadata:{contentType:'application/json'}});
-    if(saved){Object.assign(order,merged);return merged;}
+    if(saved){Object.assign(order,merged);await require('./business-dashboard.cjs').persistOrder(env,merged);return merged;}
   }
   throw new Error('Order notification update conflict');
 }
-async function createOrder(env,order){return !!(await env.REVIEW_MEDIA.put(key(order.id),JSON.stringify(order),{onlyIf:{etagDoesNotMatch:'*'},httpMetadata:{contentType:'application/json'}}));}
+async function createOrder(env,order){const created=!!(await env.REVIEW_MEDIA.put(key(order.id),JSON.stringify(order),{onlyIf:{etagDoesNotMatch:'*'},httpMetadata:{contentType:'application/json'}}));if(created)await require('./business-dashboard.cjs').persistOrder(env,order);return created;}
 async function deliver(env,order){
   if(order.emailSentAt)return {sent:true,duplicate:true};
   if(!['paid','awaiting_payment'].includes(order.status))throw new Error('Order is not ready for notification');
@@ -78,6 +78,7 @@ async function retryPending(env){
     for(const obj of batch.objects){
       const saved=await env.REVIEW_MEDIA.get(obj.key);if(!saved)continue;
       const order=JSON.parse(await saved.text());
+      await require('./business-dashboard.cjs').persistOrder(env,order);
       if(order.status==='recording_request'&&Date.now()-Date.parse(order.createdAt)>120000){order.status='awaiting_payment';order.accountingStatus='needs_review';await writeOrder(env,order);}
       if(!order.emailSentAt&&['paid','awaiting_payment'].includes(order.status)){
         try{await deliver(env,order);}catch{console.error('Order email needs retry/review: '+order.id);}

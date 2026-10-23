@@ -1,5 +1,7 @@
 import worker from './stripe-worker.cjs';
 import orderEmail from './order-email.cjs';
+import managementAuth from './management-auth.cjs';
+import businessDashboard from './business-dashboard.cjs';
 
 export default {
   fetch(request, env, ctx) {
@@ -7,5 +9,7 @@ export default {
   },
   scheduled(controller, env, ctx) {
     ctx.waitUntil(orderEmail.retryPending(env));
+    ctx.waitUntil(managementAuth.cleanup(env));
+    ctx.waitUntil(businessDashboard.backfill(env));
   },
 };

@@ -7,6 +7,8 @@ workers_dev = false
 preview_urls = false
 
 routes = [
+  { pattern = "asheerahhair.com/gestao*", zone_name = "asheerahhair.com" },
+  { pattern = "asheerahhair.com/management-api/*", zone_name = "asheerahhair.com" },
   { pattern = "asheerahhair.com/request-orange-money", zone_name = "asheerahhair.com" },
   { pattern = "asheerahhair.com/create-checkout-session", zone_name = "asheerahhair.com" },
   { pattern = "asheerahhair.com/public/*", zone_name = "asheerahhair.com" },
@@ -17,6 +19,7 @@ routes = [
 ]
 
 [vars]
+MANAGEMENT_CAPTURE_ENABLED = "1"
 ORDER_EMAIL_ENABLED = "1"
 MANUAL_ORDER_GAS_URL = "https://script.google.com/macros/s/AKfycbzKCanbiHbmlJkhhjy77g2LyTGef6jqcOBNp-2LmUsw21eOCJfSiATnLrw3i2lXlnMP/exec"
 STRIPE_MODE = "live"

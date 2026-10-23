@@ -366,6 +366,8 @@ async function stripePost(path, params, secret, idempotencyKey) {
 }
 async function handleRequest(request, env) {
   const url = new URL(request.url);
+  if (url.pathname === '/gestao' || url.pathname.startsWith('/gestao/')) return require('./business-dashboard.cjs').handlePage(request);
+  if (url.pathname.startsWith('/management-api/')) return require('./business-dashboard.cjs').handle(request, env);
   if (url.pathname === '/webhook' && request.method === 'POST') {
     const mode = stripeMode(env);
     if (env.STRIPE_MODE !== undefined && !mode) return json({ error:'Webhook mode is not configured' }, 503, '*');
@@ -379,6 +381,13 @@ async function handleRequest(request, env) {
     try {
       const ack = await forwardToGas(env, { action:'stripe_event', eventId:event.id, eventType:event.type, session:event.data?.object });
       const session = event.data?.object;
+      if (env.MANAGEMENT_CAPTURE_ENABLED === '1' && ['expired','failed','pending'].includes(ack.status)) {
+        const order = await orderEmail.readOrder(env, session?.client_reference_id);
+        if (order && order.totalCents === session.amount_total && order.sessionId === session.id && order.status !== 'paid') {
+          order.status = ack.status === 'expired' ? 'expired' : ack.status === 'failed' ? 'payment_failed' : 'payment_processing';
+          await orderEmail.writeOrder(env, order);
+        }
+      }
       if (env.ORDER_EMAIL_ENABLED === '1' && ack.status === 'paid' && session?.payment_status === 'paid') {
         const order = await orderEmail.readOrder(env, session.client_reference_id);
         // Orders started before this feature have no immutable item snapshot.
