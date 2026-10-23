@@ -52,7 +52,7 @@ input[type="radio"],input[type="checkbox"]{accent-color:var(--gold)}
 .currency-opt{display:flex;align-items:center;gap:.5rem;width:100%;background:none;border:none;padding:.5rem .7rem;border-radius:8px;font-size:.9rem;color:var(--ink);cursor:pointer;text-align:left;font-family:inherit}
 .currency-opt:hover{background:var(--gold-soft)}
 .currency-opt.active{background:var(--gold-soft);font-weight:600}
-.currency-opt .cur-sym{font-weight:700;color:var(--gold-d);width:1.2rem}
+.currency-opt .cur-sym{font-weight:700;color:var(--gold-d);min-width:1.2rem;width:auto;flex-shrink:0;white-space:nowrap}
 /* language dropdown (custom, inline SVG flags) */
 #langDropdown{position:relative;flex:none}
 .lang-btn{display:flex;align-items:center;gap:.4rem;font-size:.82rem;color:var(--ink-soft);cursor:pointer;padding:.35rem .7rem;border:1px solid var(--border);border-radius:999px;background:var(--card);font-family:inherit}

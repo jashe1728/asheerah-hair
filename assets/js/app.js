@@ -8,7 +8,7 @@
 let checkoutSubmitting = false; // guards against double order submission
 
 const CONFIG = window.CONFIG || {
-  currency:'EUR', rates:{EUR:1,USD:1.08,GBP:0.85,XOF:660}, shipping:null, shippingEta:'6–10 days', taxRate:0,
+  currency:'EUR', rates:{EUR:1,USD:1.08,XOF:660}, shipping:null, shippingEta:'6–10 days', taxRate:0,
   coupons:{}, payment:{ pending:{configured:false} },
   whatsapp:'351914522508', email:'asheerahhair@gmail.com',
   backendURL:'', stripeCheckoutURL:'', stripePublishable:'', paypalClientId:'', mbwayKey:'',
@@ -18,7 +18,6 @@ const CONFIG = window.CONFIG || {
 const CURRENCIES = {
   EUR: { symbol: '€', label: 'EUR' },
   USD: { symbol: '$', label: 'USD' },
-  GBP: { symbol: '£', label: 'GBP' },
   XOF: { symbol: 'FCFA ', label: 'FCFA' },
 };
 
@@ -55,7 +54,7 @@ function findProduct(handle){
 
 // ---------- Currency & money ----------
 function curSym(code){ const c = CURRENCIES[code]; return c ? c.symbol : code; }
-function curCode(){ return localStorage.getItem('ash_cur') || CONFIG.currency || 'EUR'; }
+function curCode(){ const saved=localStorage.getItem('ash_cur'); return CURRENCIES[saved] ? saved : (CURRENCIES[CONFIG.currency] ? CONFIG.currency : 'EUR'); }
 function money(priceEur, cur){
   const rate = CONFIG.rates[cur] || 1;
   const sym = (CURRENCIES[cur] || CURRENCIES.EUR).symbol;
@@ -339,7 +338,7 @@ function buildCurrencyDropdown(){
   btn.className = 'currency-btn';
   btn.setAttribute('aria-haspopup','listbox');
   btn.setAttribute('aria-expanded','false');
-  btn.innerHTML = '<span class="cur-sym">'+curSym(cur)+'</span><span>'+cur+'</span><span class="chev">⌄</span>';
+  btn.innerHTML = '<span class="cur-sym">'+curSym(cur)+'</span>'+(cur==='XOF'?'':'<span>'+cur+'</span>')+'<span class="chev">⌄</span>';
   const menu = document.createElement('div');
   menu.className = 'currency-menu';
   menu.setAttribute('role','listbox');
@@ -349,7 +348,7 @@ function buildCurrencyDropdown(){
     opt.className = 'currency-opt' + (code===cur?' active':'');
     opt.setAttribute('role','option');
     opt.setAttribute('data-cur', code);
-    opt.innerHTML = '<span class="cur-sym">'+c.symbol+'</span><span>'+c.label+'</span>' + (code===cur?' ✓':'');
+    opt.innerHTML = '<span class="cur-sym">'+c.symbol+'</span>'+(code==='XOF'?'':'<span>'+c.label+'</span>') + (code===cur?' ✓':'');
     opt.addEventListener('click', (e)=>{ e.stopPropagation(); setCurrency(code); closeCur(); });
     menu.appendChild(opt);
   });
@@ -409,7 +408,7 @@ function buildMenuControls(){
     b.type = 'button';
     b.dataset.currency = code;
     b.className = (code===curCode()?'active':'');
-    b.innerHTML = '<span class="cur-sym">'+CURRENCIES[code].symbol+'</span><span>'+CURRENCIES[code].label+'</span>';
+    b.innerHTML = '<span class="cur-sym">'+CURRENCIES[code].symbol+'</span>'+(code==='XOF'?'':'<span>'+CURRENCIES[code].label+'</span>');
     b.addEventListener('click', ()=>{ setCurrency(code); syncMenuControls(); });
     curSel.appendChild(b);
   });

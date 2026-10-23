@@ -6,7 +6,7 @@ window.CONFIG = {
 
   // Approximate display rates for the currency switcher. UPDATE as needed.
   // All charges settle in EUR; this is display-only.
-  rates: { EUR: 1, USD: 1.08, GBP: 0.85, XOF: 660 },
+  rates: { EUR: 1, USD: 1.08, XOF: 660 },
 
   // Shipping is destination-based; the Worker provides the quote at checkout.
   shipping: null,
