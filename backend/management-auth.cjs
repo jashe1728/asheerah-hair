@@ -9,12 +9,18 @@ const json=(data,status=200,extra={})=>new Response(JSON.stringify(data),{status
 const prefix='management-auth/';
 async function read(env,key){const obj=await env.REVIEW_MEDIA.get(prefix+key);return obj?{value:JSON.parse(await obj.text()),etag:obj.etag}:null;}
 async function put(env,key,value,current){return env.REVIEW_MEDIA.put(prefix+key,JSON.stringify(value),{onlyIf:current?{etagMatches:current.etag}:{etagDoesNotMatch:'*'},httpMetadata:{contentType:'application/json'}});}
-function tokenFrom(request){const cookies=request.headers.get('Cookie')||'';const found=cookies.split(';').map(s=>s.trim()).find(s=>s.startsWith(COOKIE+'='));const token=found?.slice(COOKIE.length+1)||'';return /^[a-f0-9]{64}$/.test(token)?token:null;}
+function tokensFrom(request){
+ const cookies=(request.headers.get('Cookie')||'').split(';').map(s=>s.trim());
+ return [COOKIE,'__Secure-ah_management'].map(name=>cookies.find(s=>s.startsWith(name+'='))?.slice(name.length+1)||'').filter(token=>/^[a-f0-9]{64}$/.test(token));
+}
 async function identity(request,env){
  if(!env.REVIEW_MEDIA||!allowed(env).length)return null;
- const token=tokenFrom(request);if(!token)return null;
- const record=await read(env,'sessions/'+hash(token)+'.json');
- return record&&record.value.expiresAt>Date.now()&&allowed(env).includes(record.value.email)?record.value.email:null;
+ // Preserve already-issued API-scoped sessions through the initial cookie transition.
+ for(const token of tokensFrom(request)){
+  const record=await read(env,'sessions/'+hash(token)+'.json');
+  if(record&&record.value.expiresAt>Date.now()&&allowed(env).includes(record.value.email))return record.value.email;
+ }
+ return null;
 }
 async function rateLimit(env,scope,identifier,max,period=WINDOW){
  const now=Date.now(),window=Math.floor(now/period),key='limits/'+scope+'-'+hash(identifier)+'-'+window+'.json';
@@ -33,8 +39,9 @@ async function handle(request,env){
  let input;try{input=JSON.parse(raw);}catch{return json({error:'Pedido inválido.'},400);}
  if(!input||Array.isArray(input)||typeof input!=='object')return json({error:'Pedido inválido.'},400);
  if(url.pathname==='/management-api/auth/logout'){
-  const token=tokenFrom(request);if(token)await env.REVIEW_MEDIA.delete(prefix+'sessions/'+hash(token)+'.json');
-  return json({ok:true},200,{'set-cookie':COOKIE+'=; Path=/; HttpOnly; Secure; SameSite=Strict; Max-Age=0'});
+  for(const token of tokensFrom(request))await env.REVIEW_MEDIA.delete(prefix+'sessions/'+hash(token)+'.json');
+  const response=json({ok:true},200,{'set-cookie':COOKIE+'=; Path=/; HttpOnly; Secure; SameSite=Strict; Max-Age=0'});
+  response.headers.append('set-cookie','__Secure-ah_management=; Path=/management-api/; HttpOnly; Secure; SameSite=Strict; Max-Age=0');return response;
  }
  const ip=request.headers.get('CF-Connecting-IP')||'unavailable';
  if(url.pathname==='/management-api/auth/start'){

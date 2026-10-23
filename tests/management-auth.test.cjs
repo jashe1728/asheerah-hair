@@ -34,6 +34,12 @@ test('wrong attempts exhaust a code without allowing a later correct attempt',as
  for(let i=0;i<5;i++)assert.equal((await auth.handle(req('auth/verify',{challenge,code:wrong}),env)).status,401);
  assert.equal((await auth.handle(req('auth/verify',{challenge,code}),env)).status,401);
 });
+test('already-issued API-scoped sessions survive rollout and are removed on logout',async()=>{
+ const env=environment(),{challenge,code}=await login(env),signed=await auth.handle(req('auth/verify',{challenge,code}),env);
+ const token=signed.headers.get('set-cookie').split('=')[1].split(';')[0],cookie='__Secure-ah_management='+token;
+ const request=new Request('https://asheerahhair.com/management-api/orders',{headers:{Cookie:cookie}});assert.equal(await auth.identity(request,env),'owner@example.com');
+ const logout=await auth.handle(req('auth/logout',{}, {Cookie:cookie}),env);assert.match(logout.headers.get('set-cookie'),/__Secure-ah_management=; Path=\/management-api\//);assert.equal(await auth.identity(request,env),null);
+});
 test('simultaneous use of one code creates only one session',async()=>{
  const env=environment(),{challenge,code}=await login(env);
  const results=await Promise.all([auth.handle(req('auth/verify',{challenge,code}),env),auth.handle(req('auth/verify',{challenge,code}),env)]);

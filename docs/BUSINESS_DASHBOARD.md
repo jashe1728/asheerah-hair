@@ -56,10 +56,16 @@ Routes: /gestao* and /management-api/* on the existing Worker. No payment secret
 
 ## Verification and remaining acceptance
 
-155 Node tests pass, including existing checkout/email regressions and new auth, replay/concurrency, expiry, allowlist, CSRF, workflow/payment gating, historical classification, pickup, archival retention, test exclusion, export privacy, CSV formula handling and page-header checks. Wrangler dry-run bundles successfully.
+155 Node checks passed for the initial release, including existing checkout/email regressions and new auth, replay/concurrency, expiry, allowlist, CSRF, workflow/payment gating, historical classification, pickup, archival retention, test exclusion, export privacy, CSV formula handling and page-header checks. A further regression verifies compatibility with already-issued API-scoped sessions and their revocation on logout. Wrangler dry-run bundles successfully.
 
 The local synthetic preview was exercised through receipt confirmation, supplier handoff, supplier acceptance, courier tracking, note persistence, search, summary copy/download button behavior, and desktop/phone layout. The supplier summary's contents are tested directly; a browser automation download-event wait was unavailable, so a saved downloaded artifact was not independently inspected.
 
 The dashboard was published and the live API rejected missing/forged sessions, unlisted-account verification and cross-origin sign-in. The live page returned CSP/frame-denial/no-store headers and had no browser console errors. Shelton confirmed successful live sign-in using his inbox code on 23 October 2026. No real order was modified for testing. Older accounting history, refunds/fees/profit, correction controls and Orange Money accounting synchronization remain follow-up work.
 
 Authentication design reference: https://cheatsheetseries.owasp.org/cheatsheets/Forgot_Password_Cheat_Sheet.html (random, expiring, single-use codes and request/attempt limits).
+
+## Deployment evidence — 23 October 2026
+
+Initial app commit bd8b696 and historical-order safeguard f76d02a were published. Shelton confirmed live email-code sign-in. Unauthenticated/forged-session order listing returned 401; cross-origin login returned 403; an unlisted account could not verify a code. No real order was modified for acceptance testing. The normal scheduled backfill completed at 2026-10-23T13:11:03.357Z, verified from its timestamp marker without exporting customer data. The original ten-minute schedule is unchanged.
+
+Final session compatibility work was isolated in a separate worktree after another process switched/reset the shared repository branch. Existing changes were preserved; already-issued scoped sessions remain valid until their normal expiry, and logout clears both supported cookie forms.
