@@ -2,7 +2,7 @@
 
 ## Current state
 
-The review form is available at `reviews.html`, linked from the homepage, every footer, and each product heading. Review forms appear before product recommendations. Cloudflare R2 is private and configured, Turnstile is configured for the storefront domains, and the live Worker holds the protection and moderation secrets. New submissions require approval before appearing publicly.
+The review form is available at `avaliacoes.html`, linked from the homepage, every footer, and each product heading. Review forms appear before product recommendations. Cloudflare R2 is private and configured, Turnstile is configured for the storefront domains, and the live Worker holds the protection and moderation secrets. New submissions require approval before appearing publicly.
 
 The moderation token is stored locally, encrypted with Windows DPAPI for the current Windows user, at `C:\Users\PC\.asheerah-private\review-admin.dpapi`. Do not commit or print the decrypted token. It is also stored as the live Worker's `REVIEW_ADMIN_TOKEN` secret.
 
