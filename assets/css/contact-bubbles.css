@@ -1,0 +1,14 @@
+.contact-bubbles{position:fixed;right:14px;bottom:76px;z-index:98;font-family:inherit}
+.contact-toggle{display:flex;align-items:center;gap:9px;padding:12px 16px;background:#362511;color:#fff7e8;border:1px solid #b99763;border-radius:999px;box-shadow:0 6px 24px #36251124;cursor:pointer;font:600 13px inherit;min-height:48px}
+.contact-toggle svg,.contact-bubble svg{width:23px;height:23px;flex-shrink:0}
+.contact-toggle svg{transition:transform .3s ease}
+.contact-channels{position:absolute;right:0;bottom:62px;display:flex;flex-direction:column;align-items:flex-end;gap:12px}
+.contact-bubble{display:flex;align-items:center;justify-content:flex-end;gap:12px;color:#362511;text-decoration:none;opacity:0;transform:translateY(30px) scale(.65);transition:transform .32s cubic-bezier(.2,.8,.3,1.2),opacity .2s;transition-delay:calc(var(--order)*45ms);pointer-events:none}
+.contact-bubble svg{box-sizing:content-box;padding:14px;background:#fff9ec;border:1px solid #d6c19d;border-radius:50%;box-shadow:0 5px 18px #36251120}
+.contact-bubble span{padding:7px 12px;background:#fff9ec;border:1px solid #e2d3b7;border-radius:9px;font-size:12px;box-shadow:0 3px 14px #36251112}
+.is-open .contact-bubble{opacity:1;transform:translateY(0) scale(1);pointer-events:auto}
+.is-open .contact-toggle svg{transform:rotate(-12deg)}
+.contact-bubble:hover svg{background:#f3e6cc;transform:scale(1.08)}
+.contact-toggle:focus-visible,.contact-bubble:focus-visible{outline:3px solid #ad803f;outline-offset:4px}
+@media(max-width:640px){.contact-bubbles{right:12px;bottom:72px}.contact-toggle{padding:12px}.contact-toggle>span{display:none}.contact-channels{bottom:60px}}
+@media(prefers-reduced-motion:reduce){.contact-bubbles *{transition:none!important}}
