@@ -209,7 +209,7 @@ test('checkout rejects invalid customer data and quantity',()=>{
   assert.throws(()=>normalizeCheckoutRequest(qty,catalog,{}),/quantity/i);
 });
 
-test('all eight new ambassador coupon codes are accepted and old codes are rejected with exact discounted Stripe line items and metadata',()=>{
+test('all nine active ambassador coupon codes are accepted and old codes are rejected with exact discounted Stripe line items and metadata',()=>{
   // Old codes rejected
   for (const oldCode of ['ONIKA10','LILIAN10','TUCHA10','CASSIE10']) {
     const req=request('PT');
@@ -218,7 +218,7 @@ test('all eight new ambassador coupon codes are accepted and old codes are rejec
   }
 
   // All 4 EUR 7 new codes accepted
-  for (const code7 of ['ONIKA01','LILIAN01','TUCHA01','CASSIE01']) {
+  for (const code7 of ['ONIKA01','LILIAN01','TUCHA01','CASSIE01','MIDANABT']) {
     const req=request('PT');
     req.couponCode=code7;
     const norm=normalizeCheckoutRequest(req,catalog,{});

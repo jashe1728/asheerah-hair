@@ -4,12 +4,12 @@ const fs = require('node:fs');
 const path = require('node:path');
 const vm = require('node:vm');
 
-test('all eight new ambassador and personal codes are configured and old codes removed', () => {
+test('all nine active ambassador and personal codes are configured and old codes removed', () => {
   const context = { window: {} };
   vm.runInNewContext(fs.readFileSync(path.join(__dirname, '../config.js'), 'utf8'), context);
   const coupons = JSON.parse(JSON.stringify(context.window.CONFIG.coupons));
 
-  const ambassadorCodes = ['ONIKA01', 'LILIAN01', 'TUCHA01', 'CASSIE01'];
+  const ambassadorCodes = ['ONIKA01', 'LILIAN01', 'TUCHA01', 'CASSIE01', 'MIDANABT'];
   const personalCodes = ['ONIKAAH', 'LILIANAH', 'TUCHAAH', 'CASSIEAH'];
   const allCodes = [...ambassadorCodes, ...personalCodes];
 
@@ -19,8 +19,8 @@ test('all eight new ambassador and personal codes are configured and old codes r
     assert.equal(coupons[oldCode], undefined, `Old code ${oldCode} must be removed`);
   }
 
-  // Exactly 8 active codes
-  assert.equal(Object.keys(coupons).length, 8);
+  // Exactly 9 active codes
+  assert.equal(Object.keys(coupons).length, 9);
   assert.deepEqual(Object.keys(coupons).sort(), allCodes.sort());
 
   // Ambassador codes: €7 fixed, merchandise only

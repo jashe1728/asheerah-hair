@@ -38,13 +38,13 @@ function setupEnvironment() {
   return { context, storage };
 }
 
-test('coupon validation enforces 8 new codes, removes old codes, and purges stale localStorage coupon', () => {
+test('coupon validation enforces 9 active codes, removes old codes, and purges stale localStorage coupon', () => {
   const { context, storage } = setupEnvironment();
 
-  // 1. Verify 8 new codes in CONFIG.coupons
+  // 1. Verify 9 active codes in CONFIG.coupons
   const coupons = context.CONFIG.coupons;
-  const expectedCodes = ['ONIKA01', 'LILIAN01', 'TUCHA01', 'CASSIE01', 'ONIKAAH', 'LILIANAH', 'TUCHAAH', 'CASSIEAH'];
-  assert.equal(Object.keys(coupons).length, 8);
+  const expectedCodes = ['ONIKA01', 'LILIAN01', 'TUCHA01', 'CASSIE01', 'MIDANABT', 'ONIKAAH', 'LILIANAH', 'TUCHAAH', 'CASSIEAH'];
+  assert.equal(Object.keys(coupons).length, 9);
   assert.deepEqual(Object.keys(coupons).sort(), expectedCodes.sort());
 
   // Old codes removed
@@ -58,10 +58,10 @@ test('coupon validation enforces 8 new codes, removes old codes, and purges stal
   assert.equal(context.localStorage.getItem('ash_coupon'), null, 'Stale code ONIKA10 must be purged from storage');
 
   // 3. Validate valid code in localStorage
-  storage.set('ash_coupon', JSON.stringify({ code: 'ONIKA01', type: 'fixed', value: 7 }));
+  storage.set('ash_coupon', JSON.stringify({ code: 'MIDANABT', type: 'fixed', value: 7 }));
   const applied = context.getAppliedCoupon();
   assert.ok(applied);
-  assert.equal(applied.code, 'ONIKA01');
+  assert.equal(applied.code, 'MIDANABT');
   assert.equal(applied.value, 7);
 
   // 4. Validate €15 personal code

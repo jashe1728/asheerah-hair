@@ -527,7 +527,7 @@ function authMail() {
 
 // Legacy codes remain readable for orders started before the coupon migration.
 function checkoutDiscountCents_(code, subtotal) {
-  var values={ONIKA01:700,LILIAN01:700,TUCHA01:700,CASSIE01:700,ONIKAAH:1500,LILIANAH:1500,TUCHAAH:1500,CASSIEAH:1500,ONIKA10:700,LILIAN10:700,TUCHA10:700,CASSIE10:700};
+  var values={ONIKA01:700,LILIAN01:700,TUCHA01:700,CASSIE01:700,MIDANABT:700,ONIKAAH:1500,LILIANAH:1500,TUCHAAH:1500,CASSIEAH:1500,ONIKA10:700,LILIAN10:700,TUCHA10:700,CASSIE10:700};
   return code ? (Object.prototype.hasOwnProperty.call(values,code) ? Math.min(values[code],subtotal) : -1) : 0;
 }
 function checkoutFulfillmentText_(method) {

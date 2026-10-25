@@ -15,18 +15,18 @@ test('Stripe checkout applies a server-validated EUR 7 ambassador discount to me
     throw new Error(`Unexpected fetch ${url}`);
   };
   const env={SITE_ORIGIN:'https://asheerahhair.com',SITE_BASE_URL:'https://asheerahhair.com',CATALOG_URL:'https://catalog.example/catalog.json',STRIPE_SECRET_KEY:'sk_test_fake',STRIPE_WEBHOOK_SECRET:'whsec_test',WORKER_GAS_SECRET:'gas_test',GAS_WEBHOOK_URL:'https://gas.example/exec'};
-  const body={customer:{name:'Buyer',email:'buyer@example.com',phone:'+351900000000',country:'PT',address:'Rua A',city:'Lisbon',postalCode:'1000-001'},items:[{handle:'sample-wig',options:{opt1:'18',opt2:'HD'},quantity:1}],couponCode:'ONIKA01'};
+  const body={customer:{name:'Buyer',email:'buyer@example.com',phone:'+351900000000',country:'PT',address:'Rua A',city:'Lisbon',postalCode:'1000-001'},items:[{handle:'sample-wig',options:{opt1:'18',opt2:'HD'},quantity:1}],couponCode:'MIDANABT'};
   try{
     const response=await handleRequest(new Request('https://worker.example/create-checkout-session',{method:'POST',headers:{Origin:env.SITE_ORIGIN,'Content-Type':'text/plain'},body:JSON.stringify(body)}),env);
     assert.equal(response.status,200);
     const lineItemCount=Number(sessionParams.get('line_items[0][quantity]'));
     assert.equal(sessionParams.get('line_items[0][price_data][unit_amount]'),'4300');
     assert.equal(lineItemCount,1);
-    assert.match(sessionParams.get('line_items[0][price_data][product_data][name]'),/ambassador offer ONIKA01/i);
+    assert.match(sessionParams.get('line_items[0][price_data][product_data][name]'),/ambassador offer MIDANABT/i);
     assert.equal(sessionParams.get('line_items[1][price_data][product_data][name]'),'Shipping');
     assert.equal(sessionParams.get('line_items[1][price_data][unit_amount]'),'799');
     assert.equal(sessionParams.get('line_items[1][quantity]'),'1');
-    assert.equal(sessionParams.get('metadata[ambassador_code]'),'ONIKA01');
+    assert.equal(sessionParams.get('metadata[ambassador_code]'),'MIDANABT');
     assert.equal(sessionParams.get('metadata[coupon_discount_cents]'),'700');
     assert.equal(sessionParams.get('metadata[shipping_cents]'),'799');
     assert.equal(sessionParams.get('metadata[shipping_country]'),'PT');
@@ -38,7 +38,7 @@ test('Stripe checkout applies a server-validated EUR 7 ambassador discount to me
     assert.equal(pending.shippingCents,799);
     assert.equal(pending.expectedTotalCents,5099);
     assert.equal(pending.fulfillmentMethod,'delivery');
-    assert.match(pending.itemsSummary,/ONIKA01/);
+    assert.match(pending.itemsSummary,/MIDANABT/);
     assert.match(pending.itemsSummary,/Fulfillment: Delivery/);
   }finally{global.fetch=oldFetch;}
 });

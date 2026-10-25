@@ -23,6 +23,7 @@ window.CONFIG = {
     LILIAN01: { type: 'fixed', value: 7, minSubtotalEur: 0 },
     TUCHA01: { type: 'fixed', value: 7, minSubtotalEur: 0 },
     CASSIE01: { type: 'fixed', value: 7, minSubtotalEur: 0 },
+    MIDANABT: { type: 'fixed', value: 7, minSubtotalEur: 0 },
     ONIKAAH: { type: 'fixed', value: 15, minSubtotalEur: 0 },
     LILIANAH: { type: 'fixed', value: 15, minSubtotalEur: 0 },
     TUCHAAH: { type: 'fixed', value: 15, minSubtotalEur: 0 },

@@ -10,7 +10,7 @@ function setup(){
 }
 const base={orderId:'123e4567-e89b-42d3-a456-426614174000',currency:'EUR',customer:{name:'Test',email:'test@example.com',country:'PT',address:'Client address'},subtotalCents:5000,shippingCents:0,expectedTotalCents:3500,couponCode:'ONIKAAH',discountCents:1500,fulfillmentMethod:'pickup'};
 test('new bearer coupons have fixed merchandise-only discounts capped at subtotal',()=>{
- const {ctx}=setup();for(const code of ['ONIKA01','LILIAN01','TUCHA01','CASSIE01'])assert.equal(ctx.checkoutDiscountCents_(code,5000),700);
+ const {ctx}=setup();for(const code of ['ONIKA01','LILIAN01','TUCHA01','CASSIE01','MIDANABT'])assert.equal(ctx.checkoutDiscountCents_(code,5000),700);
  for(const code of ['ONIKAAH','LILIANAH','TUCHAAH','CASSIEAH']){assert.equal(ctx.checkoutDiscountCents_(code,5000),1500);assert.equal(ctx.checkoutDiscountCents_(code,600),600);}
  assert.equal(ctx.checkoutDiscountCents_('UNKNOWN',5000),-1);
 });

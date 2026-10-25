@@ -6,7 +6,7 @@ const catalog={currency:'EUR',products:[{handle:'sample-wig',title:'Sample Wig',
 const request=(couponCode,country='PT')=>({customer:{name:'Test Buyer',email:'buyer@example.com',phone:'+351900000000',country,address:'Rua A',city:'Lisbon',postalCode:'1000-001'},items:[{handle:'sample-wig',options:{opt1:'18',opt2:'HD'},quantity:1}],...(couponCode===undefined?{}:{couponCode})});
 
 test('each known ambassador coupon gives a server-calculated fixed EUR 7 discount on merchandise without discounting shipping',()=>{
-  for(const code of ['ONIKA01','LILIAN01','TUCHA01','CASSIE01']){
+  for(const code of ['ONIKA01','LILIAN01','TUCHA01','CASSIE01','MIDANABT']){
     const checkout=normalizeCheckoutRequest(request(code,'PT'),catalog,{});
     assert.equal(checkout.couponCode,code);
     assert.equal(checkout.subtotalCents,5000);
@@ -29,8 +29,8 @@ test('each known ambassador coupon gives a server-calculated fixed EUR 15 discou
 
 test('ambassador coupon matching is case-insensitive and caps discount at merchandise subtotal while preserving shipping charge',()=>{
   const smallCatalog={...catalog,products:[{...catalog.products[0],variants:[{...catalog.products[0].variants[0],price_eur:3}]}]};
-  const checkout7=normalizeCheckoutRequest(request(' onika01 ','PT'),smallCatalog,{});
-  assert.equal(checkout7.couponCode,'ONIKA01');
+  const checkout7=normalizeCheckoutRequest(request(' midanabt ','PT'),smallCatalog,{});
+  assert.equal(checkout7.couponCode,'MIDANABT');
   assert.equal(checkout7.subtotalCents,300);
   assert.equal(checkout7.discountCents,300);
   assert.equal(checkout7.shippingCents,799);
