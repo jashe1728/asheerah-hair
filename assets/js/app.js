@@ -650,7 +650,8 @@ function productThumbnail(src){
 function shopCardImageHTML(p){
   const original=`<img src="${escapeHTML(p.images[0]||'')}" alt="${escapeHTML(p.title)}" loading="lazy">`;
   const desktop=CROCHET_DESKTOP_IMAGES[p.handle];
-  return desktop?`<picture><source media="(min-width: 641px)" srcset="${desktop}">${original}</picture>`:original;
+  const desktopSrc=typeof AHImages==='object'?AHImages.url(desktop):desktop;
+  return desktop?`<picture><source media="(min-width: 641px)" srcset="${escapeHTML(desktopSrc)}">${original}</picture>`:original;
 }
 function renderShop(){
   const grid = document.getElementById('shopGrid'); if (!grid) return;
@@ -901,7 +902,7 @@ function renderProduct(){
   window.setMain = (src,el) => {
     const image = document.getElementById('mainImg');
     if (!image || !el) return;
-    image.src = src;
+    image.src = typeof AHImages==='object'?AHImages.url(src):src;
     image.alt = el.dataset.alt || _product.title;
     document.querySelectorAll('.thumbs button').forEach(t=>{
       const active = t === el;
