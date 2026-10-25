@@ -46,7 +46,7 @@ const SEEDED_PRODUCT_REVIEWS = [
 ];
 async function loadCatalog(){
   if (CATALOG) return CATALOG;
-  const r = await fetch('catalog.json?v=20261023-colored-densities');
+  const r = await fetch('catalog.json?v=20261025-image-loading');
   CATALOG = await r.json();
   refreshCartPrices();
   return CATALOG;
@@ -640,6 +640,8 @@ const CROCHET_DESKTOP_IMAGES = Object.freeze({
 });
 function productThumbnail(src){
   const thumbnails={
+    'assets/img/chocolate-caramel-highlight-wig-2.png':'assets/img/chocolate-caramel-highlight-wig-2-thumb-v2.png',
+    'assets/img/chocolate-caramel-highlight-wig-3.png':'assets/img/chocolate-caramel-highlight-wig-3-thumb-v2.png',
     'assets/img/chocolate-caramel-highlight-wig-2-fast-v2.png':'assets/img/chocolate-caramel-highlight-wig-2-thumb-v2.png',
     'assets/img/chocolate-caramel-highlight-wig-3-fast-v2.png':'assets/img/chocolate-caramel-highlight-wig-3-thumb-v2.png',
   };
