@@ -638,6 +638,13 @@ const CROCHET_DESKTOP_IMAGES = Object.freeze({
   'burmese-curly-crochet-human-hair':'assets/img/burmese-curly-crochet-human-hair-desktop-v2.png',
 
 });
+function productThumbnail(src){
+  const thumbnails={
+    'assets/img/chocolate-caramel-highlight-wig-2-fast-v2.png':'assets/img/chocolate-caramel-highlight-wig-2-thumb-v2.png',
+    'assets/img/chocolate-caramel-highlight-wig-3-fast-v2.png':'assets/img/chocolate-caramel-highlight-wig-3-thumb-v2.png',
+  };
+  return thumbnails[src]||src;
+}
 function shopCardImageHTML(p){
   const original=`<img src="${escapeHTML(p.images[0]||'')}" alt="${escapeHTML(p.title)}" loading="lazy">`;
   const desktop=CROCHET_DESKTOP_IMAGES[p.handle];
@@ -847,7 +854,7 @@ function renderProduct(){
       <div class="pd">
         <div class="gallery" data-category="${escapeHTML(p.category)}">
           <div class="main-img"><img id="mainImg" src="${escapeHTML(p.images[0]||'')}" alt="${escapeHTML(p.title)}"></div>
-          <div class="thumbs" role="group" aria-label="Product images">${p.images.slice(0,6).map((im,i)=>`<button type="button" class="thumb ${i===0?'active':''}" data-src="${escapeHTML(im)}" data-alt="${escapeHTML(p.title)} image ${i+1}" aria-label="View ${escapeHTML(p.title)} image ${i+1}" aria-pressed="${i===0?'true':'false'}"><img src="${escapeHTML(im)}" alt="" loading="lazy"></button>`).join('')}</div>
+          <div class="thumbs" role="group" aria-label="Product images">${p.images.slice(0,6).map((im,i)=>`<button type="button" class="thumb ${i===0?'active':''}" data-src="${escapeHTML(im)}" data-alt="${escapeHTML(p.title)} image ${i+1}" aria-label="View ${escapeHTML(p.title)} image ${i+1}" aria-pressed="${i===0?'true':'false'}"><img src="${escapeHTML(productThumbnail(im))}" alt="" loading="lazy"></button>`).join('')}</div>
           ${(p.videos||[]).map(src=>`<video class="product-video" controls playsinline preload="none" poster="${escapeHTML(p.images[0]||'')}" aria-label="${escapeHTML(p.title)} video"><source src="${escapeHTML(src)}" type="video/mp4"></video>`).join('')}
         </div>
         <div class="buy">
