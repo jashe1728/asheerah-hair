@@ -2,7 +2,7 @@
 const crypto=require('node:crypto');
 const PREFIX='security-limits/';
 function signingSecret(env){return String(env.WORKER_GAS_SECRET||'').normalize('NFKC').trim().replace(/^(['"])([\s\S]*)\1$/,'$2').replace(/\s+/g,'').toLowerCase();}
-function envelope(env,payload){const secret=signingSecret(env);if(!secret)throw Error('Signing is not configured');const raw=JSON.stringify(payload);return {payload:raw,signature:crypto.createHmac('sha256',secret).update(raw).digest('hex')};}
+function envelope(env,payload){const secret=signingSecret(env);if(!secret)throw Error('Signing is not configured');const raw=JSON.stringify(payload).replace(/[\u007f-\uffff]/g,c=>'\\u'+c.charCodeAt(0).toString(16).padStart(4,'0'));return {payload:raw,signature:crypto.createHmac('sha256',secret).update(raw).digest('hex')};}
 function failure(status,message,retryAfter=60){const e=Error(message);e.status=status;e.retryAfter=retryAfter;return e;}
 // R2 conditional writes provide a shared counter across Worker instances. Never use a local Map for admission.
 async function take(env,scope,limit,period,now=Date.now()){
