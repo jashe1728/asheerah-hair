@@ -9,6 +9,59 @@ const MAX_QTY = 10;
 const MAX_REVIEW_BODY_BYTES = 22 * 1024 * 1024;
 const MAX_REVIEW_MEDIA_FILES = 3;
 const MAX_REVIEW_MEDIA_BYTES = 8 * 1024 * 1024;
+const DEFAULT_UPSTREAM_TIMEOUT_MS = 10_000;
+const DEFAULT_CLEANUP_TIMEOUT_MS = 4_000;
+const SAFE_FAILURE_STAGES = Object.freeze(['catalog','validate_cart','record_snapshot','record_pending','create_stripe_session','record_session_snapshot','record_session']);
+const SAFE_FAILURE_REASONS = Object.freeze(['catalog_timeout','catalog_unavailable','validation_failed','storage_timeout','gas_timeout','gas_http_error','gas_non_json_response','gas_auth_rejected','gas_invalid_order_details','gas_invalid_pending_order','gas_invalid_discount','gas_invalid_fulfillment','gas_order_amount_conflict','gas_invalid_checkout_session','gas_pending_order_not_found','gas_order_already_paid','gas_unsupported_action','gas_record_error','stripe_timeout','stripe_request_failed','unclassified']);
+const GAS_ERROR_REASONS = Object.freeze({
+  'Unauthorized payment event': 'gas_auth_rejected',
+  'Invalid order details': 'gas_invalid_order_details',
+  'Invalid pending order': 'gas_invalid_pending_order',
+  'Invalid discount': 'gas_invalid_discount',
+  'Invalid fulfillment': 'gas_invalid_fulfillment',
+  'Order already exists with different amount': 'gas_order_amount_conflict',
+  'Invalid Checkout Session': 'gas_invalid_checkout_session',
+  'Pending order not found': 'gas_pending_order_not_found',
+  'Order already paid': 'gas_order_already_paid',
+  'Unsupported worker action': 'gas_unsupported_action',
+});
+function upstreamTimeoutMs(env, key = 'UPSTREAM_TIMEOUT_MS', fallback = DEFAULT_UPSTREAM_TIMEOUT_MS) {
+  const n = Number(env && env[key]);
+  return Number.isFinite(n) && n >= 1 && n <= 30_000 ? Math.floor(n) : fallback;
+}
+async function withDeadline(operation, timeoutMs, timeoutDiagnostic) {
+  const controller = new AbortController();
+  let timer;
+  const deadline = new Promise((_, reject) => {
+    timer = setTimeout(() => {
+      const err = new Error('Upstream operation timed out');
+      err.diagnostic = timeoutDiagnostic;
+      reject(err);
+      controller.abort();
+    }, timeoutMs);
+  });
+  try {
+    // The race also bounds adapters/storage that do not implement AbortSignal.
+    return await Promise.race([Promise.resolve().then(() => operation(controller.signal)), deadline]);
+  } finally {
+    clearTimeout(timer);
+  }
+}
+async function fetchJsonWithTimeout(url, options, timeoutMs, timeoutDiagnostic) {
+  return withDeadline(async signal => {
+    const response = await fetch(url, { ...options, signal });
+    let data;
+    try { data = await response.json(); } catch { data = null; }
+    return { ok:response.ok, data };
+  }, timeoutMs, timeoutDiagnostic);
+}
+function safeFailureStage(stage) {
+  return SAFE_FAILURE_STAGES.includes(stage) ? stage : 'catalog';
+}
+function safeFailureReason(err, stage) {
+  const code = err && typeof err.diagnostic === 'string' ? err.diagnostic : (stage === 'validate_cart' ? 'validation_failed' : 'unclassified');
+  return SAFE_FAILURE_REASONS.includes(code) ? code : 'unclassified';
+}
 const AMBASSADOR_COUPONS = Object.freeze({
   ONIKA01: 700,
   LILIAN01: 700,
@@ -230,15 +283,13 @@ function verifyStripeSignature(body, signature, secret, now = Math.floor(Date.no
     return candidate.length === expected.length && crypto.timingSafeEqual(candidate, expected);
   });
 }
-async function forwardToGas(env, payload, target=env.GAS_WEBHOOK_URL) {
+async function forwardToGas(env, payload, target=env.GAS_WEBHOOK_URL, timeoutMs=upstreamTimeoutMs(env)) {
   if(!target)throw new Error('Apps Script is not configured');
-  const response = await fetch(target,{method:'POST',headers:{'content-type':'text/plain;charset=utf-8'},body:JSON.stringify(publicSecurity.envelope(env,payload))});
-  let ack;
-  try { ack = await response.json(); } catch { ack = null; }
+  const response = await fetchJsonWithTimeout(target,{method:'POST',headers:{'content-type':'text/plain;charset=utf-8'},body:JSON.stringify(publicSecurity.envelope(env,payload))},timeoutMs,'gas_timeout');
+  const ack = response.data;
   if (!response.ok || !ack || ack.ok !== true) {
     const err = new Error('Apps Script payment record failed');
-    const reasons = { 'Unauthorized payment event': 'gas_auth_rejected', 'Invalid order details': 'gas_invalid_order_details', 'Invalid pending order': 'gas_invalid_pending_order', 'Unsupported worker action': 'gas_unsupported_action' };
-    err.diagnostic = !response.ok ? 'gas_http_error' : !ack ? 'gas_non_json_response' : reasons[ack.error] || 'gas_record_error';
+    err.diagnostic = !response.ok ? 'gas_http_error' : !ack ? 'gas_non_json_response' : Object.prototype.hasOwnProperty.call(GAS_ERROR_REASONS,ack.error) ? GAS_ERROR_REASONS[ack.error] : 'gas_record_error';
     throw err;
   }
   return ack;
@@ -359,10 +410,14 @@ async function handleReviewRequest(request,url,env,origin){
   }
   return json({error:'Method not allowed'},405,origin);
 }
-async function stripePost(path, params, secret, idempotencyKey) {
-  const response = await fetch(`https://api.stripe.com/v1/${path}`, { method:'POST', headers:{ authorization:`Bearer ${secret}`, 'content-type':'application/x-www-form-urlencoded', ...(idempotencyKey ? {'idempotency-key':idempotencyKey} : {}) }, body:params.toString() });
-  const data = await response.json();
-  if (!response.ok) throw new Error(data.error?.message || 'Stripe request failed');
+async function stripePost(path, params, secret, idempotencyKey, timeoutMs=DEFAULT_UPSTREAM_TIMEOUT_MS) {
+  const response = await fetchJsonWithTimeout(`https://api.stripe.com/v1/${path}`, { method:'POST', headers:{ authorization:`Bearer ${secret}`, 'content-type':'application/x-www-form-urlencoded', ...(idempotencyKey ? {'idempotency-key':idempotencyKey} : {}) }, body:params.toString() }, timeoutMs, 'stripe_timeout');
+  const data = response.data;
+  if (!response.ok || !data) {
+    const err = new Error(data?.error?.message || 'Stripe request failed');
+    err.diagnostic = 'stripe_request_failed';
+    throw err;
+  }
   return data;
 }
 async function handleRequest(request, env) {
@@ -525,15 +580,23 @@ async function handleRequest(request, env) {
   try { input = JSON.parse(raw); } catch { return json({ error:'Invalid request' }, 400, allowedOrigin); }
   let orderId = '';
   let stage = 'catalog';
+  let pendingAttempted = false;
+  let stripeAttempted = false;
+  let createdSessionId = '';
   try {
-    const catalogResponse = await fetch(env.CATALOG_URL, { headers:{ accept:'application/json' } });
-    if (!catalogResponse.ok) throw new Error('Catalog unavailable');
+    const catalogResponse = await fetchJsonWithTimeout(env.CATALOG_URL, { headers:{ accept:'application/json' } }, upstreamTimeoutMs(env), 'catalog_timeout');
+    if (!catalogResponse.ok || !catalogResponse.data) {
+      const err = new Error('Catalog unavailable');
+      err.diagnostic = 'catalog_unavailable';
+      throw err;
+    }
     stage = 'validate_cart';
-    const checkout = normalizeCheckoutRequest(input, await catalogResponse.json(), env);
+    const checkout = normalizeCheckoutRequest(input, catalogResponse.data, env);
     orderId = crypto.randomUUID();
     if (env.ORDER_EMAIL_ENABLED === '1') {
+      stage = 'record_snapshot';
       if (!env.REVIEW_MEDIA || !env.RESEND_API_KEY) throw new Error('Order notification setup incomplete');
-      await orderEmail.writeOrder(env, orderEmail.snapshot(checkout, orderId));
+      await withDeadline(() => orderEmail.writeOrder(env, orderEmail.snapshot(checkout, orderId)), upstreamTimeoutMs(env), 'storage_timeout');
     }
     const couponSummary = checkout.couponCode ? `Ambassador coupon: ${checkout.couponCode} | ` : '';
     const fulfillmentSummary = checkout.fulfillmentMethod === 'pickup'
@@ -542,6 +605,7 @@ async function handleRequest(request, env) {
     const merchandiseSummary = checkout.lineItems.filter(x => x.price_data.product_data.name !== 'Shipping').map(x => `${x.quantity}x ${x.price_data.product_data.name}`).join(' | ');
     const itemsSummary = `${couponSummary}${fulfillmentSummary} | ${merchandiseSummary}`;
     stage = 'record_pending';
+    pendingAttempted = true;
     await forwardToGas(env, {
       action: 'stripe_pending',
       orderId,
@@ -607,21 +671,49 @@ async function handleRequest(request, env) {
       params.set(`line_items[${i}][quantity]`, String(item.quantity));
     });
     stage = 'create_stripe_session';
-    const session = await stripePost('checkout/sessions', params, env.STRIPE_SECRET_KEY, `asheerah-${orderId}`);
+    stripeAttempted = true;
+    const session = await stripePost('checkout/sessions', params, env.STRIPE_SECRET_KEY, `asheerah-${orderId}`, upstreamTimeoutMs(env));
+    createdSessionId = session.id || '';
     if (env.ORDER_EMAIL_ENABLED === '1') {
-      const notification = await orderEmail.readOrder(env, orderId);
-      notification.sessionId = session.id;
-      await orderEmail.writeOrder(env, notification);
+      stage = 'record_session_snapshot';
+      await withDeadline(async () => {
+        const notification = await orderEmail.readOrder(env, orderId);
+        notification.sessionId = session.id;
+        await orderEmail.writeOrder(env, notification);
+      }, upstreamTimeoutMs(env), 'storage_timeout');
     }
     stage = 'record_session';
     await forwardToGas(env, { action:'stripe_session_created', orderId, sessionId:session.id });
     return json({ checkoutUrl:session.url, orderId }, 200, allowedOrigin);
   } catch (err) {
+    const failureStage = safeFailureStage(stage);
+    const failureReason = safeFailureReason(err, failureStage);
+    // A deadline does not prove that a remote operation was cancelled.
+    const failureOutcome = createdSessionId ? 'session_created' : stripeAttempted ? 'unknown' : 'not_started';
+    console.error(JSON.stringify({ event:'stripe_checkout_failed', orderId:orderId || null, stage:failureStage, reason:failureReason, outcome:failureOutcome }));
     if (orderId) {
-      try { await forwardToGas(env, { action:'stripe_checkout_failed', orderId }); } catch {}
+      const cleanupMs = upstreamTimeoutMs(env, 'CLEANUP_TIMEOUT_MS', DEFAULT_CLEANUP_TIMEOUT_MS);
+      try {
+        await withDeadline(() => Promise.allSettled([
+          (async () => {
+            if (env.ORDER_EMAIL_ENABLED !== '1' || !env.REVIEW_MEDIA) return;
+            const notification = await orderEmail.readOrder(env, orderId);
+            if (!notification || notification.status === 'paid') return;
+            notification.status = 'checkout_failed';
+            notification.failureStage = failureStage;
+            notification.failureReason = failureReason;
+            notification.failureOutcome = failureOutcome;
+            notification.failedAt = new Date().toISOString();
+            if (createdSessionId) notification.sessionId = createdSessionId;
+            if (failureOutcome !== 'not_started') notification.accountingStatus = 'needs_review';
+            await orderEmail.writeOrder(env, notification);
+          })(),
+          pendingAttempted ? forwardToGas(env, { action:'stripe_checkout_failed', orderId }, env.GAS_WEBHOOK_URL, cleanupMs) : Promise.resolve(),
+        ]), cleanupMs, 'cleanup_timeout');
+      } catch {}
     }
     if (err.message === 'Shipping rate is not configured for this destination') return json({ error:'Shipping is not available to that destination at the listed rates.' }, 422, allowedOrigin);
-    return json({ error:'Unable to start secure checkout', ...(env.CHECKOUT_DIAGNOSTIC === '1' ? { stage, reason:err.diagnostic || 'unclassified' } : {}) }, 502, allowedOrigin);
+    return json({ error:'Unable to start secure checkout', ...(env.CHECKOUT_DIAGNOSTIC === '1' ? { stage:failureStage, reason:failureReason } : {}) }, 502, allowedOrigin);
   }
 }
 module.exports = { EU_COUNTRIES, EUROPE_COUNTRIES, PICKUP_LOCATION, AMBASSADOR_COUPONS, EUROPE_SHIPPING_CENTS, EU_SHIPPING_CENTS, INTL_SHIPPING_CENTS, PICKUP_SHIPPING_CENTS, COUNTRY_ENTRIES, shippingForCountry, normalizeCheckoutRequest, verifyStripeSignature, handleRequest, fetch: handleRequest };

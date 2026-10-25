@@ -378,3 +378,145 @@ test('Stripe webhook verifies the raw signature without Origin and forwards an H
     assert.equal(Object.hasOwn(JSON.parse(forwarded.payload),'sharedSecret'),false);
   }finally{global.fetch=oldFetch;}
 });
+
+test('GAS rejection before Stripe preserves safe stage/reason on private R2 failure records, skips Stripe API, logs no PII, and never sets paid status',async()=>{
+  const {bucket}=require('./helpers/mock-r2.cjs');
+  const oldFetch=global.fetch,oldError=console.error;
+  for(const [ackError,expectedReason] of [
+    ['Invalid discount','gas_invalid_discount'],
+    ['Invalid fulfillment','gas_invalid_fulfillment'],
+    ['Invalid pending order','gas_invalid_pending_order'],
+    ['Unauthorized payment event','gas_auth_rejected'],
+    ['Order already exists with different amount','gas_order_amount_conflict'],
+    ['Exception: Service invoked too many times','gas_record_error'],
+  ]){
+    const r2=bucket(),gasActions=[],logs=[];
+    let stripeCalls=0;
+    console.error=(...args)=>logs.push(args.join(' '));
+    global.fetch=async(url,options)=>{
+      if(url==='https://catalog.example/catalog.json')return Response.json(catalog);
+      if(url==='https://gas.example/exec'){
+        const payload=JSON.parse(JSON.parse(options.body).payload);
+        gasActions.push(payload.action);
+        if(payload.action==='stripe_pending')return Response.json({ok:false,error:ackError});
+        return Response.json({ok:true,missing:true});
+      }
+      if(String(url).includes('api.stripe.com')){stripeCalls++;return Response.json({id:'cs_unexpected'});}
+      throw new Error(`Unexpected fetch ${url}`);
+    };
+    const env={
+      SITE_ORIGIN:'https://asheerahhair.com',
+      SITE_BASE_URL:'https://asheerahhair.com',
+      CATALOG_URL:'https://catalog.example/catalog.json',
+      STRIPE_SECRET_KEY:'sk_test_fake',
+      STRIPE_WEBHOOK_SECRET:'whsec_test',
+      WORKER_GAS_SECRET:'gas_test',
+      GAS_WEBHOOK_URL:'https://gas.example/exec',
+      ORDER_EMAIL_ENABLED:'1',
+      MANAGEMENT_CAPTURE_ENABLED:'1',
+      RESEND_API_KEY:'resend_test',
+      REVIEW_MEDIA:r2,
+    };
+    try{
+      const reqBody=request('PT');
+      const res=await handleRequest(new Request('https://worker.example/create-checkout-session',{method:'POST',headers:{Origin:env.SITE_ORIGIN,'Content-Type':'text/plain'},body:JSON.stringify(reqBody)}),env);
+      assert.equal(res.status,502);
+      const pubBody=await res.json();
+      assert.deepEqual(pubBody,{error:'Unable to start secure checkout'});
+      assert.equal(stripeCalls,0,'Stripe API must not be called when GAS pending fails');
+      assert.deepEqual(gasActions,['stripe_pending','stripe_checkout_failed']);
+
+      const notifKeys=[...r2.data.keys()].filter(k=>k.startsWith('order-notifications/'));
+      assert.equal(notifKeys.length,1);
+      const notif=JSON.parse(r2.data.get(notifKeys[0]).value);
+      assert.equal(notif.status,'checkout_failed');
+      assert.notEqual(notif.status,'paid');
+      assert.equal(notif.sessionId,undefined);
+      assert.equal(notif.failureStage,'record_pending');
+      assert.equal(notif.failureReason,expectedReason);
+      assert.match(notif.failedAt,/^\d{4}-\d{2}-\d{2}T/);
+
+      const bizKeys=[...r2.data.keys()].filter(k=>k.startsWith('business-orders/'));
+      assert.equal(bizKeys.length,1);
+      const biz=JSON.parse(r2.data.get(bizKeys[0]).value);
+      assert.equal(biz.status,'checkout_failed');
+      assert.notEqual(biz.status,'paid');
+      assert.equal(biz.failureStage,'record_pending');
+      assert.equal(biz.failureReason,expectedReason);
+
+      assert.equal(logs.length,1);
+      const logEntry=JSON.parse(logs[0]);
+      assert.equal(logEntry.event,'stripe_checkout_failed');
+      assert.equal(logEntry.stage,'record_pending');
+      assert.equal(logEntry.reason,expectedReason);
+      assert.match(logEntry.orderId,/^[a-f0-9-]{36}$/i);
+      assert.doesNotMatch(logs[0],/Test Buyer|buyer@example\.com|912345678|Rua A|Lisbon|sk_test|gas_test/i);
+    }finally{
+      global.fetch=oldFetch;
+      console.error=oldError;
+    }
+  }
+});
+
+test('GAS timeout before Stripe and hanging catch cleanup respect bounded upstream deadlines without calling Stripe or exposing PII',async()=>{
+  const {bucket}=require('./helpers/mock-r2.cjs');
+  const oldFetch=global.fetch,oldError=console.error;
+  const r2=bucket(),gasActions=[],logs=[];
+  let stripeCalls=0;
+  console.error=(...args)=>logs.push(args.join(' '));
+  global.fetch=async(url,options)=>{
+    if(url==='https://catalog.example/catalog.json')return Response.json(catalog);
+    if(url==='https://gas.example/exec'){
+      const payload=JSON.parse(JSON.parse(options.body).payload);
+      gasActions.push(payload.action);
+      return new Promise((_,reject)=>{
+        options.signal.addEventListener('abort',()=>{
+          const abortErr=new Error('The operation was aborted');
+          abortErr.name='AbortError';
+          reject(abortErr);
+        });
+      });
+    }
+    if(String(url).includes('api.stripe.com')){stripeCalls++;return Response.json({id:'cs_unexpected'});}
+    throw new Error(`Unexpected fetch ${url}`);
+  };
+  const env={
+    SITE_ORIGIN:'https://asheerahhair.com',
+    SITE_BASE_URL:'https://asheerahhair.com',
+    CATALOG_URL:'https://catalog.example/catalog.json',
+    STRIPE_SECRET_KEY:'sk_test_fake',
+    STRIPE_WEBHOOK_SECRET:'whsec_test',
+    WORKER_GAS_SECRET:'gas_test',
+    GAS_WEBHOOK_URL:'https://gas.example/exec',
+    ORDER_EMAIL_ENABLED:'1',
+    MANAGEMENT_CAPTURE_ENABLED:'1',
+    RESEND_API_KEY:'resend_test',
+    REVIEW_MEDIA:r2,
+    UPSTREAM_TIMEOUT_MS:'25',
+    CLEANUP_TIMEOUT_MS:'15',
+    CHECKOUT_DIAGNOSTIC:'1',
+  };
+  try{
+    const started=Date.now();
+    const res=await handleRequest(new Request('https://worker.example/create-checkout-session',{method:'POST',headers:{Origin:env.SITE_ORIGIN,'Content-Type':'text/plain'},body:JSON.stringify(request('PT'))}),env);
+    const elapsed=Date.now()-started;
+    assert.equal(res.status,502);
+    assert.ok(elapsed<1000,`Expected bounded timeout under 1000ms, took ${elapsed}ms`);
+    const body=await res.json();
+    assert.deepEqual(body,{error:'Unable to start secure checkout',stage:'record_pending',reason:'gas_timeout'});
+    assert.equal(stripeCalls,0);
+    assert.deepEqual(gasActions,['stripe_pending','stripe_checkout_failed']);
+
+    const notifKeys=[...r2.data.keys()].filter(k=>k.startsWith('order-notifications/'));
+    assert.equal(notifKeys.length,1);
+    const notif=JSON.parse(r2.data.get(notifKeys[0]).value);
+    assert.equal(notif.status,'checkout_failed');
+    assert.equal(notif.sessionId,undefined);
+    assert.equal(notif.failureStage,'record_pending');
+    assert.equal(notif.failureReason,'gas_timeout');
+    assert.doesNotMatch(logs[0],/Test Buyer|buyer@example\.com|912345678|Rua A/i);
+  }finally{
+    global.fetch=oldFetch;
+    console.error=oldError;
+  }
+});

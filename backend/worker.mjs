@@ -4,6 +4,7 @@ import managementAuth from './management-auth.cjs';
 import businessDashboard from './business-dashboard.cjs';
 import publicSecurity from './public-security.cjs';
 import newsletter from './newsletter.cjs';
+import checkoutMonitor from './checkout-monitor.cjs';
 
 export default {
   fetch(request, env, ctx) {
@@ -15,5 +16,6 @@ export default {
     ctx.waitUntil(businessDashboard.backfill(env));
     ctx.waitUntil(publicSecurity.cleanup(env));
     ctx.waitUntil(newsletter.processQueue(env));
+    ctx.waitUntil(checkoutMonitor.run(env));
   },
 };

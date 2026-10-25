@@ -84,7 +84,7 @@ async function retryPending(env){
         try{await deliver(env,order);}catch{console.error('Order email needs retry/review: '+order.id);}
       }
       // Private notification copies are temporary, not the accounting ledger.
-      if(Date.now()-Date.parse(order.createdAt)>30*86400000&&(order.emailSentAt||order.status==='pending_checkout')&&order.accountingStatus!=='needs_review'){
+      if(Date.now()-Date.parse(order.createdAt)>30*86400000&&(order.emailSentAt||['pending_checkout','checkout_failed'].includes(order.status))&&order.accountingStatus!=='needs_review'){
         await env.REVIEW_MEDIA.delete(obj.key);await env.REVIEW_MEDIA.delete('order-email-payloads/'+order.id+'.json');
       }
     }
