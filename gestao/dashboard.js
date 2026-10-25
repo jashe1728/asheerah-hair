@@ -104,7 +104,8 @@ function renderDetail(){
   const button=document.getElementById('detail').querySelector('[data-action="classify_history"]');if(button)button.textContent='Confirmar estado anterior';
   for(const id of ['supplierSummary','copySupplierSummary']){const button=document.getElementById(id);if(button){button.disabled=true;button.title='Confirma primeiro o estado anterior.';}}
  }
- const summary=$('supplierSummary');if(summary)summary.innerHTML=icon('download')+'<span>Resumo para fornecedor</span>';
+ const summary=$('supplierSummary');if(summary)summary.innerHTML=icon('download')+'<span>Descarregar pedido em PDF</span>';
+ if(summary){const note=document.createElement('p');note.className='detail-note';note.textContent='PDF em inglês, com artigos, opções, quantidades e entrega. Envia-o manualmente ao fornecedor.';summary.closest('.detail-actions').after(note);}
  const bar=$('mobileOrderAction');bar.replaceChildren();bar.hidden=false;
  const primary=$('detail').querySelector('button[data-action]');if(primary)bar.append(primary.cloneNode(true));
  const back=document.createElement('button');back.type='button';back.className='button subtle';back.dataset.closeOrder='true';back.textContent=primary?'Voltar':'Voltar à lista';bar.append(back);
@@ -139,7 +140,22 @@ function supplierText(o){
 async function supplierSummary(copy=false){const o=state.orders.find(o=>o.id===state.selected);if(!o||!paid(o))return;
  if(stage(o)==='needs_review'){toast('Confirma primeiro o estado anterior desta encomenda.');return;}
  if(copy){try{await navigator.clipboard.writeText(supplierText(o));toast('Resumo copiado. Partilha apenas com o fornecedor responsável.');}catch{toast('Não foi possível copiar. Usa a opção de download.');}}
- else{download('Asheerah-fornecedor-'+o.id.slice(-8)+'.txt',supplierText(o));toast('Resumo descarregado. Envia-o ao fornecedor pelo teu canal habitual.');}
+ else{
+  const button=$('supplierSummary'),version=lockVersion;
+  if(button?.disabled)return;
+  if(button){button.disabled=true;button.textContent='A preparar PDF…';}
+  const controller=new AbortController(),timer=setTimeout(()=>controller.abort(),8000);
+  try{
+   if(!window.AHSupplierPDF)throw Error('Não foi possível carregar o modelo PDF. Atualiza a página e tenta novamente.');
+   const logo=await fetch('../assets/logo-sm.png',{signal:controller.signal});
+   if(!logo.ok)throw Error('Não foi possível carregar o logótipo. Tenta novamente.');
+   const pdf=await window.AHSupplierPDF.create(o,{logoBytes:new Uint8Array(await logo.arrayBuffer())});
+   if(version!==lockVersion||state.selected!==o.id)return;
+   download('Asheerah-pedido-fornecedor-'+o.id.slice(-8)+'.pdf',pdf,'application/pdf');
+   toast('PDF descarregado. Envia-o manualmente e depois regista «Já enviei ao fornecedor».');
+  }catch(err){if(version===lockVersion)toast(err.name==='AbortError'?'Não foi possível preparar o PDF a tempo. Tenta novamente.':err.message);}
+  finally{clearTimeout(timer);if(button){button.disabled=false;button.innerHTML=icon('download')+'<span>Descarregar pedido em PDF</span>';}}
+ }
 }
 function csvCell(value){const text=String(value);return '"'+(/^\s*[=+@\-\t\r\n]/.test(text)?"'"+text:text).replaceAll('"','""')+'"';}
 function exportCsv(){const rows=[['Referência','Data','Cliente','Produtos','Total EUR','Pagamento','Método','Estado de envio'],...filterOrders().map(o=>[o.id,o.createdAt,o.customer.name,o.items.map(i=>`${i.qty} × ${i.title}`).join(' / '),(o.totalCents/100).toFixed(2),paid(o)?'Confirmado':incomplete(o)?'Por concluir':'Pendente',o.method,next(o)])];download('Asheerah-encomendas.csv','\uFEFF'+rows.map(r=>r.map(csvCell).join(';')).join('\r\n'),'text/csv;charset=utf-8');}

@@ -22,6 +22,12 @@ Orders before the configured MANAGEMENT_HISTORY_CUTOFF have an unknown initial f
 
 The supplier summary contains the order reference, items/options, destination name, phone and delivery address. It omits retail prices and customer email. CSV cells escape quotes and neutralize formula prefixes. Downloads contain personal data and should only be shared with the responsible recipient.
 
+### Supplier PDF (25 October 2026)
+
+In order details, `Descarregar pedido em PDF` creates a branded English request for the supplier with reference, dates, products, variants, quantities and delivery/collection details. The management interface remains Portuguese. Copying the Portuguese text summary remains available. Only confirmed-paid, historically classified orders can be exported, as before. Downloading does not change the fulfillment stage; send manually, then register `Já enviei ao fornecedor` separately.
+
+PDF generation runs entirely in the browser using self-hosted pdf-lib 1.17.1 (the existing project dependency). It makes no order writes or calls to payment services. No Worker, checkout, webhook, cron, provider configuration or secret changes are required. Customer email, prices, coupons, payment-provider IDs and private notes are omitted. Long documents paginate. PDFs are not stored on the server. The desktop and phone use the same download control.
+
 Confirmations require acknowledgement. Concurrent edits require refresh rather than silently overwriting another operator. There is no delete, refund, financial reversal or fulfillment rollback in v1; the owner can request a correction workflow next.
 
 Financial cards show gross order amounts, not processor balances, payouts or profit. Fees, refunds and supplier costs are not reconciled. Lists paginate in batches of 100; a visible partial-summary warning remains while more pages exist. Search and totals apply to loaded records. The daily view prioritizes paid orders ready for the supplier, unpaid requests, supplier/courier work, then completed/incomplete checkouts.
