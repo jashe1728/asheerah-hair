@@ -9,9 +9,10 @@ test('all nine active ambassador and personal codes are configured and old codes
   vm.runInNewContext(fs.readFileSync(path.join(__dirname, '../config.js'), 'utf8'), context);
   const coupons = JSON.parse(JSON.stringify(context.window.CONFIG.coupons));
 
-  const ambassadorCodes = ['ONIKA01', 'LILIAN01', 'TUCHA01', 'CASSIE01', 'MIDANABT'];
+  const ambassadorCodes = ['ONIKA01', 'LILIAN01', 'TUCHA01', 'CASSIE01'];
+  const partnerCodes10 = ['MIDANABT'];
   const personalCodes = ['ONIKAAH', 'LILIANAH', 'TUCHAAH', 'CASSIEAH'];
-  const allCodes = [...ambassadorCodes, ...personalCodes];
+  const allCodes = [...ambassadorCodes, ...partnerCodes10, ...personalCodes];
 
   // Old codes must be removed
   const oldCodes = ['ONIKA10', 'LILIAN10', 'TUCHA10', 'CASSIE10'];
@@ -27,6 +28,9 @@ test('all nine active ambassador and personal codes are configured and old codes
   for (const code of ambassadorCodes) {
     assert.deepEqual(coupons[code], { type: 'fixed', value: 7, minSubtotalEur: 0 });
   }
+
+  // MIDANABT: €10 fixed, merchandise only
+  assert.deepEqual(coupons.MIDANABT, { type: 'fixed', value: 10, minSubtotalEur: 0 });
 
   // Personal codes: €15 fixed, merchandise only
   for (const code of personalCodes) {

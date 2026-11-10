@@ -15,7 +15,7 @@ window.CONFIG = {
   // Taxes rate (0 = none currently). Set to e.g. 0.23 (23% IVA) when applicable.
   taxRate: 0,
 
-  // Separate public code per ambassador, each with a €7 display discount.
+  // Separate public code per ambassador (€7 display discount; MIDANABT €10).
   // Personal codes offer a €15 discount.
   // The checkout Worker validates the code and enforces its value server-side.
   coupons: {
@@ -23,7 +23,7 @@ window.CONFIG = {
     LILIAN01: { type: 'fixed', value: 7, minSubtotalEur: 0 },
     TUCHA01: { type: 'fixed', value: 7, minSubtotalEur: 0 },
     CASSIE01: { type: 'fixed', value: 7, minSubtotalEur: 0 },
-    MIDANABT: { type: 'fixed', value: 7, minSubtotalEur: 0 },
+    MIDANABT: { type: 'fixed', value: 10, minSubtotalEur: 0 },
     ONIKAAH: { type: 'fixed', value: 15, minSubtotalEur: 0 },
     LILIANAH: { type: 'fixed', value: 15, minSubtotalEur: 0 },
     TUCHAAH: { type: 'fixed', value: 15, minSubtotalEur: 0 },

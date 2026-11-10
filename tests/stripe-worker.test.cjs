@@ -217,8 +217,8 @@ test('all nine active ambassador coupon codes are accepted and old codes are rej
     assert.throws(()=>normalizeCheckoutRequest(req,catalog,{}),/ambassador coupon/i);
   }
 
-  // All 4 EUR 7 new codes accepted
-  for (const code7 of ['ONIKA01','LILIAN01','TUCHA01','CASSIE01','MIDANABT']) {
+  // All 4 EUR 7 codes accepted
+  for (const code7 of ['ONIKA01','LILIAN01','TUCHA01','CASSIE01']) {
     const req=request('PT');
     req.couponCode=code7;
     const norm=normalizeCheckoutRequest(req,catalog,{});
@@ -227,6 +227,18 @@ test('all nine active ambassador coupon codes are accepted and old codes are rej
     assert.equal(norm.subtotalCents,39998);
     assert.equal(norm.shippingCents,799);
     assert.equal(norm.totalCents,39998 - 700 + 799);
+  }
+
+  // MIDANABT EUR 10 code accepted
+  {
+    const req=request('PT');
+    req.couponCode='MIDANABT';
+    const norm=normalizeCheckoutRequest(req,catalog,{});
+    assert.equal(norm.couponCode,'MIDANABT');
+    assert.equal(norm.discountCents,1000);
+    assert.equal(norm.subtotalCents,39998);
+    assert.equal(norm.shippingCents,799);
+    assert.equal(norm.totalCents,39998 - 1000 + 799);
   }
 
   // All 4 EUR 15 new codes accepted

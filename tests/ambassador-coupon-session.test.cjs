@@ -4,7 +4,7 @@ const {handleRequest}=require('../backend/stripe-worker.cjs');
 
 const catalog={currency:'EUR',products:[{handle:'sample-wig',title:'Sample Wig',variants:[{title:'18 / HD',opt1:'18',opt2:'HD',opt3:null,opt4:null,price_eur:50}]}]};
 
-test('Stripe checkout applies a server-validated EUR 7 ambassador discount to merchandise, includes separate Shipping line item, and records attribution and fulfillment',async()=>{
+test('Stripe checkout applies a server-validated EUR 10 MIDANABT discount to merchandise, includes separate Shipping line item, and records attribution and fulfillment',async()=>{
   const oldFetch=global.fetch;
   let sessionParams,pending;
   global.fetch=async(url,options)=>{
@@ -20,23 +20,23 @@ test('Stripe checkout applies a server-validated EUR 7 ambassador discount to me
     const response=await handleRequest(new Request('https://worker.example/create-checkout-session',{method:'POST',headers:{Origin:env.SITE_ORIGIN,'Content-Type':'text/plain'},body:JSON.stringify(body)}),env);
     assert.equal(response.status,200);
     const lineItemCount=Number(sessionParams.get('line_items[0][quantity]'));
-    assert.equal(sessionParams.get('line_items[0][price_data][unit_amount]'),'4300');
+    assert.equal(sessionParams.get('line_items[0][price_data][unit_amount]'),'4000');
     assert.equal(lineItemCount,1);
     assert.match(sessionParams.get('line_items[0][price_data][product_data][name]'),/ambassador offer MIDANABT/i);
     assert.equal(sessionParams.get('line_items[1][price_data][product_data][name]'),'Shipping');
     assert.equal(sessionParams.get('line_items[1][price_data][unit_amount]'),'799');
     assert.equal(sessionParams.get('line_items[1][quantity]'),'1');
     assert.equal(sessionParams.get('metadata[ambassador_code]'),'MIDANABT');
-    assert.equal(sessionParams.get('metadata[coupon_discount_cents]'),'700');
+    assert.equal(sessionParams.get('metadata[coupon_discount_cents]'),'1000');
     assert.equal(sessionParams.get('metadata[shipping_cents]'),'799');
     assert.equal(sessionParams.get('metadata[shipping_country]'),'PT');
     assert.equal(sessionParams.get('metadata[fulfillment_method]'),'delivery');
-    assert.equal(sessionParams.get('metadata[expected_total_cents]'),'5099');
+    assert.equal(sessionParams.get('metadata[expected_total_cents]'),'4799');
     assert.deepEqual(sessionParams.getAll('shipping_address_collection[allowed_countries][]'),['PT']);
     assert.equal(pending.subtotalCents,5000);
-    assert.equal(pending.discountCents,700);
+    assert.equal(pending.discountCents,1000);
     assert.equal(pending.shippingCents,799);
-    assert.equal(pending.expectedTotalCents,5099);
+    assert.equal(pending.expectedTotalCents,4799);
     assert.equal(pending.fulfillmentMethod,'delivery');
     assert.match(pending.itemsSummary,/MIDANABT/);
     assert.match(pending.itemsSummary,/Fulfillment: Delivery/);

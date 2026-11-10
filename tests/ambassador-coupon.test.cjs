@@ -5,8 +5,8 @@ const {normalizeCheckoutRequest}=require('../backend/stripe-worker.cjs');
 const catalog={currency:'EUR',products:[{handle:'sample-wig',title:'Sample Wig',variants:[{title:'18 / HD',opt1:'18',opt2:'HD',opt3:null,opt4:null,price_eur:50}]}]};
 const request=(couponCode,country='PT')=>({customer:{name:'Test Buyer',email:'buyer@example.com',phone:'+351900000000',country,address:'Rua A',city:'Lisbon',postalCode:'1000-001'},items:[{handle:'sample-wig',options:{opt1:'18',opt2:'HD'},quantity:1}],...(couponCode===undefined?{}:{couponCode})});
 
-test('each known ambassador coupon gives a server-calculated fixed EUR 7 discount on merchandise without discounting shipping',()=>{
-  for(const code of ['ONIKA01','LILIAN01','TUCHA01','CASSIE01','MIDANABT']){
+test('each known ambassador coupon gives a server-calculated fixed EUR 7 (or EUR 10 for MIDANABT) discount on merchandise without discounting shipping',()=>{
+  for(const code of ['ONIKA01','LILIAN01','TUCHA01','CASSIE01']){
     const checkout=normalizeCheckoutRequest(request(code,'PT'),catalog,{});
     assert.equal(checkout.couponCode,code);
     assert.equal(checkout.subtotalCents,5000);
@@ -14,6 +14,12 @@ test('each known ambassador coupon gives a server-calculated fixed EUR 7 discoun
     assert.equal(checkout.shippingCents,799);
     assert.equal(checkout.totalCents,5099);
   }
+  const midana=normalizeCheckoutRequest(request('MIDANABT','PT'),catalog,{});
+  assert.equal(midana.couponCode,'MIDANABT');
+  assert.equal(midana.subtotalCents,5000);
+  assert.equal(midana.discountCents,1000);
+  assert.equal(midana.shippingCents,799);
+  assert.equal(midana.totalCents,4799);
 });
 
 test('each known ambassador coupon gives a server-calculated fixed EUR 15 discount on merchandise without discounting shipping',()=>{

@@ -57,12 +57,12 @@ test('coupon validation enforces 9 active codes, removes old codes, and purges s
   assert.equal(context.getAppliedCoupon(), null, 'Stale code ONIKA10 must return null');
   assert.equal(context.localStorage.getItem('ash_coupon'), null, 'Stale code ONIKA10 must be purged from storage');
 
-  // 3. Validate valid code in localStorage
+  // 3. Validate valid code in localStorage (and verify stale value 7 refreshes to 10)
   storage.set('ash_coupon', JSON.stringify({ code: 'MIDANABT', type: 'fixed', value: 7 }));
   const applied = context.getAppliedCoupon();
   assert.ok(applied);
   assert.equal(applied.code, 'MIDANABT');
-  assert.equal(applied.value, 7);
+  assert.equal(applied.value, 10);
 
   // 4. Validate €15 personal code
   storage.set('ash_coupon', JSON.stringify({ code: 'ONIKAAH', type: 'fixed', value: 15 }));
