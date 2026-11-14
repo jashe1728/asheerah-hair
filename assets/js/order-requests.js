@@ -32,7 +32,7 @@
     try{
       const response=await fetch(new URL('/request-orange-money',CONFIG.stripeCheckoutURL),{method:'POST',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify({...request,requestId,turnstileToken:token})});
       const result=await response.json();if(!response.ok||!result.ok)throw new Error('Request failed');
-      submitted=true;show(msg(1)+result.orderId,true);
+      submitted=true;show(msg(1)+'#'+result.orderId.slice(-8).toUpperCase(),true);
     }catch{show(msg(2));btn.disabled=false;}
     finally{busy=false;token='';if(widget!==undefined)window.turnstile.reset(widget);}
   },true);

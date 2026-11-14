@@ -71,7 +71,7 @@ async function load(more=false,quiet=false){
 }
 function periodOrders(){const d=new Date();let start=0;if($('period').value==='month')start=new Date(d.getFullYear(),d.getMonth(),1).getTime();if($('period').value==='week')start=Date.now()-7*86400000;return state.orders.filter(o=>Date.parse(o.createdAt)>=start);}
 function filterOrders(){const q=$('search').value.toLocaleLowerCase('pt'),f=$('statusFilter').value;return periodOrders().filter(o=>{
- if(q&&!`${o.id} ${o.customer.name} ${o.customer.email} ${o.items.map(i=>i.title).join(' ')}`.toLocaleLowerCase('pt').includes(q))return false;
+ if(q&&!`${o.id} #${o.id.slice(-8).toUpperCase()} ${o.customer.name} ${o.customer.email} ${o.items.map(i=>i.title).join(' ')}`.toLocaleLowerCase('pt').includes(q))return false;
  if(state.view==='shipping'&&!paid(o))return false;
  if(f==='unpaid')return !paid(o)&&!incomplete(o);if(f==='incomplete')return incomplete(o);if(f!=='all')return paid(o)&&stage(o)===f;return true;
  }).sort((a,b)=>{
@@ -134,7 +134,7 @@ async function mutate(action,extra={}){
 }
 function download(name,text,type='text/plain;charset=utf-8'){const u=URL.createObjectURL(new Blob([text],{type})),a=document.createElement('a');a.href=u;a.download=name;a.click();setTimeout(()=>URL.revokeObjectURL(u),1000);}
 function supplierText(o){
- const text=['ASHEERAH HAIR · PEDIDO AO FORNECEDOR',`Referência: ${o.id}`,`Data: ${date(o.createdAt)}`,'',...o.items.flatMap(i=>[`${i.qty} × ${i.title}`,options(i),'']),o.fulfillmentMethod==='pickup'?'ENTREGA PARA RECOLHA NA LOJA':'DADOS PARA ENTREGA',`Destinatária: ${o.customer.name}`,`Telefone: ${o.customer.phone||'—'}`,`Morada: ${o.fulfillmentAddress||[o.customer.address,o.customer.city,o.customer.postalCode,o.customer.country].filter(Boolean).join(', ')}`,'','Confirmar disponibilidade e aceitação do pedido.','Após entrega à transportadora, enviar confirmação e código de seguimento.','', 'Este resumo contém dados de entrega. Partilhar apenas com o fornecedor responsável.'].join('\n');
+ const text=['ASHEERAH HAIR · PEDIDO AO FORNECEDOR',`Referência: #${o.id.slice(-8).toUpperCase()}`,`Data: ${date(o.createdAt)}`,'',...o.items.flatMap(i=>[`${i.qty} × ${i.title}`,options(i),'']),o.fulfillmentMethod==='pickup'?'ENTREGA PARA RECOLHA NA LOJA':'DADOS PARA ENTREGA',`Destinatária: ${o.customer.name}`,`Telefone: ${o.customer.phone||'—'}`,`Morada: ${o.fulfillmentAddress||[o.customer.address,o.customer.city,o.customer.postalCode,o.customer.country].filter(Boolean).join(', ')}`,'','Confirmar disponibilidade e aceitação do pedido.','Após entrega à transportadora, enviar confirmação e código de seguimento.','', 'Este resumo contém dados de entrega. Partilhar apenas com o fornecedor responsável.'].join('\n');
  return text;
 }
 async function supplierSummary(copy=false){const o=state.orders.find(o=>o.id===state.selected);if(!o||!paid(o))return;
@@ -158,7 +158,7 @@ async function supplierSummary(copy=false){const o=state.orders.find(o=>o.id===s
  }
 }
 function csvCell(value){const text=String(value);return '"'+(/^\s*[=+@\-\t\r\n]/.test(text)?"'"+text:text).replaceAll('"','""')+'"';}
-function exportCsv(){const rows=[['Referência','Data','Cliente','Produtos','Total EUR','Pagamento','Método','Estado de envio'],...filterOrders().map(o=>[o.id,o.createdAt,o.customer.name,o.items.map(i=>`${i.qty} × ${i.title}`).join(' / '),(o.totalCents/100).toFixed(2),paid(o)?'Confirmado':incomplete(o)?'Por concluir':'Pendente',o.method,next(o)])];download('Asheerah-encomendas.csv','\uFEFF'+rows.map(r=>r.map(csvCell).join(';')).join('\r\n'),'text/csv;charset=utf-8');}
+function exportCsv(){const rows=[['Referência','ID completo','Data','Cliente','Produtos','Total EUR','Pagamento','Método','Estado de envio'],...filterOrders().map(o=>['#'+o.id.slice(-8).toUpperCase(),o.id,o.createdAt,o.customer.name,o.items.map(i=>`${i.qty} × ${i.title}`).join(' / '),(o.totalCents/100).toFixed(2),paid(o)?'Confirmado':incomplete(o)?'Por concluir':'Pendente',o.method,next(o)])];download('Asheerah-encomendas.csv','\uFEFF'+rows.map(r=>r.map(csvCell).join(';')).join('\r\n'),'text/csv;charset=utf-8');}
 $('today').textContent=new Date().toLocaleDateString('pt-PT',{weekday:'long',day:'numeric',month:'long'}).toUpperCase();
 document.querySelectorAll('[data-icon]').forEach(el=>{el.innerHTML=icon(el.dataset.icon);el.setAttribute('aria-hidden','true');});
 const quickFilters=[['all','Todos'],['unpaid','Por pagar'],['new','Ao fornecedor'],['supplier_sent','A confirmar'],['courier_accepted','Em envio'],['needs_review','Anteriores']];

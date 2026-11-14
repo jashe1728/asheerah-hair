@@ -10,7 +10,7 @@
   if(!Array.isArray(order.items)||!order.items.length)throw Error('A encomenda não tem artigos.');
   const customer=order.customer||{};
   return {
-   reference:String(order.id||''),createdAt:order.createdAt,pickup:order.fulfillmentMethod==='pickup',
+   reference:'#'+String(order.id||'').slice(-8).toUpperCase(),createdAt:order.createdAt,pickup:order.fulfillmentMethod==='pickup',
    recipient:String(customer.name||''),phone:String(customer.phone||'Not provided'),
    address:String(order.fulfillmentAddress||[customer.address,customer.postalCode,customer.city,customer.country].filter(Boolean).join(', ')||'Not provided'),
    items:order.items.map(item=>{

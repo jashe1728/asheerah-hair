@@ -3,6 +3,12 @@ const test=require('node:test'),assert=require('node:assert/strict');
 const {create,model}=require('../gestao/supplier-pdf.js');
 const {PDFDocument}=require('../gestao/vendor/pdf-lib-1.17.1.min.js');
 const fixture=()=>({id:'00000000-0000-4000-8000-000000000001',createdAt:'2026-10-25T10:00:00Z',status:'paid',method:'stripe',customer:{name:'Inês Exemplo',email:'private@example.com',phone:'+351 000 000 000',notes:'PRIVATE CUSTOMER NOTE',address:'Morada fictícia',city:'Lisboa',country:'PT'},items:[{title:'Body Wave Wig',variant:'26″ / 13x4 HD / 200% / M',qty:3,unitCents:21399}],totalCents:64697,couponCode:'PRIVATE COUPON',sessionId:'PRIVATE STRIPE SESSION',operations:{stage:'new',notes:'PRIVATE INTERNAL NOTE',events:[]}});
+test('supplier PDF reference matches the dashboard short order reference',async()=>{
+ const o={...fixture(),id:'64bada3c-2c23-49de-9576-351de7e56cad'};
+ assert.equal(model(o).reference,'#E7E56CAD');
+ const pdf=await PDFDocument.load(await create(o));
+ assert.equal(pdf.getTitle(),'Asheerah Hair - Supplier Order Request #E7E56CAD');
+});
 test('supplier model only includes preparation and delivery data',()=>{
  const data=model(fixture()),json=JSON.stringify(data);
  for(const s of ['Inês Exemplo','Morada fictícia','13x4 HD','"qty":3'])assert.ok(json.includes(s));
