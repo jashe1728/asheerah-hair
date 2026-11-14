@@ -20,7 +20,7 @@ test('authenticated same-origin CAS approval is replay-safe, sanitized and never
  const token='a'.repeat(64),hash=crypto.createHash('sha256').update(token).digest('hex'),origin='https://example.invalid';
  await bucket.put('management-auth/sessions/'+hash+'.json',JSON.stringify({email:'owner@example.invalid',createdAt:Date.now(),lastActiveAt:Date.now(),idleMinutes:15,expiresAt:Date.now()+60000}));
  await bucket.put('business-orders/'+order.id+'.json',JSON.stringify(order));
- const env={REVIEW_MEDIA:bucket,MANAGEMENT_ALLOWED_EMAILS:'owner@example.invalid'};
+ const env={REVIEW_MEDIA:bucket,MANAGEMENT_ALLOWED_EMAILS:'owner@example.invalid',MANUAL_PAID_SCHEDULER_ENABLED:'1',ORDER_EMAIL_ENABLED:'1'};
  const make=(body,opts={})=>new Request(origin+'/management-api/orders/'+order.id,{method:'POST',headers:{Origin:opts.origin||origin,'Content-Type':'application/json',...(opts.noauth?{}:{Cookie:'__Host-ah_management='+token})},body:JSON.stringify(body)});
  const confirmation={version:0,action:'confirm_payment',acknowledged:true,reference:'receipt',expectedOrderDigest:digest};
  assert.equal((await d.handle(make(confirmation),env)).status,200);

@@ -24,6 +24,7 @@ async function persistOrder(env,order){
 const identity=auth.identity;
 const orderDigest=order=>require('node:crypto').createHash('sha256').update(JSON.stringify(order)).digest('hex');
 const immutableManual=order=>order.method==='manual_dashboard'&&order.version===1&&/^[a-f0-9]{64}$/.test(order.manualRequestHash||'');
+const manualEmailAvailable=env=>env.MANUAL_PAID_SCHEDULER_ENABLED==='1'&&env.ORDER_EMAIL_ENABLED==='1';
 function blankOperations(order={},env={}){return {version:0,stage:Date.parse(order.createdAt)<Date.parse(env.MANAGEMENT_HISTORY_CUTOFF)?'needs_review':'new',notes:'',tracking:'',events:[]};}
 async function backfill(env){
  if(env.MANAGEMENT_CAPTURE_ENABLED!=='1'||!env.REVIEW_MEDIA||await env.REVIEW_MEDIA.get('business-backfill-complete'))return;
@@ -37,7 +38,7 @@ function safeOrder(order,operations,env={}){
  const {id,createdAt,language,method,status,customer,items,subtotalCents,discountCents,shippingCents,totalCents,couponCode,fulfillmentMethod,fulfillmentAddress,channel,createdBy}=order;
  const op=operations||blankOperations(order,env),safeOperations={...op};
  if(op.paidEmail)safeOperations.paidEmail={status:op.paidEmail.status};
- return {id,createdAt,language,method,status,customer,items,subtotalCents,discountCents,shippingCents,totalCents,couponCode,fulfillmentMethod,fulfillmentAddress,channel,createdBy,...(immutableManual(order)?{orderDigest:orderDigest(order)}:{}),operations:safeOperations};
+ return {id,createdAt,language,method,status,customer,items,subtotalCents,discountCents,shippingCents,totalCents,couponCode,fulfillmentMethod,fulfillmentAddress,channel,createdBy,...(immutableManual(order)?{orderDigest:orderDigest(order),manualEmailAvailable:manualEmailAvailable(env)}:{}),operations:safeOperations};
 }
 function applyAction(order,previous,input,by,at=new Date().toISOString()){
  if(!input||!Number.isSafeInteger(input.version)||input.version!==previous.version)throw Error('Este pedido foi atualizado por outra pessoa. Atualiza a página antes de continuar.');
@@ -178,6 +179,7 @@ async function handle(request,env){
   if(Number(request.headers.get('Content-Length')||0)>8000)return response({error:'Pedido demasiado grande.'},413);
   const raw=await request.text();if(Buffer.byteLength(raw)>8000)return response({error:'Pedido demasiado grande.'},413);
   let input;try{input=JSON.parse(raw);}catch{return response({error:'Pedido inválido.'},400);}
+  if(input?.action==='approve_paid_email'&&!manualEmailAvailable(env))return response({error:'O envio de e-mail de confirmação está temporariamente indisponível.',code:'manual_email_unavailable'},503);
   const saved=await readJson(env.REVIEW_MEDIA,snapshotKey(match[1]));if(!saved||saved.value.isTest)return response({error:'Encomenda não encontrada.'},404);
   const key=operationsKey(match[1]),current=await readJson(env.REVIEW_MEDIA,key);
   const replay=async state=>{const p=state?.paidEmail;if(input?.action!=='approve_paid_email'||input.acknowledged!==true||typeof input.idempotencyKey!=='string'||!/^[a-zA-Z0-9_-]{32,128}$/.test(input.idempotencyKey)||input.expectedOrderDigest!==orderDigest(saved.value)||input.recipient!==saved.value.customer?.email||p?.approvalKeyHash!==require('node:crypto').createHash('sha256').update(input.idempotencyKey).digest('hex'))return null;return response({order:safeOrder(saved.value,state,env)});};
