@@ -61,7 +61,7 @@ async function deliver(env,order){
   else {
     const email=renderEmail(order);
     const pdf=await makePdf(order);
-    payload=JSON.stringify({from:FROM,to:[order.customer.email],...(order.method==='orange_money'?{bcc:[REPLY]}:{}),reply_to:REPLY,...email,attachments:[{filename:'Asheerah-Hair-'+order.id+'.pdf',content:Buffer.from(pdf).toString('base64')}]});
+    payload=JSON.stringify({from:FROM,to:[order.customer.email],...(order.method==='orange_money'?{bcc:[REPLY]}:{}),reply_to:REPLY,...email,attachments:[{filename:'Asheerah-Hair-'+order.id.slice(-8).toUpperCase()+'.pdf',content:Buffer.from(pdf).toString('base64')}]});
     const created=await env.REVIEW_MEDIA.put(preparedKey,payload,{onlyIf:{etagDoesNotMatch:'*'},httpMetadata:{contentType:'application/json'}});
     if(!created)payload=await (await env.REVIEW_MEDIA.get(preparedKey)).text();
   }

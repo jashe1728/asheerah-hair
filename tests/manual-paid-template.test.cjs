@@ -23,7 +23,11 @@ for(const language of languages)for(const fulfillmentMethod of ['delivery','pick
  assert.ok(!email.html.includes(t('A caminho de si')));
  assert.ok(!email.html.includes(t('À sua espera na loja')));
  assert.ok(email.html.includes(t(fulfillmentMethod==='pickup'?'Ponto de recolha':'Morada de entrega')));
- assert.ok(pdf.includes(order.id));
+ const reference='#'+order.id.slice(-8).toUpperCase();
+ for(const output of [email.subject,email.html,email.text,pdf]) {
+  assert.ok(output.includes(reference),'short order reference');
+  assert.ok(!output.includes(order.id),'full order ID is not customer-facing');
+ }
 });
 test('other payment flows retain their provider and delivery information',async()=>{
  for(const [method,status,provider] of [['stripe','paid','Stripe'],['orange_money','awaiting_payment','Orange Money']]){
