@@ -2,9 +2,10 @@ const test=require('node:test'),assert=require('node:assert/strict');
 const fs=require('node:fs'),vm=require('node:vm'),path=require('node:path');
 const source=fs.readFileSync(path.join(__dirname,'../gestao/dashboard.js'),'utf8');
 
-test('payment confirmation warns automatic email is disabled',()=>{
+test('payment confirmation explains email requires separate review and approval',()=>{
  const copy=source.match(/confirm_payment:\[([^\n]+)\]/)?.[1]||'';
- assert.match(copy,/e-mail.*desativado/i);
+ assert.match(copy,/e-mail.*ação separada.*revisão e aprovação/i);
+ assert.doesNotMatch(copy,/e-mail.*desativado/i);
 });
 test('paid email states are distinct and never promise delivery',()=>{
  const match=source.match(/function paidEmailMessage\(order\)\{[^\n]*\}/);

@@ -82,3 +82,9 @@ Owner-facing workflow and system connections: [OWNER_WORKFLOW.md](OWNER_WORKFLOW
 The mobile interface now uses fixed bottom navigation, concise phone headings, action-first tasks, readable order cards, quick status chips, expandable full-width advanced filters, full-screen detail and a persistent action footer. Form controls account for safe areas, dynamic viewport height and modal scroll locking. The desktop layout is retained; text-symbol icons were replaced with SVG icons. Dashboard HTML/JavaScript contain no pictographic emoji characters.
 
 158 tests pass, including two new simulated checkout-to-dashboard ingestion tests. They verify that the checkout handler's durable order archive is what the authenticated management endpoint reads, for both online paid events and pending Orange Money requests. No real purchase or customer order was created for these checks.
+
+## Manual-order confirmation emails
+
+The production configuration enables both `ORDER_EMAIL_ENABLED=1` and `MANUAL_PAID_SCHEDULER_ENABLED=1`. Creating a manual order or confirming its payment does not send an email by itself. After confirming the actual receipt of payment, use **Rever e enviar e-mail**, review the recipient and order, and explicitly approve sending. The existing scheduled Worker then processes approved messages on its ten-minute cycle; no local computer or Hermes session needs to stay running. The email includes the generated order-summary PDF and the original short # reference.
+
+Pending, processing, provider-accepted and needs-review states are distinct. Provider acceptance does not prove inbox delivery. Preserve the approved payload and idempotency evidence; investigate ambiguous outcomes rather than generating a fresh send request. Payment confirmation remains a dashboard record and does not synchronize manual-order accounting.

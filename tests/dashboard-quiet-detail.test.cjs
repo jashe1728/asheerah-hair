@@ -43,6 +43,12 @@ for(const fulfillmentMethod of ['delivery','pickup'])test(`${fulfillmentMethod}:
   op=backend.applyAction(order,op,{version:op.version,action,acknowledged:true,reference:'synthetic-receipt',tracking:'synthetic-tracking',expectedOrderDigest:digest},'test-operator');check();
  }
 });
+test('enabled manual payment guidance describes separate email approval rather than claiming email is disabled',()=>{
+ const x=setup(),o={...x.order(''),status:'awaiting_payment',manualEmailAvailable:true};x.ui.state.orders=[o];x.ui.state.selected=o.id;x.ui.beginAction('confirm_payment');
+ const description=x.get('actionDescription').textContent;
+ assert.doesNotMatch(description,/envio autom[aá]tico de e-mail est[aá] desativado/i);
+ assert.match(description,/revis[aã]o e aprova[cç][aã]o/i);
+});
 test('manual payment confirmation explains accounting is not updated',()=>{
  const x=setup(),o=x.order('pending');x.ui.state.orders=[o];x.ui.state.selected=o.id;x.ui.beginAction('confirm_payment');
  assert.match(x.get('actionDescription').textContent,/apenas na área de gestão/i);assert.match(x.get('actionDescription').textContent,/não atualiza a contabilidade/i);
