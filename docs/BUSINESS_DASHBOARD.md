@@ -85,6 +85,8 @@ The mobile interface now uses fixed bottom navigation, concise phone headings, a
 
 ## Manual-order confirmation emails
 
+The manual quote/review step uses the `MANUAL_ORDER_SIGNING_SECRET` Worker secret (at least 32 nonblank bytes; provision it securely, never in source or plaintext variables). For backwards compatibility, an absent dedicated key can use a sufficiently strong `WORKER_GAS_SECRET`, but an explicitly invalid dedicated key fails closed. Keep the legacy accounting integration secret unchanged when provisioning the manual quote key. A key change invalidates outstanding review tokens; review again before creating an order.
+
 The production configuration enables both `ORDER_EMAIL_ENABLED=1` and `MANUAL_PAID_SCHEDULER_ENABLED=1`. Creating a manual order or confirming its payment does not send an email by itself. After confirming the actual receipt of payment, use **Rever e enviar e-mail**, review the recipient and order, and explicitly approve sending. The existing scheduled Worker then processes approved messages on its ten-minute cycle; no local computer or Hermes session needs to stay running. The email includes the generated order-summary PDF and the original short # reference.
 
 Pending, processing, provider-accepted and needs-review states are distinct. Provider acceptance does not prove inbox delivery. Preserve the approved payload and idempotency evidence; investigate ambiguous outcomes rather than generating a fresh send request. Payment confirmation remains a dashboard record and does not synchronize manual-order accounting.

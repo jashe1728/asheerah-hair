@@ -110,7 +110,7 @@ async function createManual(request,env,user,url){
  }catch{return response({error:'Não foi possível guardar. Tenta novamente com a mesma chave.'},503);}
 }
 // Derive an isolated signing key; never expose raw customer or operator data.
-function quoteKey(env){const secret=env.WORKER_GAS_SECRET;if(typeof secret!=='string'||Buffer.byteLength(secret.trim())<32)return null;return require('node:crypto').createHmac('sha256',secret).update('asheerah/manual-quote/key/v1').digest();}
+function quoteKey(env){const secret=env.MANUAL_ORDER_SIGNING_SECRET??env.WORKER_GAS_SECRET;if(typeof secret!=='string'||Buffer.byteLength(secret.trim())<32)return null;return require('node:crypto').createHmac('sha256',secret).update('asheerah/manual-quote/key/v1').digest();}
 function quoteDigest(key,domain,value){return require('node:crypto').createHmac('sha256',key).update(domain+'\0'+JSON.stringify(value)).digest('hex');}
 function signQuote(key,user,input,pricing){const crypto=require('node:crypto'),payload=Buffer.from(JSON.stringify({v:1,operator:quoteDigest(key,'operator',user),request:quoteDigest(key,'request',input),price:quoteDigest(key,'pricing',pricing),expires:Date.now()+15*60*1000})).toString('base64url');return payload+'.'+crypto.createHmac('sha256',key).update('token\0'+payload).digest('base64url');}
 function verifyQuote(token,key,user,input){

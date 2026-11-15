@@ -38,4 +38,22 @@ test('signed quote rejects tampering, another operator, and expiry',async t=>{
  const sessionHash=crypto.createHash('sha256').update('a'.repeat(64)).digest('hex');await env.REVIEW_MEDIA.put('management-auth/sessions/'+sessionHash+'.json',JSON.stringify({email:'owner@example.invalid',createdAt:now(),lastActiveAt:Date.now(),idleMinutes:30,expiresAt:Date.now()+60000}));
  assert.equal((await handleRequest(req(approved),env)).status,422);
 });
+test('a dedicated strong manual signing secret supports quote and create without changing a short legacy accounting secret',async t=>{
+ const {env}=await setup(),old=global.fetch;global.fetch=async url=>{assert.equal(url,env.CATALOG_URL);return Response.json(catalog)};t.after(()=>global.fetch=old);
+ env.WORKER_GAS_SECRET='legacy-short';env.MANUAL_ORDER_SIGNING_SECRET='dedicated-manual-only-strong-secret-0123456789abcdef';
+ const approved=await reviewed(env),r=await handleRequest(req(approved),env);assert.equal(r.status,201);assert.equal((await r.json()).order.status,'awaiting_payment');
+ assert.equal(env.WORKER_GAS_SECRET,'legacy-short','must not rotate the live accounting integration secret');
+ assert.equal([...env.REVIEW_MEDIA.data.keys()].filter(k=>k.startsWith('business-orders/')).length,1);
+});
+test('an explicitly invalid dedicated signing secret fails closed even when the legacy key is strong',async t=>{
+ const {env}=await setup(),old=global.fetch;global.fetch=async()=>Response.json(catalog);t.after(()=>global.fetch=old);const approved=await reviewed(env);
+ for(const value of ['', 'short', ' '.repeat(64), 123]){env.MANUAL_ORDER_SIGNING_SECRET=value;assert.equal((await handleRequest(req(approved),env)).status,503);}
+ assert.equal([...env.REVIEW_MEDIA.data.keys()].filter(k=>k.startsWith('business-orders/')).length,0);
+});
+test('switching to a dedicated quote key requires a fresh review and rejects the previous signature',async t=>{
+ const {env}=await setup(),old=global.fetch;global.fetch=async()=>Response.json(catalog);t.after(()=>global.fetch=old);const oldQuote=await reviewed(env);
+ env.MANUAL_ORDER_SIGNING_SECRET='new-independent-quote-key-0123456789abcdef';
+ const stale=await handleRequest(req(oldQuote),env);assert.equal(stale.status,422);assert.equal((await stale.json()).code,'manual_quote_rejected');
+ const current=await reviewed(env);assert.equal((await handleRequest(req(current),env)).status,201);
+});
 test('missing or short signing secret fails closed',async t=>{const {env}=await setup(),old=global.fetch;global.fetch=async()=>Response.json(catalog);t.after(()=>global.fetch=old);const approved=await reviewed(env);env.WORKER_GAS_SECRET='short';assert.equal((await handleRequest(req(approved),env)).status,503);const r=await handleRequest(new Request(origin+'/management-api/manual-quote',{method:'POST',headers:{Origin:origin,'Content-Type':'application/json',Cookie:'__Host-ah_management='+'a'.repeat(64)},body:JSON.stringify(cart)}),env);assert.equal(r.status,503);});
