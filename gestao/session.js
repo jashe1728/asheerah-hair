@@ -76,7 +76,7 @@
  document.addEventListener('visibilitychange',()=>{if(!document.hidden){tick();if(running)sync(false);}});
  window.addEventListener('pageshow',()=>{if(running){tick();sync(false);}});
  if(channel)channel.onmessage=({data})=>{
-  if(data?.type==='logout'){lock('A sessão terminou noutro separador. Entra novamente para continuar.');return;}
+  if(running&&data?.type==='logout'){lock('A sessão terminou noutro separador. Entra novamente para continuar.');return;}
   if(running&&data?.type==='session'&&Number.isFinite(data.deadline)&&[5,15,30].includes(data.idleMinutes)){
    deadline=data.deadline;$('sessionMinutes').value=String(data.idleMinutes);if(deadline-Date.now()>60000)closeWarning();tick();
   }

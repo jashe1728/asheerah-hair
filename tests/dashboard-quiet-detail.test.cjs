@@ -3,7 +3,7 @@ const test=require('node:test'),assert=require('node:assert/strict'),fs=require(
 function setup(){
  const elements=new Map();let response,interval;
  class Element{
-  constructor(id=''){this.id=id;this.dataset={};this.classList={add(){},remove(){},toggle(){}};this.value='';this.hidden=false;this.open=false;this.elements={fulfillmentMethod:{value:'delivery'}};this.children=[];}
+  constructor(id=''){this.id=id;this.dataset={};const classes=new Set();this.classList={add:n=>classes.add(n),remove:n=>classes.delete(n),contains:n=>classes.has(n),toggle(){}};this.value='';this.hidden=false;this.open=false;this.elements={fulfillmentMethod:{value:'delivery'}};this.children=[];}
   closest(){return this} addEventListener(){} setAttribute(){} querySelector(s){if(s==='.paid-email-status')return this.children.find(x=>x.className?.includes('paid-email-status'))||null;if(s==='.detail-actions')return this.actions||(this.actions={before:n=>this.children.push(n),append(){},insertAdjacentHTML(){}});return null} querySelectorAll(){return []} append(){} replaceChildren(){} showModal(){this.open=true} close(){this.open=false} reset(){} after(){} before(){}
   set innerHTML(v){this.html=v;this.children=[]} get innerHTML(){return this.html||''}
  }

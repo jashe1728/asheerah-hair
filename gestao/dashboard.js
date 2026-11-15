@@ -6,7 +6,7 @@ const date=s=>s?new Date(s).toLocaleString('pt-PT',{day:'2-digit',month:'short',
 const demo=['127.0.0.1','localhost'].includes(location.hostname)&&new URLSearchParams(location.search).get('demo')==='1';
 const DEMO_KEY='asheerah-management-demo-v1';
 const state={orders:[],view:'overview',selected:null,cursor:null,busy:false,pendingAction:null,challenge:null,approvalAttempts:{}};
-let lockVersion=0;
+let lockVersion=0,loadSequence=0;
 function icon(name){
  const paths={grid:'<rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/>',orders:'<rect x="5" y="3" width="14" height="18" rx="2"/><path d="M9 8h6M9 12h6M9 16h4"/>',wallet:'<path d="M20 7H5a2 2 0 0 1 0-4h13v4M3 5v14a2 2 0 0 0 2 2h15V7"/><path d="M20 11h-5v6h5M17 14h.01"/>',truck:'<path d="M3 5h11v12H3zM14 9h4l3 4v4h-7"/><circle cx="7" cy="18" r="2"/><circle cx="18" cy="18" r="2"/>',logout:'<path d="M9 4H4v16h5M14 8l4 4-4 4M8 12h10"/>',refresh:'<path d="M20 7v5h-5M4 17v-5h5M6 7a7 7 0 0 1 12-2l2 2M4 17l2 2a7 7 0 0 0 12-2"/>',download:'<path d="M12 3v12m-5-5 5 5 5-5M4 16v5h16v-5"/>',search:'<circle cx="10.5" cy="10.5" r="6.5"/><path d="m16 16 5 5"/>',filters:'<path d="M3 7h18M3 17h18"/><circle cx="8" cy="7" r="2" fill="currentColor"/><circle cx="16" cy="17" r="2" fill="currentColor"/>',close:'<path d="m6 6 12 12M18 6 6 18"/>',arrowRight:'<path d="M4 12h16m-6-6 6 6-6 6"/>',clock:'<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/>',checkCircle:'<circle cx="12" cy="12" r="9"/><path d="m8 12 3 3 5-6"/>',check:'<path d="m5 12 4 4L19 6"/>',package:'<path d="m12 3 9 5v9l-9 5-9-5V8zM3 8l9 5 9-5M12 13v9M7 5l9 5"/>',inbox:'<path d="M4 4h16l2 12v5H2v-5zM2 16h6l2 3h4l2-3h6"/>'};
  return `<svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${paths[name]||paths.package}</svg>`;
@@ -47,9 +47,10 @@ function initialDemo(){
  });
 }
 async function api(path,body){
+ const version=lockVersion;
  const r=await fetch('/management-api/'+path,{method:body?'POST':'GET',credentials:'same-origin',cache:'no-store',headers:body?{'Content-Type':'application/json'}:{},...(body?{body:JSON.stringify(body)}:{})});
  const data=await r.json().catch(()=>({error:'Não foi possível ligar à área privada.'}));
- if(r.status===401&&!path.startsWith('auth/')){lock();throw Error('Entra com o teu e-mail para continuar.');}
+ if(r.status===401&&!path.startsWith('auth/')){if(version===lockVersion&&!document.body.classList.contains('is-locked'))lock();throw Error('Entra com o teu e-mail para continuar.');}
  if(!r.ok)throw Error(data.error||'Não foi possível guardar. Tenta novamente.');return data;
 }
 function lock(){
@@ -61,19 +62,19 @@ function lock(){
  $('ordersBody').textContent='';$('stats').textContent='';$('detail').textContent='';$('identity').textContent='Área privada';resetLogin();document.body.classList.add('is-locked');
 }
 function resetLogin(){state.challenge=null;$('codeStep').hidden=true;$('loginCode').required=false;$('loginCode').value='';$('loginEmail').readOnly=false;$('loginSubmit').textContent='Receber código de entrada';$('newCode').hidden=true;$('loginError').hidden=true;}
-async function load(more=false,quiet=false){
- if(state.busy)return;state.busy=true;$('refresh').disabled=true;$('refresh').classList.add('is-refreshing');
+async function load(more=false,quiet=false,force=false){
+ if(state.busy&&!force)return;const request=++loadSequence;state.busy=true;$('refresh').disabled=true;$('refresh').classList.add('is-refreshing');
  const version=lockVersion;
  try{
   if(demo){state.orders=JSON.parse(localStorage.getItem(DEMO_KEY)||'null')||initialDemo();saveDemo();$('identity').textContent='Demonstração local';state.cursor=null;}
-  else {const data=await api('orders'+(more&&state.cursor?'?cursor='+encodeURIComponent(state.cursor):''));state.orders=more?[...state.orders,...data.orders.filter(o=>!state.orders.some(x=>x.id===o.id))]:data.orders;state.cursor=data.cursor||null;$('identity').textContent=data.identity;$('backfillNotice').hidden=data.historyReady;}
-  if(version!==lockVersion){state.orders=[];return;}
+  else {const data=await api('orders'+(more&&state.cursor?'?cursor='+encodeURIComponent(state.cursor):''));if(version!==lockVersion||request!==loadSequence)return;state.orders=more?[...state.orders,...data.orders.filter(o=>!state.orders.some(x=>x.id===o.id))]:data.orders;state.cursor=data.cursor||null;$('identity').textContent=data.identity;$('backfillNotice').hidden=data.historyReady;}
+  if(version!==lockVersion||request!==loadSequence)return;
   if(!demo)await window.AHSession.start(message=>{lock();$('loginError').textContent=message;$('loginError').hidden=false;});
-  if(version!==lockVersion){state.orders=[];return;}
+  if(version!==lockVersion||request!==loadSequence)return;
   document.body.classList.remove('is-locked');$('error').hidden=true;$('syncStatus').textContent=(demo?'Exemplo guardado · ':state.cursor?'Resumo parcial · ':'Atualizado · ')+new Date().toLocaleTimeString('pt-PT',{hour:'2-digit',minute:'2-digit'});render();
   if($('orderDialog').open){const order=state.orders.find(o=>o.id===state.selected),note=$('detail').querySelector('.paid-email-status');if(order&&note){const message=paidEmailMessage(order);note.textContent=message;note.hidden=!message;if(order.method==='manual_dashboard'&&paidEmailStatus(order)==='not_sent'&&order.manualEmailAvailable!==true){$('detail').querySelector('[data-action="approve_paid_email"]')?.remove();note.textContent='O envio de e-mail de confirmação está temporariamente indisponível.';note.hidden=false;}}}
- }catch(e){$('syncStatus').textContent='Sem ligação';if(!quiet){$('error').textContent=e.message;$('error').hidden=false;}}
- finally{state.busy=false;$('refresh').disabled=false;$('refresh').classList.remove('is-refreshing');}
+ }catch(e){if(version===lockVersion&&request===loadSequence){$('syncStatus').textContent='Sem ligação';if(!quiet){$('error').textContent=e.message;$('error').hidden=false;}}}
+ finally{if(request===loadSequence){state.busy=false;$('refresh').disabled=false;$('refresh').classList.remove('is-refreshing');}}
 }
 function periodOrders(){const d=new Date();let start=0;if($('period').value==='month')start=new Date(d.getFullYear(),d.getMonth(),1).getTime();if($('period').value==='week')start=Date.now()-7*86400000;return state.orders.filter(o=>Date.parse(o.createdAt)>=start);}
 function filterOrders(){const q=$('search').value.toLocaleLowerCase('pt'),f=$('statusFilter').value;return periodOrders().filter(o=>{
@@ -184,8 +185,8 @@ $('demoBanner').hidden=!demo;$('logout').hidden=demo;$('logoutMobile').hidden=de
 $('loginForm').onsubmit=async e=>{
  e.preventDefault();$('loginSubmit').disabled=true;$('loginError').hidden=true;
  try{
-  if(!state.challenge){const result=await api('auth/start',{email:$('loginEmail').value.trim()});state.challenge=result.challenge;$('codeStep').hidden=false;$('loginCode').required=true;$('loginEmail').readOnly=true;$('loginSubmit').textContent='Entrar na minha área';$('newCode').hidden=false;$('loginCode').focus();}
-  else{await api('auth/verify',{challenge:state.challenge,code:$('loginCode').value.trim()});state.challenge=null;$('loginCode').value='';await load();}
+  if(!state.challenge){lockVersion++;const result=await api('auth/start',{email:$('loginEmail').value.trim()});state.challenge=result.challenge;$('codeStep').hidden=false;$('loginCode').required=true;$('loginEmail').readOnly=true;$('loginSubmit').textContent='Entrar na minha área';$('newCode').hidden=false;$('loginCode').focus();}
+  else{await api('auth/verify',{challenge:state.challenge,code:$('loginCode').value.trim()});lockVersion++;state.challenge=null;$('loginCode').value='';await load(false,false,true);}
  }catch(err){$('loginError').textContent=err.message;$('loginError').hidden=false;}
  finally{$('loginSubmit').disabled=false;}
 };
@@ -226,5 +227,5 @@ $('manualBack').onclick=()=>{if(manualAttempted)return;$('manualReview').hidden=
 $('manualCheck').onclick=async()=>{const version=lockVersion,button=$('manualCheck');button.disabled=true;try{const result=await manualController.resolve(async key=>{const r=await fetch('/management-api/manual-order-status',{credentials:'same-origin',cache:'no-store',headers:{'Idempotency-Key':key}});if(version!==lockVersion)throw Error('Sessão bloqueada; volta a iniciar sessão para verificar.');if(r.status===401){lock();throw Error('Sessão terminada.');}if(!r.ok)throw Error('Não foi possível verificar.');const result=await r.json();if(version!==lockVersion)throw Error('Sessão bloqueada.');return result;});if(version!==lockVersion)return;manualController.reset();manualAttempted=false;manualItems=[];manualRenderItems();mf.reset();mf.elements.fulfillmentMethod.onchange();$('manualReviewText').textContent='';$('manualReview').hidden=true;$('manualEdit').hidden=false;$('manualBack').disabled=false;$('manualRecovery').textContent='Encomenda confirmada: '+result.orderId+'. Consulta a lista de encomendas.';manualError('');await load();}catch(e){if(version===lockVersion)$('manualRecovery').textContent=(e.message||'Não foi possível verificar.')+' Se não for encontrada, continua pendente: não cries outra; pede verificação à equipa.';}finally{button.disabled=false;}};
 $('manualClose').onclick=()=>$('manualOrderDialog').close();
 $('manualCreate').onclick=async()=>{if($('manualCreate').disabled)return;manualAttempted=true;$('manualBack').disabled=true;$('manualCreate').disabled=true;const version=lockVersion;try{const data=await manualController.submit();if(version!==lockVersion)return;$('manualOrderDialog').close();manualItems=[];manualRenderItems();manualController.reset();mf.reset();mf.elements.fulfillmentMethod.onchange();$('manualReviewText').textContent='';$('manualReview').hidden=true;$('manualEdit').hidden=false;state.orders=[data.order,...state.orders.filter(o=>o.id!==data.order.id)];render();openOrder(data.order.id);toast('Encomenda criada · pagamento pendente.');}catch(e){if(version===lockVersion){if(e.safeToReviewAgain===true){manualController.reset();manualAttempted=false;$('manualBack').disabled=false;$('manualReview').hidden=true;$('manualEdit').hidden=false;manualError(e.message+' Revê os dados e obtém um novo orçamento.');}else manualError(e.message+' O resultado pode ser incerto. Usa «Verificar encomenda pendente»; não cries outra encomenda.');}}finally{$('manualCreate').disabled=false;}};
-load();setInterval(()=>{if(!demo&&!document.hidden&&!$('actionDialog').open&&!$('manualOrderDialog').open&&!state.cursor)load(false,true);},60000);
+load();setInterval(()=>{if(!demo&&!document.body.classList.contains('is-locked')&&!document.hidden&&!$('actionDialog').open&&!$('manualOrderDialog').open&&!state.cursor)load(false,true);},60000);
 })();

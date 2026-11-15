@@ -27,6 +27,11 @@ test('offline inactivity clears private UI; another tab logout locks immediately
  const b=browser();await b.start();b.offline();b.advance(16*60000);await settle();assert.equal(b.locked,1);
  const other=browser();await other.start();other.message({type:'logout'});assert.equal(other.locked,1);
 });
+test('a stopped session ignores another tab logout while a fresh login may be in progress',async()=>{
+ const b=browser();await b.start();b.session.stop();b.message({type:'logout'});
+ assert.equal(b.locked,0,'a stopped session must not call the old lock handler and reset a new code-entry form');
+ assert.equal(b.revokes,0);
+});
 test('real interaction renews; input arriving after expiry cannot revive a suspended tab',async()=>{
  const b=browser();await b.start();b.advance(31000);await settle();b.events.keydown({isTrusted:true});b.advance(30000);await settle();assert.equal(b.activeCalls,1);
  b.advance(16*60000);b.events.pointerdown({isTrusted:true});await settle();assert.equal(b.locked,1);assert.equal(b.activeCalls,1);
