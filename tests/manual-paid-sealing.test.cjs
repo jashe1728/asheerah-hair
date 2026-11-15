@@ -16,6 +16,17 @@ test('seals approved snapshot in operations with digest and preserves fields',as
  const f=setup(),before=f.op,r=await mail.preparePaidEmail({REVIEW_MEDIA:f.bucket,WORKER_GAS_SECRET:'test-secret-at-least-32-characters-long'},f.args);assert.equal(r.prepared,true);const op=f.op,p=op.paidEmail;
  assert.equal(p.payload,r.payload);assert.equal(p.payloadDigest,crypto.createHash('sha256').update(p.payload).digest('hex'));assert.equal(op.notes,before.notes);assert.deepEqual(op.paymentConfirmation,before.paymentConfirmation);assert.deepEqual(p.confirmedSnapshot,before.paidEmail.confirmedSnapshot);assert.deepEqual(JSON.parse(p.payload).to,[f.order.customer.email]);assert.equal(f.writes,1);
 });
+test('manual confirmation PDF filename preserves the original short order reference',async()=>{
+ const f=setup(),snapshot=f.op.paidEmail.confirmedSnapshot;
+ const result=await mail.preparePaidEmail({REVIEW_MEDIA:f.bucket,WORKER_GAS_SECRET:'test-secret-at-least-32-characters-long'},f.args);
+ assert.equal(result.prepared,true);const payload=JSON.parse(result.payload);
+ assert.ok(payload.subject.includes('#11111111'));
+ assert.equal(payload.attachments[0].filename,'Asheerah-Hair-11111111.pdf');
+ assert.ok(!payload.attachments[0].filename.includes(f.order.id));
+ assert.equal(Buffer.from(payload.attachments[0].content,'base64').subarray(0,5).toString(),'%PDF-');
+ assert.deepEqual(f.op.paidEmail.confirmedSnapshot,snapshot,'display formatting must not alter the approved record');
+ assert.equal(f.key,'business-operations/'+f.order.id+'.json','persistence must retain the complete internal ID');
+});
 test('rejects stale lease and invalid approval evidence without writes',async()=>{
  for(const mode of ['expired','lease','snapshot','hash','digest','amount']){const f=setup(),op=f.op;if(mode==='expired')f.args.now=op.paidEmail.expiresAt;if(mode==='lease')op.paidEmail.leaseId='other';if(mode==='snapshot')op.paidEmail.confirmedSnapshot.customer.email='attacker@example.invalid';if(mode==='hash')delete op.paidEmail.approvalKeyHash;if(mode==='digest')op.paymentConfirmation.orderDigest='0'.repeat(64);if(mode==='amount')op.paymentConfirmation.amountCents++;f.op=op;assert.deepEqual(await mail.preparePaidEmail({REVIEW_MEDIA:f.bucket,WORKER_GAS_SECRET:'test-secret-at-least-32-characters-long'},f.args),{prepared:false},mode);assert.equal(f.writes,0,mode)}
 });

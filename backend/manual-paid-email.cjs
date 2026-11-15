@@ -74,7 +74,7 @@ async function preparePaidEmail(env,{id,eventId,leaseId,now=new Date().toISOStri
   if(Object.hasOwn(c,'firstAttemptAt'))return {prepared:false};
   const {renderEmail,makePdf,FROM,REPLY}=require('./order-email.cjs');
   const paidOrder={...order,status:'paid'},email=renderEmail(paidOrder),pdf=await makePdf(paidOrder);
-  const payload=JSON.stringify({from:FROM,to:[order.customer.email],reply_to:REPLY,...email,attachments:[{filename:'Asheerah-Hair-'+id+'.pdf',content:Buffer.from(pdf).toString('base64')}]});
+  const payload=JSON.stringify({from:FROM,to:[order.customer.email],reply_to:REPLY,...email,attachments:[{filename:'Asheerah-Hair-'+id.slice(-8).toUpperCase()+'.pdf',content:Buffer.from(pdf).toString('base64')}]});
   if(!active())return {prepared:false};
   const payloadDigest=hash(payload),envelope={schemaVersion:1,keyVersion:1,tag:envelopeTag(env,id,eventId,order,payload,payloadDigest)};
   if(!verifyEnvelope(env,id,eventId,{...c,payload,payloadDigest,envelope}))return {prepared:false};
