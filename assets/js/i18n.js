@@ -40,6 +40,7 @@ var I18N = {
   hero_strand:{ pt:'Luxo em cada fio.', en:'Luxury in every strand.', es:'Lujo en cada hebra.', de:'Luxus in jeder Strähne.', fr:'Le luxe dans chaque mèche.', it:'Lusso in ogni ciocca.' },
   btn_shop:    { pt:'Comprar Agora', en:'Shop Now', es:'Comprar Ahora', de:'Jetzt Kaufen', fr:'Acheter Maintenant', it:'Acquista Ora' },
   btn_wigs:    { pt:'Explorar Perucas', en:'Explore Wigs', es:'Explorar Pelucas', de:'Perücken Entdecken', fr:'Explorer les Perruques', it:'Esplora le Parrucche' },
+  lamara_discover: { pt:'Descobre a nova coleção', en:'Discover the new collection', es:'Descubre la nueva colección', de:'Neue Kollektion entdecken', fr:'Découvrez la nouvelle collection', it:'Scopri la nuova collezione' },
 
   sec_collections: { pt:'As Nossas Coleções', en:'Our Collections', es:'Nuestras Colecciones', de:'Unsere Kollektionen', fr:'Nos Collections', it:'Le Nostre Collezioni' },
   shop_by_collection: { pt:'Comprar por Coleção', en:'Shop by Collection', es:'Comprar por Colección', de:'Nach Kollektion Einkaufen', fr:'Acheter par Collection', it:'Acquista per Collezione' },

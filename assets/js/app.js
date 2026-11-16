@@ -46,7 +46,7 @@ const SEEDED_PRODUCT_REVIEWS = [
 ];
 async function loadCatalog(){
   if (CATALOG) return CATALOG;
-  const r = await fetch('catalog.json?v=20261025-image-loading');
+  const r = await fetch('catalog.json?v=20261116-lamara');
   CATALOG = await r.json();
   refreshCartPrices();
   return CATALOG;
@@ -659,6 +659,8 @@ function renderShop(){
   const cat = new URLSearchParams(location.search).get('cat');
   let list = CATALOG.products;
   if (cat) list = list.filter(p => p.category === cat);
+  const collection = new URLSearchParams(location.search).get('collection');
+  if (collection) list = list.filter(p => p.collection === collection);
   grid.innerHTML = list.map(p => {
     const pricing = variantPricing(p, defaultOpts(p));
     const priceHTMLstr = priceHTML(pricing.priceEur, pricing.hasPromo ? pricing.compareEur : null, cur);
@@ -855,7 +857,7 @@ function renderProduct(){
       : `<button class="btn-primary add-btn" disabled>${uiTxt('add_to_cart')}</button>`;
     root.innerHTML = `
       <div class="pd">
-        <div class="gallery" data-category="${escapeHTML(p.category)}">
+        <div class="gallery" data-category="${escapeHTML(p.category)}" data-collection="${escapeHTML(p.collection||'')}">
           <div class="main-img"><img id="mainImg" src="${escapeHTML(p.images[0]||'')}" alt="${escapeHTML(p.title)}"></div>
           <div class="thumbs" role="group" aria-label="Product images">${p.images.slice(0,6).map((im,i)=>`<button type="button" class="thumb ${i===0?'active':''}" data-src="${escapeHTML(im)}" data-alt="${escapeHTML(p.title)} image ${i+1}" aria-label="View ${escapeHTML(p.title)} image ${i+1}" aria-pressed="${i===0?'true':'false'}"><img src="${escapeHTML(productThumbnail(im))}" alt="" loading="lazy"></button>`).join('')}</div>
           ${(p.videos||[]).map(src=>`<video class="product-video" controls playsinline preload="none" poster="${escapeHTML(p.images[0]||'')}" aria-label="${escapeHTML(p.title)} video"><source src="${escapeHTML(src)}" type="video/mp4"></video>`).join('')}

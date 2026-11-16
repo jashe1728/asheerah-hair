@@ -82,11 +82,17 @@
 <script src="config.js?v=20261110-midanabt-v2"></script>
 <script src="assets/js/i18n.js?v=20261023-shipping-times"></script>
 <script src="assets/js/lossless-images.js?v=20261025-lossless-v1"></script>
-<script src="assets/js/app.js?v=20261025-lossless-v1"></script>
+<script src="assets/js/app.js?v=20261116-lamara"></script>
 <script src="assets/js/chatbot.js?v=20261023-security-newsletter"></script>
 <script>
 document.addEventListener('DOMContentLoaded', ()=>{
-  const cat = new URLSearchParams(location.search).get('cat');
+  const params = new URLSearchParams(location.search);
+  if (params.get('collection') === 'lamara') {
+    const title = document.getElementById('shopTitle');
+    title.removeAttribute('data-i18n');
+    title.textContent = 'Coleção Lamara';
+  }
+  const cat = params.get('cat');
   if (cat && window.uiTxt) {
     const t = {wigs:uiTxt('luxury_wigs'),bundles:uiTxt('luxury_bundles'),crochet:uiTxt('crochet_hair')}[cat];
     if (t) document.getElementById('shopTitle').textContent = t;
