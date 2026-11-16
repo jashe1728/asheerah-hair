@@ -41,6 +41,7 @@ var I18N = {
   btn_shop:    { pt:'Comprar Agora', en:'Shop Now', es:'Comprar Ahora', de:'Jetzt Kaufen', fr:'Acheter Maintenant', it:'Acquista Ora' },
   btn_wigs:    { pt:'Explorar Perucas', en:'Explore Wigs', es:'Explorar Pelucas', de:'Perücken Entdecken', fr:'Explorer les Perruques', it:'Esplora le Parrucche' },
   lamara_discover: { pt:'Descobre a nova coleção', en:'Discover the new collection', es:'Descubre la nueva colección', de:'Neue Kollektion entdecken', fr:'Découvrez la nouvelle collection', it:'Scopri la nuova collezione' },
+  lamara_collection: { pt:'Coleção Lamara', en:'Lamara Collection', es:'Colección Lamara', de:'Lamara-Kollektion', fr:'Collection Lamara', it:'Collezione Lamara' },
 
   sec_collections: { pt:'As Nossas Coleções', en:'Our Collections', es:'Nuestras Colecciones', de:'Unsere Kollektionen', fr:'Nos Collections', it:'Le Nostre Collezioni' },
   shop_by_collection: { pt:'Comprar por Coleção', en:'Shop by Collection', es:'Comprar por Colección', de:'Nach Kollektion Einkaufen', fr:'Acheter par Collection', it:'Acquista per Collezione' },
