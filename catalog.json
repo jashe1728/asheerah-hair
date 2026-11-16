@@ -17881,15 +17881,15 @@
     {
       "id": 2026111601,
       "handle": "barbara-wig",
-      "title": "Bárbara Wig",
+      "title": "BÁRBARA Wig",
       "category": "wigs",
       "collection": "lamara",
       "description": "Bárbara Wig — Coleção Lamara.",
       "images": [
-        "assets/img/lamara/barbara-1.webp",
-        "assets/img/lamara/barbara-2.webp"
+        "assets/img/lamara-originals/barbara-1.webp",
+        "assets/img/lamara-originals/barbara-2.webp"
       ],
-      "type": "Bárbara Wig",
+      "type": "BÁRBARA Wig",
       "model_options": {},
       "options": [
         {
@@ -18090,16 +18090,16 @@
     {
       "id": 2026111602,
       "handle": "deiva-wig",
-      "title": "Deiva Wig",
+      "title": "DEIVA Wig",
       "category": "wigs",
       "collection": "lamara",
       "description": "Deiva Wig — Coleção Lamara.",
       "images": [
-        "assets/img/lamara/deiva-1.webp",
-        "assets/img/lamara/deiva-2.webp",
-        "assets/img/lamara/deiva-3.webp"
+        "assets/img/lamara-originals/deiva-1.webp",
+        "assets/img/lamara-originals/deiva-2.webp",
+        "assets/img/lamara-originals/deiva-3.webp"
       ],
-      "type": "Deiva Wig",
+      "type": "DEIVA Wig",
       "model_options": {},
       "options": [
         {
@@ -18300,16 +18300,16 @@
     {
       "id": 2026111603,
       "handle": "natacha-wig",
-      "title": "Natacha Wig",
+      "title": "NATACHA Wig",
       "category": "wigs",
       "collection": "lamara",
       "description": "Natacha Wig — Coleção Lamara.",
       "images": [
-        "assets/img/lamara/natacha-1.webp",
-        "assets/img/lamara/natacha-2.webp",
-        "assets/img/lamara/natacha-3.webp"
+        "assets/img/lamara-originals/natacha-1.webp",
+        "assets/img/lamara-originals/natacha-2.webp",
+        "assets/img/lamara-originals/natacha-3.webp"
       ],
-      "type": "Natacha Wig",
+      "type": "NATACHA Wig",
       "model_options": {},
       "options": [
         {
@@ -18510,16 +18510,16 @@
     {
       "id": 2026111604,
       "handle": "salome-wig",
-      "title": "Salomé Wig",
+      "title": "SALOMÉ Wig",
       "category": "wigs",
       "collection": "lamara",
       "description": "Salomé Wig — Coleção Lamara.",
       "images": [
-        "assets/img/lamara/salome-1.webp",
-        "assets/img/lamara/salome-2.webp",
-        "assets/img/lamara/salome-3.webp"
+        "assets/img/lamara-originals/salome-1.webp",
+        "assets/img/lamara-originals/salome-2.webp",
+        "assets/img/lamara-originals/salome-3.webp"
       ],
-      "type": "Salomé Wig",
+      "type": "SALOMÉ Wig",
       "model_options": {},
       "options": [
         {
