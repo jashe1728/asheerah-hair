@@ -42,6 +42,7 @@ function safeOrder(order,operations,env={}){
 }
 function applyAction(order,previous,input,by,at=new Date().toISOString()){
  if(!input||!Number.isSafeInteger(input.version)||input.version!==previous.version)throw Error('Este pedido foi atualizado por outra pessoa. Atualiza a página antes de continuar.');
+ if(previous.removed)throw Error('Esta encomenda já foi removida.');
  const op=structuredClone(previous),action=input.action;
  const reference=input.reference??'',tracking=input.tracking??'';
  if(typeof reference!=='string'||reference.length>200||typeof tracking!=='string'||tracking.length>100)throw Error('Referência demasiado longa.');
@@ -60,6 +61,10 @@ function applyAction(order,previous,input,by,at=new Date().toISOString()){
   }else if(action==='approve_paid_email'){
    if(!immutableManual(order)||order.status!=='awaiting_payment'||!op.paymentConfirmation||op.paymentConfirmation.orderDigest!==orderDigest(order)||input.expectedOrderDigest!==orderDigest(order)||typeof order.customer?.email!=='string'||!order.customer.email.trim()||input.recipient!==order.customer.email||typeof input.idempotencyKey!=='string'||!/^[a-zA-Z0-9_-]{32,128}$/.test(input.idempotencyKey)||op.paidEmail)throw Error('Revê a encomenda e o destinatário antes de aprovar o email.');
    op.paidEmail={status:'pending',eventId:require('node:crypto').randomUUID(),createdAt:at,confirmedSnapshot:structuredClone(order),approvalKeyHash:require('node:crypto').createHash('sha256').update(input.idempotencyKey).digest('hex')};
+  }else if(action==='remove_manual_order'){
+   if(order.method!=='manual_dashboard'||!immutableManual(order)||order.status!=='awaiting_payment'||paid||op.paidEmail||op.stage&&op.stage!=='new')throw Error('Só é possível remover pedidos manuais ainda não pagos.');
+   if(input.expectedOrderDigest!==orderDigest(order))throw Error('A encomenda mudou ou não é imutável. Atualiza e revê antes de confirmar.');
+   op.removed=true;op.removedAt=at;op.removedBy=by;
   }else if(action==='classify_history'){
    const stages=['new','supplier_sent','supplier_accepted',order.fulfillmentMethod==='pickup'?'pickup_ready':'courier_accepted','delivered'];
    if(!paid||op.stage!=='needs_review'||!stages.includes(input.stage)||!reference.trim())throw Error('Confirma o pagamento e o estado real deste pedido anterior, com uma observação.');
@@ -169,7 +174,7 @@ async function handle(request,env){
   if(cursor&&cursor.length>2048)return response({error:'Página inválida.'},400);
   try{
    const batch=await env.REVIEW_MEDIA.list({prefix:'business-orders/',limit:100,...(cursor?{cursor}:{})});
-   const orders=(await Promise.all(batch.objects.map(async obj=>{const saved=await readJson(env.REVIEW_MEDIA,obj.key);if(!saved||saved.value.isTest)return null;const op=await readJson(env.REVIEW_MEDIA,operationsKey(saved.value.id));return safeOrder(saved.value,op?.value,env);}))).filter(Boolean);
+   const orders=(await Promise.all(batch.objects.map(async obj=>{const saved=await readJson(env.REVIEW_MEDIA,obj.key);if(!saved||saved.value.isTest)return null;const op=await readJson(env.REVIEW_MEDIA,operationsKey(saved.value.id));if(op?.value?.removed)return null;return safeOrder(saved.value,op?.value,env);}))).filter(Boolean);
    return response({orders,cursor:batch.truncated?batch.cursor:null,identity:user,historyReady:!!await env.REVIEW_MEDIA.get('business-backfill-complete')});
   }catch{return response({error:'Não foi possível carregar as encomendas. Tenta novamente.'},502);}
  }
@@ -182,12 +187,18 @@ async function handle(request,env){
   if(input?.action==='approve_paid_email'&&!manualEmailAvailable(env))return response({error:'O envio de e-mail de confirmação está temporariamente indisponível.',code:'manual_email_unavailable'},503);
   const saved=await readJson(env.REVIEW_MEDIA,snapshotKey(match[1]));if(!saved||saved.value.isTest)return response({error:'Encomenda não encontrada.'},404);
   const key=operationsKey(match[1]),current=await readJson(env.REVIEW_MEDIA,key);
+  if(current?.value?.removed)return response({error:'Encomenda não encontrada.'},404);
   const replay=async state=>{const p=state?.paidEmail;if(input?.action!=='approve_paid_email'||input.acknowledged!==true||typeof input.idempotencyKey!=='string'||!/^[a-zA-Z0-9_-]{32,128}$/.test(input.idempotencyKey)||input.expectedOrderDigest!==orderDigest(saved.value)||input.recipient!==saved.value.customer?.email||p?.approvalKeyHash!==require('node:crypto').createHash('sha256').update(input.idempotencyKey).digest('hex'))return null;return response({order:safeOrder(saved.value,state,env)});};
   const existing=await replay(current?.value);if(existing)return existing;
   let op;try{op=applyAction(saved.value,current?.value||blankOperations(saved.value,env),input,user);}catch(e){return response({error:e.message},409);}
   try{
    const written=await env.REVIEW_MEDIA.put(key,JSON.stringify(op),{onlyIf:current?{etagMatches:current.etag}:{etagDoesNotMatch:'*'},httpMetadata:{contentType:'application/json'}});
    if(!written){const latest=await readJson(env.REVIEW_MEDIA,key);return await replay(latest?.value)||response({error:'Outra pessoa atualizou este pedido. Atualiza a página.'},409);}
+   if(op.removed){
+    await env.REVIEW_MEDIA.delete(snapshotKey(saved.value.id));
+    await env.REVIEW_MEDIA.delete(key);
+    return response({removed:true,id:saved.value.id});
+   }
    return response({order:safeOrder(saved.value,op,env)});
   }catch{return response({error:'Não foi possível guardar. Tenta novamente.'},502);}
  }
