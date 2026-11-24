@@ -1,5 +1,6 @@
 'use strict';
-const {PDFDocument,StandardFonts,rgb}=require('./order-pdf.cjs');
+const {PDFDocument,StandardFonts,rgb}=require('./dashboard-pdf-writer.cjs');
+const {copy}=require('./dashboard-customer-i18n.cjs');
 const orderReference=id=>'#'+id.slice(-8).toUpperCase();
 
 function email(order,{content,money,esc,imageUrl,SITE,REPLY,language,t}){
@@ -20,37 +21,42 @@ ${heading(manualPaid?t('Os próximos passos'):order.fulfillmentMethod==='pickup'
 
 async function pdf(order,{content,money,REPLY,t}){
   const reference=orderReference(order.id);
-  const doc=await PDFDocument.load(),normal=await doc.embedFont(StandardFonts.Helvetica),bold=await doc.embedFont(StandardFonts.HelveticaBold);
-  const brown=rgb(.314,.208,.133),muted=rgb(.49,.38,.29),cream=rgb(.975,.941,.878),paper=rgb(1,.989,.965),sand=rgb(.91,.84,.73),white=rgb(1,.975,.93);
+  const doc=await PDFDocument.load(),normal=await doc.embedFont(StandardFonts.Helvetica),bold=await doc.embedFont(StandardFonts.HelveticaBold),editorial=await doc.embedFont(StandardFonts.TimesItalic);
+  const brown=rgb(.22,.13,.10),muted=rgb(.47,.37,.28),cream=rgb(.955,.925,.86),paper=rgb(.98,.96,.91),sand=rgb(.87,.81,.70),gold=rgb(.66,.48,.23);
   let page,y,pageNo=0;
-  const clean=s=>Array.from(String(s??'').replace(/[\u00a0\u202f]/g,' ')).map(c=>{try{normal.encodeText(c);return c;}catch{return '?';}}).join('');
+  const clean=s=>Array.from(String(s??'').normalize('NFC').replace(/[\r\n\t\u00a0\u202f]/g,' ').replace(/\u2033/g,'"').replace(/\u2032/g,"'").replace(/\u2212/g,'-')).map(c=>{try{normal.encodeText(c);return c;}catch{return '?';}}).join('');
   const width=(s,size=10,font=normal)=>font.widthOfTextAtSize(clean(s),size);
   const text=(s,x,yy,size=10,font=normal,color=brown)=>page.drawText(clean(s),{x,y:yy,size,font,color});
   const rect=(x,yy,w,h,color)=>page.drawRectangle({x,y:yy,width:w,height:h,color});
   function wrap(s,max,size=10,font=normal){const out=[];let row='',w=0;const space=width(' ',size,font);for(const word of clean(s).split(/\s+/)){const ww=width(word,size,font);if(row&&w+space+ww>max){out.push(row);row='';w=0;}if(ww<=max){if(row){row+=' ';w+=space;}row+=word;w+=ww;}else for(const ch of word){const cw=width(ch,size,font);if(w+cw>max){out.push(row);row='';w=0;}row+=ch;w+=cw;}}if(row)out.push(row);return out;}
-  function newPage(){page=pageNo++?doc.addPage():doc.getPage(0);rect(0,0,595.28,841.89,paper);rect(0,824,595.28,18,brown);rect(0,707,595.28,117,cream);page.drawLogo({x:252.64,y:728,width:90});text('BECAUSE YOU DESERVE THE BEST',201,715,8,normal,muted);rect(36,47,523,1,sand);text('ASHEERAH HAIR  |  '+REPLY,36,32,8,normal,muted);text(t('Página')+' '+pageNo,515,32,8,normal,muted);y=680;}
+  function newPage(){page=pageNo++?doc.addPage():doc.getPage(0);rect(0,0,595.28,841.89,paper);page.drawLogo({x:36,y:710,width:112});text('Asheerah Hair',180,765,34,editorial,brown);text(copy(order.language).tagline,182,735,9,normal,gold);rect(36,694,523,1,gold);rect(36,47,523,1,sand);text('ASHEERAH HAIR  |  '+REPLY,36,32,8,normal,muted);const number=t('Página')+' '+pageNo;text(number,559-width(number,8),32,8,normal,gold);y=650;}
   function ensure(h){if(y-h<64)newPage();}
-  function block(s,size=10,font=normal,color=brown){for(const row of wrap(s,499,size,font)){ensure(size+5);text(row,48,y,size,font,color);y-=size+5;}}
-  function section(title){ensure(45);rect(36,y-9,523,27,cream);text(title,48,y,11,bold);y-=30;}
-  function total(label,value,emphasis=false){if(emphasis)y-=9;ensure(34);if(emphasis)rect(310,y-11,249,34,brown);text(label,322,y,emphasis?12:10,emphasis?bold:normal,emphasis?white:muted);text(value,547-width(value,emphasis?15:10,emphasis?bold:normal),y,emphasis?15:10,emphasis?bold:normal,emphasis?white:brown);y-=emphasis?35:21;}
-  newPage();const c=content(order);
-  text(c.title,(595.28-width(c.title,24,bold))/2,y,24,bold);y-=25;
-  const welcome=t('Um cuidado especial, pensado para si.');text(welcome,(595.28-width(welcome,10))/2,y,10,normal,muted);y-=30;
+  function block(s,size=10,font=normal,color=brown){for(const row of wrap(s,499,size,font)){ensure(size+3);text(row,48,y,size,font,color);y-=size+3;}}
+  function section(title){ensure(42);text(title,48,y,11,bold);rect(36,y-8,523,.7,gold);y-=22;}
+  function total(label,value,emphasis=false){if(emphasis)y-=5;ensure(34);if(emphasis){rect(310,y-9,249,30,cream);rect(310,y-9,2,30,gold);}text(label,322,y,emphasis?12:10,emphasis?bold:normal,muted);text(value,547-width(value,emphasis?15:10,emphasis?bold:normal),y,emphasis?15:10,emphasis?bold:normal,brown);y-=emphasis?29:17;}
+  newPage();y=660;const c=content(order);
+  block(c.title,24,bold);
+  const welcome=t('Um cuidado especial, pensado para si.');text(welcome,48,y,10,normal,muted);y-=22;
   if(order.isTest){block(t('TESTE - SEM COMPRA OU PAGAMENTO REAL'),10,bold);y-=8;}
-  rect(36,y-48,523,66,brown);text(t('RESUMO DA ENCOMENDA'),48,y,9,bold,white);text(order.createdAt.slice(0,10),489,y,9,normal,white);text(reference,48,y-18,9,normal,white);text(c.status+(order.method==='manual_dashboard'&&order.status==='paid'?'':'  |  '+(order.method==='stripe'?'Stripe':'Orange Money')),48,y-36,10,bold,white);y-=75;
+  const state=c.status+(order.method==='manual_dashboard'&&order.status==='paid'?'':'  |  '+(order.method==='stripe'?'Stripe':'Orange Money'));
+  const stateLines=wrap(state,499,10,bold);
+  const paymentLines=order.method==='orange_money'&&order.status!=='paid'?[...wrap('Orange Money: Ciara Ly · +245 95 734 21 44',499,10,bold).map(s=>[s,10,bold]),...wrap(t('A encomenda é confirmada após a receção do pagamento.'),499,9).map(s=>[s,9,normal])]:[];
+  const cardHeight=50+stateLines.length*15+(paymentLines.length?8+paymentLines.length*13:0);
+  ensure(cardHeight+20);rect(36,y-cardHeight+18,523,cardHeight,cream);rect(36,y-cardHeight+18,2,cardHeight,order.status==='paid'?brown:gold);text(t('RESUMO DA ENCOMENDA'),48,y,9,bold);const date=order.createdAt.slice(0,10);text(date,547-width(date,9),y,9,normal,muted);text(reference,48,y-18,9,normal,muted);for(let n=0;n<stateLines.length;n++)text(stateLines[n],48,y-36-n*15,10,bold,order.status==='paid'?brown:muted);
+  if(paymentLines.length){let yy=y-36-stateLines.length*15;rect(48,yy+5,499,.7,gold);yy-=8;for(const [s,size,font]of paymentLines){text(s,48,yy,size,font);yy-=13;}}
+  y-=cardHeight+9;
   section(t('Preparada para si'));
   const left=[order.customer.name,order.customer.email,order.customer.phone].flatMap(s=>wrap(s,231,10));
   const right=[order.fulfillmentMethod==='pickup'?t('Ponto de recolha'):t('Morada de entrega'),order.fulfillmentAddress].flatMap(s=>wrap(s,231,10));
-  for(let n=0;n<Math.max(left.length,right.length);n++){ensure(15);if(left[n])text(left[n],48,y,10,n===0?bold:normal);if(right[n])text(right[n],310,y,10,n===0?bold:normal);y-=15;}y-=12;
+  for(let n=0;n<Math.max(left.length,right.length);n++){ensure(13);if(left[n])text(left[n],48,y,10,n===0?bold:normal);if(right[n])text(right[n],310,y,10,n===0?bold:normal);y-=13;}y-=6;
   section(t('As suas escolhas'));
-  function tableHeader(){ensure(32);rect(36,y-8,523,24,brown);text(t('ARTIGO'),48,y,9,bold,white);text(t('QTD.'),340,y,9,bold,white);text(t('UNITÁRIO'),395,y,9,bold,white);text(t('TOTAL'),505,y,9,bold,white);y-=28;}
+  function tableHeader(){ensure(44);rect(36,y-8,523,24,cream);text(t('ARTIGO'),48,y,9,bold);text(t('QTD.'),355-width(t('QTD.'),9,bold),y,9,bold);text(t('UNITÁRIO'),447-width(t('UNITÁRIO'),9,bold),y,9,bold);text(t('TOTAL'),547-width(t('TOTAL'),9,bold),y,9,bold);y-=24;}
   tableHeader();
-  for(const item of order.items){const names=wrap(item.title,273,10,bold),options=wrap(item.variant||Object.values(item.opts||{}).filter(Boolean).join(' · '),273,9);const lines=[...names.map(t=>[t,10,bold]),...options.map(t=>[t,9,normal])];const height=lines.length*14+18;if(y-Math.min(height,90)<64){newPage();tableHeader();}let first=true;for(const [line,size,font]of lines){if(y<82){newPage();tableHeader();}if(first){text(String(item.qty),350,y);const unit=money(item.unitCents),amount=money(item.qty*item.unitCents);text(unit,447-width(unit),y);text(amount,547-width(amount),y,10,bold);first=false;}text(line,48,y,size,font);y-=14;}rect(36,y-2,523,.7,sand);y-=18;}
-  ensure(130);y-=4;total(t('Subtotal'),money(order.subtotalCents));if(order.discountCents)total(t('Desconto'), '-'+money(order.discountCents));total(t('Envio'),order.shippingCents?money(order.shippingCents):t('Grátis'));total(c.total,money(order.totalCents),true);
-  if(order.couponCode){block(t('Cupão aplicado: ')+order.couponCode,9,normal,muted);y-=8;}
-  section(t('Os próximos passos'));block(c.next);if(!(order.method==='manual_dashboard'&&order.status==='paid'))block(c.eta,9,normal,muted);y-=8;
-  if(order.method==='orange_money'){block('Orange Money: Ciara Ly · +245 95 734 21 44',10,bold);block(t('A encomenda é confirmada após a receção do pagamento.'),9);y-=8;}
-  if(order.customer.notes){section(t('O seu pedido, ao seu gosto'));block(order.customer.notes);y-=8;}
+  for(const item of order.items){const names=wrap(item.title,273,10,bold),options=wrap(item.variant||Object.values(item.opts||{}).filter(Boolean).join(' · '),273,9);const lines=[...names.map(t=>[t,10,bold]),...options.map(t=>[t,9,normal])];const height=lines.length*13+12;if(y-Math.min(height,90)<64){newPage();tableHeader();}let first=true;for(const [line,size,font]of lines){if(y<82){newPage();tableHeader();}if(first){const qty=String(item.qty);text(qty,355-width(qty),y);const unit=money(item.unitCents),amount=money(item.qty*item.unitCents);text(unit,447-width(unit),y);text(amount,547-width(amount),y,10,bold);first=false;}text(line,48,y,size,font);y-=13;}rect(36,y-2,523,.7,sand);y-=12;}
+  ensure(110);y-=4;total(t('Subtotal'),money(order.subtotalCents));if(order.discountCents)total(t('Desconto'), '-'+money(order.discountCents));total(t('Envio'),order.shippingCents?money(order.shippingCents):t('Grátis'));total(c.total,money(order.totalCents),true);
+  if(order.couponCode){block(t('Cupão aplicado: ')+order.couponCode,9,normal,muted);y-=4;}
+  section(t('Os próximos passos'));block(c.next);if(!(order.method==='manual_dashboard'&&order.status==='paid'))block(c.eta,9,normal,muted);y-=4;
+  if(order.customer.notes){section(t('O seu pedido, ao seu gosto'));block(order.customer.notes);y-=4;}
   ensure(55);block(t('Com carinho, a equipa Asheerah Hair'),12,bold);block(t('Obrigada por nos deixar fazer parte da sua história.'),10,normal,muted);y-=7;block(t('Resumo da encomenda - não constitui fatura fiscal.'),8,normal,muted);
   doc.setTitle('Asheerah Hair — '+t('Encomenda')+' '+reference);doc.setAuthor('Asheerah Hair');return doc.save();
 }
