@@ -2,3 +2,4 @@ backend/node_modules/
 backend/.dev.vars
 output/
 tmp/
+.wrangler/

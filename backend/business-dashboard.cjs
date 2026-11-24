@@ -36,9 +36,10 @@ async function backfill(env){
 }
 function safeOrder(order,operations,env={}){
  const {id,createdAt,language,method,status,customer,items,subtotalCents,discountCents,shippingCents,totalCents,couponCode,fulfillmentMethod,fulfillmentAddress,channel,createdBy}=order;
- const op=operations||blankOperations(order,env),safeOperations={...op};
+ const op=operations||blankOperations(order,env),safeOperations={...op},receiptOwned=!!op.customerComms?.receiptOwner||!!op.customerComms?.messages?.some(m=>m.kind==='receipt');
  if(op.paidEmail)safeOperations.paidEmail={status:op.paidEmail.status};
- return {id,createdAt,language,method,status,customer,items,subtotalCents,discountCents,shippingCents,totalCents,couponCode,fulfillmentMethod,fulfillmentAddress,channel,createdBy,...(immutableManual(order)?{orderDigest:orderDigest(order),manualEmailAvailable:manualEmailAvailable(env)}:{}),operations:safeOperations};
+ delete safeOperations.customerComms;
+ return {id,createdAt,language,method,status,customer,items,subtotalCents,discountCents,shippingCents,totalCents,couponCode,fulfillmentMethod,fulfillmentAddress,channel,createdBy,...(immutableManual(order)?{orderDigest:orderDigest(order),manualEmailAvailable:manualEmailAvailable(env)}:{}),dashboardCustomerEmailAvailable:env.DASHBOARD_CUSTOMER_EMAIL_UI_ENABLED==='1',dashboardReceiptOwned:receiptOwned,dashboardReceiptStatus:op.customerComms?.messages?.filter(m=>m.kind==='receipt').at(-1)?.status||(receiptOwned?'reserved':null),operations:safeOperations};
 }
 function applyAction(order,previous,input,by,at=new Date().toISOString()){
  if(!input||!Number.isSafeInteger(input.version)||input.version!==previous.version)throw Error('Este pedido foi atualizado por outra pessoa. Atualiza a página antes de continuar.');
@@ -59,6 +60,7 @@ function applyAction(order,previous,input,by,at=new Date().toISOString()){
    op.paymentConfirmation={at,by,reference:reference.trim(),amountCents:order.totalCents};
    if(order.method==='manual_dashboard')op.paymentConfirmation.orderDigest=orderDigest(order);
   }else if(action==='approve_paid_email'){
+   if(previous.customerComms?.receiptOwner||previous.customerComms?.messages?.some(m=>m.kind==='receipt'))throw Error('Esta confirmação pertence à nova comunicação à cliente.');
    if(!immutableManual(order)||order.status!=='awaiting_payment'||!op.paymentConfirmation||op.paymentConfirmation.orderDigest!==orderDigest(order)||input.expectedOrderDigest!==orderDigest(order)||typeof order.customer?.email!=='string'||!order.customer.email.trim()||input.recipient!==order.customer.email||typeof input.idempotencyKey!=='string'||!/^[a-zA-Z0-9_-]{32,128}$/.test(input.idempotencyKey)||op.paidEmail)throw Error('Revê a encomenda e o destinatário antes de aprovar o email.');
    op.paidEmail={status:'pending',eventId:require('node:crypto').randomUUID(),createdAt:at,confirmedSnapshot:structuredClone(order),approvalKeyHash:require('node:crypto').createHash('sha256').update(input.idempotencyKey).digest('hex')};
   }else if(action==='remove_manual_order'){
@@ -147,6 +149,14 @@ async function handle(request,env){
  if(!user)return response({error:'Área privada. Inicia sessão com uma conta autorizada.'},401);
  if(!env.REVIEW_MEDIA)return response({error:'Área de gestão ainda não configurada.'},503);
  const url=new URL(request.url),path=url.pathname;
+ const preview=path.match(/^\/management-api\/orders\/([a-f0-9-]{36})\/customer-email\/previews\/([a-f0-9-]{36})\/(html|pdf)$/i);
+ if(preview)return require('./dashboard-customer-service.cjs').previewResponse(request,env,user,preview[1].toLowerCase(),preview[2].toLowerCase(),preview[3].toLowerCase());
+ const comms=path.match(/^\/management-api\/orders\/([a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12})\/customer-email(?:\/(record|preview|approve|resolve))?$/i);
+ if(comms)return require('./dashboard-customer-service.cjs').handle(request,env,user,comms[1].toLowerCase(),comms[2]);
+ if(request.method==='GET'&&path==='/management-api/customer-email-inventory'&&env.DASHBOARD_CUSTOMER_EMAIL_UI_ENABLED==='1'){
+  const cursor=url.searchParams.get('cursor')||undefined;if(cursor&&cursor.length>2048)return response({error:'Cursor inválido.'},400);
+  try{return response(await require('./dashboard-customer-service.cjs').inventory(env,{cursor}));}catch{return response({error:'Inventário indisponível.'},503);}
+ }
  if(request.method==='GET'&&path==='/management-api/security-status'){
   const security=require('./public-security.cjs'),checks={};
   for(const [name,target] of Object.entries({stripe:env.GAS_WEBHOOK_URL,manual:env.MANUAL_ORDER_GAS_URL||env.GAS_WEBHOOK_URL})){
@@ -187,6 +197,7 @@ async function handle(request,env){
   if(input?.action==='approve_paid_email'&&!manualEmailAvailable(env))return response({error:'O envio de e-mail de confirmação está temporariamente indisponível.',code:'manual_email_unavailable'},503);
   const saved=await readJson(env.REVIEW_MEDIA,snapshotKey(match[1]));if(!saved||saved.value.isTest)return response({error:'Encomenda não encontrada.'},404);
   const key=operationsKey(match[1]),current=await readJson(env.REVIEW_MEDIA,key);
+  if(input?.action==='approve_paid_email'&&(current?.value.customerComms?.receiptOwner||current?.value.customerComms?.messages?.some(m=>m.kind==='receipt')))return response({error:'Reveja o email na área de comunicação à cliente.'},409);
   if(current?.value?.removed)return response({error:'Encomenda não encontrada.'},404);
   const replay=async state=>{const p=state?.paidEmail;if(input?.action!=='approve_paid_email'||input.acknowledged!==true||typeof input.idempotencyKey!=='string'||!/^[a-zA-Z0-9_-]{32,128}$/.test(input.idempotencyKey)||input.expectedOrderDigest!==orderDigest(saved.value)||input.recipient!==saved.value.customer?.email||p?.approvalKeyHash!==require('node:crypto').createHash('sha256').update(input.idempotencyKey).digest('hex'))return null;return response({order:safeOrder(saved.value,state,env)});};
   const existing=await replay(current?.value);if(existing)return existing;
@@ -209,13 +220,14 @@ async function handlePage(request){
  if(!['GET','HEAD'].includes(request.method))return new Response('Method not allowed',{status:405});
  if(url.pathname==='/gestao')return Response.redirect(url.origin+'/gestao/',302);
  if(!url.pathname.startsWith('/gestao/')||url.pathname.length>200)return new Response('Not found',{status:404});
+ if(/^\/gestao\/tracking-local\.(html|js|css)$/.test(url.pathname))return new Response('Not found',{status:404});
  const target=new URL('https://jashe1728.github.io/asheerah-hair'+url.pathname);
  const version=url.searchParams.get('v');if(version&&/^[a-z0-9-]{1,60}$/i.test(version))target.searchParams.set('v',version);
  // Do not forward dashboard cookies or identity headers to the static asset host.
  const upstream=await fetch(target.href,{method:request.method});
  const out=new Headers(upstream.headers);
  out.set('cache-control','no-store');out.set('x-frame-options','DENY');out.set('x-content-type-options','nosniff');out.set('referrer-policy','same-origin');
- out.set('content-security-policy',"default-src 'self'; script-src 'self'; style-src 'self' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' https://cdn.shopify.com https://asheerahhair.com; connect-src 'self'; frame-ancestors 'none'; base-uri 'none'; form-action 'self'; object-src 'none'");
+ out.set('content-security-policy',"default-src 'self'; script-src 'self'; style-src 'self' https://fonts.googleapis.com; frame-src 'self'; font-src 'self' https://fonts.gstatic.com; img-src 'self' https://cdn.shopify.com https://asheerahhair.com; connect-src 'self'; frame-ancestors 'none'; base-uri 'none'; form-action 'self'; object-src 'none'");
  return new Response(upstream.body,{status:upstream.status,headers:out});
 }
 module.exports={persistOrder,identity,handle,handlePage,applyAction,blankOperations,safeOrder,backfill};

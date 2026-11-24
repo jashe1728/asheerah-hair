@@ -14,7 +14,9 @@
   <script src="vendor/pdf-lib-1.17.1.min.js?v=1" defer></script>
   <script src="supplier-pdf.js?v=20261114-orderref1" defer></script>
   <script src="manual-order.js?v=1" defer></script>
-  <script src="dashboard.js?v=20261116-manual-remove1" defer></script>
+  <link rel="stylesheet" href="customer-email.css?v=20261124-integrated1">
+  <script src="customer-email.js?v=20261124-integrated1" defer></script>
+  <script src="dashboard.js?v=20261124-customer-email1" defer></script>
 </head>
 <body class="is-locked">
   <section id="loginScreen" class="login-screen" aria-label="Entrar na área privada">
@@ -86,6 +88,16 @@
   </dialog>
   <dialog id="orderDialog" aria-labelledby="detailTitle"><div class="drawer-top"><span class="small-label">CUIDAR DE CADA DETALHE</span><button class="icon-button" id="closeDetail" aria-label="Fechar encomenda"><span data-icon="close"></span></button></div><div id="detail"></div><div id="mobileOrderAction" hidden></div></dialog>
   <dialog id="actionDialog" class="action-dialog" aria-labelledby="actionTitle"><form id="actionForm"><div class="drawer-top"><span class="small-label">REGISTAR CONFIRMAÇÃO</span><button type="button" class="icon-button" id="closeAction" aria-label="Fechar"><span data-icon="close"></span></button></div><h2 id="actionTitle"></h2><p id="actionDescription"></p><div id="paidEmailReview" hidden></div><label id="referenceLabel">Referência / observação <input id="actionReference" maxlength="200" autocomplete="off"></label><label id="trackingLabel" hidden>Código de seguimento (opcional)<input id="actionTracking" maxlength="100" autocomplete="off"></label><label class="check-label"><input type="checkbox" id="actionAcknowledged" required><span id="acknowledgement"></span></label><div class="action-buttons"><button type="button" class="button subtle" id="cancelAction">Cancelar</button><button type="submit" class="button primary" id="submitAction">Confirmar e guardar</button></div><p id="actionError" class="error" role="alert" hidden></p></form></dialog>
+  <dialog id="customerEmailDialog" aria-labelledby="customerHeading">
+    <div class="drawer-top"><span class="small-label">CUIDAR DE CADA DETALHE</span><button type="button" id="customerClose" class="button subtle">Fechar</button></div>
+    <h2 id="customerHeading">Email à cliente</h2><p id="customerNotice" role="status"></p><p id="customerSender"></p>
+    <section><h3>Guardar seguimento</h3><p>Guardar não envia email. Registe apenas após a entrega à transportadora.</p><form id="customerTrackingForm"><label>Transportadora<select id="customerCarrier" required></select></label><label>Código de seguimento<input id="customerCode" maxlength="100" required></label><button class="button primary" type="submit">Guardar código</button></form><p id="customerSaved"></p></section>
+    <section><h3>Rever e aprovar</h3><div class="customer-buttons"><button type="button" class="button subtle" id="customerReceipt">Rever resumo da encomenda</button><button type="button" class="button subtle" id="customerTrackingPreview">Rever email de seguimento</button><button type="button" class="button subtle" id="customerCorrection">Rever correção com pedido de desculpa</button></div>
+      <article id="customerReview" hidden><p id="customerRecipient"></p><h3 id="customerSubject"></h3><pre id="customerText"></pre><iframe id="customerHtml" title="Email exato à cliente" sandbox=""></iframe><p><a id="customerPdf" class="button subtle">Descarregar o PDF exato em anexo</a></p><label class="customer-check"><input id="customerAck" type="checkbox">Revi o destinatário, o email e o PDF. Aprovo este envio.</label><button type="button" class="button primary" id="customerApprove" disabled>Aprovar e colocar na fila</button></article>
+    </section>
+    <section><h3>Estado e histórico</h3><p>Aceite pelo fornecedor de email não significa entregue. Resultados incertos exigem verificação antes de outro envio.</p><button id="customerRefresh" type="button" class="button subtle">Atualizar estado</button><div id="customerMessages"></div><ol id="customerAudit"></ol></section>
+    <section id="customerResolve" hidden><h3>Reconciliar resultado</h3><p>Verifique no fornecedor o evento e a chave de idempotência antes de continuar. Nunca confirme “não enviado” apenas por a cliente não ter recebido.</p><form id="customerResolveForm"><label>Resultado verificado<select id="customerOutcome"><option value="accepted">Aceite pelo fornecedor</option><option value="confirmed_not_sent">Confirmado pelo fornecedor: não enviado</option></select></label><label>ID do email no fornecedor (obrigatório se aceite)<input id="customerProviderId" maxlength="128"></label><label>Evidência da verificação<textarea id="customerEvidence" minlength="10" maxlength="300" required></textarea></label><label class="customer-check"><input id="customerResolveAck" type="checkbox" required>Verifiquei o resultado no fornecedor e confirmo a evidência.</label><button type="submit" class="button primary">Guardar reconciliação</button></form></section>
+  </dialog>
   <div id="toast" class="toast" role="status" hidden></div>
 </body>
 </html>

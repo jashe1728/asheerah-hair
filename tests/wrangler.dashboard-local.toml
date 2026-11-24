@@ -1,0 +1,25 @@
+name = "asheerah-dashboard-synthetic-local-only"
+main = "local-dashboard-worker.mjs"
+compatibility_date = "2025-06-01"
+compatibility_flags = ["nodejs_compat"]
+workers_dev = false
+preview_urls = false
+
+[assets]
+directory = "../tmp/dashboard-assets"
+binding = "ASSETS"
+run_worker_first = true
+
+[[r2_buckets]]
+binding = "REVIEW_MEDIA"
+bucket_name = "asheerah-dashboard-synthetic-local-only"
+remote = false
+
+[vars]
+MANAGEMENT_ALLOWED_EMAILS = "operator@example.invalid"
+MANAGEMENT_CAPTURE_ENABLED = "1"
+DASHBOARD_CUSTOMER_EMAIL_UI_ENABLED = "1"
+DASHBOARD_CUSTOMER_EMAIL_SECRET = "synthetic-only-dashboard-key-32-characters"
+DASHBOARD_CUSTOMER_EMAIL_SEND_ENABLED = "0"
+ORDER_EMAIL_ENABLED = "0"
+MANUAL_PAID_SCHEDULER_ENABLED = "0"
